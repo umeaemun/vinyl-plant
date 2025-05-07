@@ -33,6 +33,7 @@ const PlantProfile = () => {
 
   // Check if data exists in Supabase for this plant ID
   useEffect(() => {
+    
     const checkPlantData = async () => {
       try {
         // First check if this is a new user
@@ -153,7 +154,7 @@ const PlantProfile = () => {
       }
       
     }
-  }, [id, toast, user]);
+  }, [id, user]);
 
   // Don't render anything until user is authenticated
   if (!user) {

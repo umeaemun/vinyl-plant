@@ -1,0 +1,91 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://use.typekit.net/hdb5yzq.css'); /* Neue Haas Grotesk Display Pro via Adobe Fonts */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 0%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 0%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 0%;
+
+    --primary: 120 100% 50%; /* Green */
+    --primary-foreground: 0 0% 0%;
+
+    --secondary: 0 0% 98%;
+    --secondary-foreground: 0 0% 0%;
+
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 45%;
+
+    --accent: 120 100% 50% / 0.1;
+    --accent-foreground: 0 0% 0%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+    --ring: 120 100% 50%;
+
+    --radius: 0.5rem;
+    
+    /* Grid background variables */
+    --grid-color: #F1F1F1;
+    --grid-size: 70px;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html, body {
+    @apply bg-background text-foreground;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+  }
+
+  body {
+    background-color: white;
+    background-image: 
+      linear-gradient(var(--grid-color) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+    background-size: var(--grid-size) var(--grid-size);
+    background-attachment: fixed;
+    position: relative;
+    /* Add a fixed border around the entire website */
+    border: 10px solid #00FF00;
+    box-sizing: border-box;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display font-medium;
+  }
+}
+
+/* Make main content area fill available space for consistent layout */
+main {
+  min-height: calc(100vh - 80px - 10px * 2); /* Adjust for header height and border */
+}
+
+/* Navbar specific styles */
+header {
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
+}
+
+/* Custom button styles */
+.wwwax-button {
+  @apply rounded-full border-2 border-black bg-wwwax-green text-black hover:bg-black hover:text-wwwax-green transition-colors;
+}

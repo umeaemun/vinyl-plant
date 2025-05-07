@@ -1,0 +1,332 @@
+
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { Plant } from '@/data/plants';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { useToast } from '@/hooks/use-toast';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Separator } from '@/components/ui/separator';
+
+interface PersonalDetailsFormProps {
+  selectedPlant: Plant | null;
+}
+
+const formSchema = z.object({
+  firstName: z.string().min(2, { message: "First name must be at least 2 characters." }),
+  lastName: z.string().min(2, { message: "Last name must be at least 2 characters." }),
+  email: z.string().email({ message: "Please enter a valid email address." }),
+  phone: z.string().min(5, { message: "Please enter a valid phone number." }),
+  companyLabel: z.string().optional(),
+  address1: z.string().min(3, { message: "Address is required." }),
+  address2: z.string().optional(),
+  city: z.string().min(2, { message: "City is required." }),
+  state: z.string().min(2, { message: "State/Province is required." }),
+  postalCode: z.string().min(3, { message: "Postal/Zip code is required." }),
+  country: z.string().min(2, { message: "Country is required." }),
+  comments: z.string().optional(),
+});
+
+type FormValues = z.infer<typeof formSchema>;
+
+const PersonalDetailsForm = ({ selectedPlant }: PersonalDetailsFormProps) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
+      companyLabel: "",
+      address1: "",
+      address2: "",
+      city: "",
+      state: "",
+      postalCode: "",
+      country: "",
+      comments: "",
+    },
+  });
+
+  const onSubmit = async (values: FormValues) => {
+    setIsSubmitting(true);
+    
+    try {
+      console.log("Form values:", values);
+      
+      // Get the vinyl specs from localStorage
+      const vinylFormData = localStorage.getItem('vinylFormData');
+      
+      // Combine the personal details with vinyl specs
+      const orderData = {
+        personalDetails: values,
+        vinylSpecs: vinylFormData ? JSON.parse(vinylFormData) : {},
+        selectedPlantId: selectedPlant?.id || localStorage.getItem('selectedPlantId'),
+      };
+      
+      // Save the full order data to localStorage for demonstration
+      localStorage.setItem('orderData', JSON.stringify(orderData));
+      
+      // In a real app, you'd send this to your backend
+      // await submitOrderToBackend(orderData);
+      
+      toast({
+        title: "Order submitted successfully!",
+        description: "We've received your order and will be in touch soon.",
+      });
+      
+      // Clear localStorage data that's no longer needed
+      localStorage.removeItem('selectedPlantId');
+      localStorage.removeItem('vinylFormData');
+      
+      // Redirect to home or a thank you page
+      setTimeout(() => {
+        navigate('/');
+      }, 2000);
+      
+    } catch (error) {
+      console.error("Order submission error:", error);
+      toast({
+        title: "Submission failed",
+        description: "There was a problem submitting your order. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="p-6 w-full">
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          {/* Contact Information */}
+          <div className="space-y-4">
+            <h3 className="font-medium text-lg">Contact Information</h3>
+            <Separator className="mb-4" />
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="firstName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>First Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="First Name" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
+                name="lastName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Last Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Last Name" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <FormField
+              control={form.control}
+              name="companyLabel"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Company/Label (Optional)</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Company or Label name" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input type="email" placeholder="Email" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
+                name="phone"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Phone</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Phone Number" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </div>
+          
+          {/* Shipping Address */}
+          <div className="space-y-4">
+            <h3 className="font-medium text-lg">Shipping Address</h3>
+            <Separator className="mb-4" />
+            
+            <FormField
+              control={form.control}
+              name="address1"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Address Line 1</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Street Address" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            <FormField
+              control={form.control}
+              name="address2"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Address Line 2 (Optional)</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Apt, Suite, Unit, etc." {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="city"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>City</FormLabel>
+                    <FormControl>
+                      <Input placeholder="City" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
+                name="state"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>State/Province</FormLabel>
+                    <FormControl>
+                      <Input placeholder="State/Province" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="postalCode"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Postal/Zip Code</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Postal/Zip Code" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
+                name="country"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Country</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Country" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </div>
+          
+          {/* Additional Information */}
+          <div className="space-y-4">
+            <h3 className="font-medium text-lg">Additional Information</h3>
+            <Separator className="mb-4" />
+            
+            <FormField
+              control={form.control}
+              name="comments"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Comments or Special Instructions (Optional)</FormLabel>
+                  <FormControl>
+                    <Textarea 
+                      placeholder="Any special requirements or information we should know about your order"
+                      className="min-h-[100px]" 
+                      {...field} 
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          
+          <div className="pt-4">
+            <Button 
+              type="submit" 
+              size="lg" 
+              className="w-full bg-wwwax-green text-black hover:bg-wwwax-green/80"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Submitting..." : "Complete Order"}
+            </Button>
+          </div>
+        </form>
+      </Form>
+    </div>
+  );
+};
+
+export default PersonalDetailsForm;

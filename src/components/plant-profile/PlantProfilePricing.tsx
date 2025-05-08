@@ -514,7 +514,6 @@ const PlantProfilePricing: React.FC<PlantProfilePricingProps> = ({
         </CardHeader>
         <CardContent>
           {vinylPricing?.map((tier, index) => {
-            console.log("tier", tier);
             return (
               <div key={index} className="mb-6 pb-6 border-b border-border last:border-0 last:pb-0">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
@@ -548,20 +547,21 @@ const PlantProfilePricing: React.FC<PlantProfilePricingProps> = ({
                     <Label htmlFor={`size-${index}`}>Size</Label>
                     <Select
                       disabled={disabled}
-                      value={tier.size.toString()}
+                      value={tier.size}
                       onValueChange={(value) => handlePriceTierChange(index, 'size', value)}
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="Select size" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="12">12"</SelectItem>
-                        <SelectItem disabled value="10">10" (Coming soon)</SelectItem>
-                        <SelectItem disabled value="7">7" (Coming soon)</SelectItem>
+                        <SelectItem value={`12"`}>12"</SelectItem>
+                        <SelectItem disabled value={`10"`}>10" (Coming soon)</SelectItem>
+                        <SelectItem disabled value={`7"`}>7" (Coming soon)</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
 
+  
                   <div>
                     <Label htmlFor={`type-${index}`}>Type</Label>
                     <Select

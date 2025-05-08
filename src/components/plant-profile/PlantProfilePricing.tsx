@@ -50,7 +50,7 @@ const PlantProfilePricing: React.FC<PlantProfilePricingProps> = ({
     // setPlant(newPlant);
   };
 
-  const handleRemovePriceTier = (index: number) => {
+  const handleRemovePriceTier = (id: string) => {
     // const newPlant = {...plant};
     // if (newPlant.priceTiers) {
     //   newPlant.priceTiers = newPlant.priceTiers.filter((_, i) => i !== index);
@@ -58,21 +58,18 @@ const PlantProfilePricing: React.FC<PlantProfilePricingProps> = ({
     // }
   };
 
-  const handlePriceTierChange = (index: number, field: keyof PriceTier, value: any) => {
-    // const newPlant = {...plant};
-    // if (!newPlant.priceTiers) {
-    //   newPlant.priceTiers = [];
-    // }
+  const handlePriceTierChange = (id: string, field: keyof PriceTier, value: any) => {
+   
+    // update the vinyl pricing state
+    const newVinylPricing = vinylPricing.map((tier) => {
+      if (tier.id === id) {
+        return { ...tier, [field]: value };
+      }
+      return tier;
+    });
+    console.log("newVinylPricing", newVinylPricing);
 
-    // newPlant.priceTiers = [...(newPlant.priceTiers || [])];
-    // newPlant.priceTiers[index] = {
-    //   quantity: newPlant.priceTiers[index]?.quantity || 0,
-    //   size: newPlant.priceTiers[index]?.size || "12",
-    //   type: newPlant.priceTiers[index]?.type || "1LP",
-    //   price: newPlant.priceTiers[index]?.price || 0,
-    //   [field]: value
-    // };
-    // setPlant(newPlant);
+    setVinylPricing(newVinylPricing);
   };
 
   // const handleAddColorOption = () => {
@@ -522,7 +519,7 @@ const PlantProfilePricing: React.FC<PlantProfilePricingProps> = ({
                     <Select
                       disabled={disabled}
                       value={tier.quantity.toString()}
-                      onValueChange={(value) => handlePriceTierChange(index, 'quantity', parseInt(value))}
+                      onValueChange={(value) => handlePriceTierChange(tier.id, 'quantity', parseInt(value))}
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="Select quantity" />
@@ -548,7 +545,7 @@ const PlantProfilePricing: React.FC<PlantProfilePricingProps> = ({
                     <Select
                       disabled={disabled}
                       value={tier.size}
-                      onValueChange={(value) => handlePriceTierChange(index, 'size', value)}
+                      onValueChange={(value) => handlePriceTierChange(tier.id, 'size', value)}
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="Select size" />
@@ -561,13 +558,12 @@ const PlantProfilePricing: React.FC<PlantProfilePricingProps> = ({
                     </Select>
                   </div>
 
-  
                   <div>
                     <Label htmlFor={`type-${index}`}>Type</Label>
                     <Select
                       disabled={disabled}
                       value={tier.type}
-                      onValueChange={(value) => handlePriceTierChange(index, 'type', value)}
+                      onValueChange={(value) => handlePriceTierChange(tier.id, 'type', value)}
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="Select type" />
@@ -587,7 +583,7 @@ const PlantProfilePricing: React.FC<PlantProfilePricingProps> = ({
                       type="number"
                       step="0.01"
                       value={tier.price}
-                      onChange={(e) => handlePriceTierChange(index, 'price', parseFloat(e.target.value) || 0)}
+                      onChange={(e) => handlePriceTierChange(tier.id, 'price', parseFloat(e.target.value) || 0)}
                       disabled={disabled}
                     />
                   </div>
@@ -597,7 +593,7 @@ const PlantProfilePricing: React.FC<PlantProfilePricingProps> = ({
                   <Button
                     variant="destructive"
                     size="sm"
-                    onClick={() => handleRemovePriceTier(index)}
+                    onClick={() => handleRemovePriceTier(tier.id)}
                     disabled={disabled || (vinylPricing?.length || 0) <= 1}
                   >
                     <Minus className="h-4 w-4 mr-2" />

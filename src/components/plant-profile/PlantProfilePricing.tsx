@@ -45,7 +45,7 @@ const PlantProfilePricing: React.FC<PlantProfilePricingProps> = ({
   const handleRemovePriceTier = (id: string) => {
 
     const newVinylPricing = vinylPricing.map((tier) => {
-     return tier.id == id ? { ...tier, status: 'deleted' } : tier;
+      return tier.id == id ? { ...tier, status: 'deleted' } : tier;
     })
 
     console.log("newVinylPricing", newVinylPricing);
@@ -57,7 +57,11 @@ const PlantProfilePricing: React.FC<PlantProfilePricingProps> = ({
     // update the vinyl pricing state
     const newVinylPricing = vinylPricing.map((tier) => {
       if (tier.id === id) {
-        return { ...tier, [field]: value, status: 'updated' };
+        if (tier.status == 'new') {
+          return { ...tier, [field]: value };
+        }else if (tier.status == 'same') {
+          return { ...tier, [field]: value, status: 'updated' };
+        }
       }
       return tier;
     });
@@ -186,132 +190,163 @@ const PlantProfilePricing: React.FC<PlantProfilePricingProps> = ({
   }, [plant]);
 
   const saveToSupabase = async () => {
-    // if (!plant.id) {
-    //   toast({
-    //     title: "Error",
-    //     description: "Plant ID is missing",
-    //     variant: "destructive"
-    //   });
-    //   return;
-    // }
+    if (!plant.id) {
+      toast({
+        title: "Error",
+        description: "Plant ID is missing",
+        variant: "destructive"
+      });
+      return;
+    }
 
-    // setIsSaving(true);
+    setIsSaving(true);
 
-    // try {
-    //   await supabase.from('vinyl_pricing').delete().eq('plant_id', plant.id);
-    //   await supabase.from('vinyl_color_options').delete().eq('plant_id', plant.id);
-    //   await supabase.from('vinyl_weight_options').delete().eq('plant_id', plant.id);
+    try {
 
-    //   const { data: packagingRecords } = await supabase
-    //     .from('packaging_pricing')
-    //     .select('id')
-    //     .eq('plant_id', plant.id);
+      console.log("vinylPricing", vinylPricing);
 
-    //   if (packagingRecords && packagingRecords.length > 0) {
-    //     const packagingIds = packagingRecords.map(record => record.id);
-    //     await supabase.from('packaging_price_tiers').delete().in('packaging_id', packagingIds);
-    //   }
+      // filter out deleted tiers
+      const deletedVinylPricing = vinylPricing.filter(tier => tier.status == 'deleted');
+      deletedVinylPricing.forEach(tier => {
+        const { data: deletedVinylPricingData, error: deletedVinylPricingError } = await supabase
+          .from('vinyl_pricing')
+          .delete()
+          .eq('id', tier.id)
+          .eq('plant_id', plant.id);
 
-    //   await supabase.from('packaging_pricing').delete().eq('plant_id', plant.id);
+        if (deletedVinylPricingError) {
+          console.error('Error deleting vinyl pricing:', deletedVinylPricingError);
+          throw new Error(`Error deleting vinyl pricing: ${deletedVinylPricingError.message}`);
+        }
+      })
 
-    //   if (plant.priceTiers && plant.priceTiers.length > 0) {
-    //     const vinylPricingData = plant.priceTiers.map(tier => ({
-    //       plant_id: plant.id,
-    //       quantity: tier.quantity,
-    //       size: tier.size,
-    //       type: tier.type,
-    //       price: tier.price
-    //     }));
+      // filter out new tiers
+      const newVinylPricing = vinylPricing.filter(tier => tier.status == 'new');
+      const newVinylPricingData = newVinylPricing.forEach(async tier => {
+        const { data: newVinylPricingData, error: newVinylPricingError } = await supabase
+          .from('vinyl_pricing')
+          .insert({
+            plant_id: plant.id,
+            quantity: tier.quantity,
+            size: tier.size,
+            type: tier.type,
+            price: tier.price
+          })
+          .select();
 
-    //     const { error: vinylError } = await supabase.from('vinyl_pricing').insert(vinylPricingData);
+        if (newVinylPricingError) {
+          console.error('Error saving vinyl pricing:', newVinylPricingError);
+          throw new Error(`Error saving vinyl pricing: ${newVinylPricingError.message}`);
+        }
+      });
 
-    //     if (vinylError) {
-    //       console.error('Error saving vinyl pricing:', vinylError);
-    //       throw new Error(`Error saving vinyl pricing: ${vinylError.message}`);
-    //     }
-    //   }
 
-    //   if (plant.colorOptions && plant.colorOptions.length > 0) {
-    //     const colorOptionsData = plant.colorOptions.map(option => ({
-    //       plant_id: plant.id,
-    //       name: option.name,
-    //       additional_cost: option.additionalCost
-    //     }));
 
-    //     const { error: colorError } = await supabase.from('vinyl_color_options').insert(colorOptionsData);
+      // filter out updated tiers
+      const updatedVinylPricing = vinylPricing.filter(tier => tier.status == 'updated');
+      const updatedVinylPricingData = updatedVinylPricing.forEach(async tier => {
+        const { data: updatedVinylPricingData, error: updatedVinylPricingError } = await supabase
+          .from('vinyl_pricing')
+          .update({
+            quantity: tier.quantity,
+            size: tier.size,
+            type: tier.type,
+            price: tier.price
+          })
+          .eq('id', tier.id)
+          .eq('plant_id', plant.id)
+          .select();
 
-    //     if (colorError) {
-    //       console.error('Error saving color options:', colorError);
-    //       throw new Error(`Error saving color options: ${colorError.message}`);
-    //     }
-    //   }
+        if (updatedVinylPricingError) {
+          console.error('Error saving vinyl pricing:', updatedVinylPricingError);
+          throw new Error(`Error saving vinyl pricing: ${updatedVinylPricingError.message}`);
+        }
+      });
 
-    //   if (plant.weightOptions && plant.weightOptions.length > 0) {
-    //     const weightOptionsData = plant.weightOptions.map(option => ({
-    //       plant_id: plant.id,
-    //       name: option.name,
-    //       additional_cost: option.additionalCost
-    //     }));
+    
+      // if (plant.packagingPricing && plant.packagingPricing.length > 0) {
+      //   for (const packaging of plant.packagingPricing) {
+      //     const { data: packagingData, error: packagingError } = await supabase
+      //       .from('packaging_pricing')
+      //       .insert({
+      //         plant_id: plant.id,
+      //         type: packaging.type,
+      //         option: packaging.option
+      //       })
+      //       .select();
 
-    //     const { error: weightError } = await supabase.from('vinyl_weight_options').insert(weightOptionsData);
+      //     if (packagingError) {
+      //       console.error('Error saving packaging pricing:', packagingError);
+      //       throw new Error(`Error saving packaging pricing: ${packagingError.message}`);
+      //     }
 
-    //     if (weightError) {
-    //       console.error('Error saving weight options:', weightError);
-    //       throw new Error(`Error saving weight options: ${weightError.message}`);
-    //     }
-    //   }
+      //     if (packagingData && packagingData.length > 0 && packaging.prices.length > 0) {
+      //       const packagingId = packagingData[0].id;
 
-    //   if (plant.packagingPricing && plant.packagingPricing.length > 0) {
-    //     for (const packaging of plant.packagingPricing) {
-    //       const { data: packagingData, error: packagingError } = await supabase
-    //         .from('packaging_pricing')
-    //         .insert({
-    //           plant_id: plant.id,
-    //           type: packaging.type,
-    //           option: packaging.option
-    //         })
-    //         .select();
+      //       const priceTiersData = packaging.prices.map(price => ({
+      //         packaging_id: packagingId,
+      //         quantity: price.quantity,
+      //         price: price.price
+      //       }));
 
-    //       if (packagingError) {
-    //         console.error('Error saving packaging pricing:', packagingError);
-    //         throw new Error(`Error saving packaging pricing: ${packagingError.message}`);
-    //       }
+      //       const { error: tierError } = await supabase
+      //         .from('packaging_price_tiers')
+      //         .insert(priceTiersData);
 
-    //       if (packagingData && packagingData.length > 0 && packaging.prices.length > 0) {
-    //         const packagingId = packagingData[0].id;
+      //       if (tierError) {
+      //         console.error('Error saving packaging price tiers:', tierError);
+      //         throw new Error(`Error saving packaging price tiers: ${tierError.message}`);
+      //       }
+      //     }
+      //   }
+      // }
 
-    //         const priceTiersData = packaging.prices.map(price => ({
-    //           packaging_id: packagingId,
-    //           quantity: price.quantity,
-    //           price: price.price
-    //         }));
 
-    //         const { error: tierError } = await supabase
-    //           .from('packaging_price_tiers')
-    //           .insert(priceTiersData);
+      // if (plant.colorOptions && plant.colorOptions.length > 0) {
+      //   const colorOptionsData = plant.colorOptions.map(option => ({
+      //     plant_id: plant.id,
+      //     name: option.name,
+      //     additional_cost: option.additionalCost
+      //   }));
 
-    //         if (tierError) {
-    //           console.error('Error saving packaging price tiers:', tierError);
-    //           throw new Error(`Error saving packaging price tiers: ${tierError.message}`);
-    //         }
-    //       }
-    //     }
-    //   }
+      //   const { error: colorError } = await supabase.from('vinyl_color_options').insert(colorOptionsData);
 
-    //   toast({
-    //     title: "Success",
-    //     description: "Pricing data saved successfully"
-    //   });
-    // } catch (error) {
-    //   console.error('Error saving pricing data:', error);
-    //   toast({
-    //     title: "Error",
-    //     description: error instanceof Error ? error.message : "An error occurred while saving pricing data",
-    //     variant: "destructive"
-    //   });
-    // } finally {
-    //   setIsSaving(false);
-    // }
+      //   if (colorError) {
+      //     console.error('Error saving color options:', colorError);
+      //     throw new Error(`Error saving color options: ${colorError.message}`);
+      //   }
+      // }
+
+      // if (plant.weightOptions && plant.weightOptions.length > 0) {
+      //   const weightOptionsData = plant.weightOptions.map(option => ({
+      //     plant_id: plant.id,
+      //     name: option.name,
+      //     additional_cost: option.additionalCost
+      //   }));
+
+      //   const { error: weightError } = await supabase.from('vinyl_weight_options').insert(weightOptionsData);
+
+      //   if (weightError) {
+      //     console.error('Error saving weight options:', weightError);
+      //     throw new Error(`Error saving weight options: ${weightError.message}`);
+      //   }
+      // }
+
+
+      toast({
+        title: "Success",
+        description: "Pricing data saved successfully"
+      });
+    } catch (error) {
+      console.error('Error saving pricing data:', error);
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "An error occurred while saving pricing data",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   // const loadFromSupabase = async () => {
@@ -478,149 +513,147 @@ const PlantProfilePricing: React.FC<PlantProfilePricingProps> = ({
 
   }
 
-  console.log("vinylPricing", vinylPricing);
+  return (
+    <div className="space-y-6">
+      {!disabled && (
+        <div className="flex justify-end gap-2 mb-6">
+          <Button
+            variant="outline"
+            onClick={loadFromSupabase}
+            disabled={isSaving || !plant.id}
+          >
+            Reload from Database
+          </Button>
+          <Button
+            onClick={saveToSupabase}
+            disabled={isSaving || !plant.id}
+            className="flex items-center gap-2"
+          >
+            {isSaving ? "Saving..." : "Save to Database"}
+            {!isSaving && <Save className="h-4 w-4" />}
+          </Button>
+        </div>
+      )}
 
-    return (
-      <div className="space-y-6">
-        {!disabled && (
-          <div className="flex justify-end gap-2 mb-6">
-            <Button
-              variant="outline"
-              onClick={loadFromSupabase}
-              disabled={isSaving || !plant.id}
-            >
-              Reload from Database
-            </Button>
-            <Button
-              onClick={saveToSupabase}
-              disabled={isSaving || !plant.id}
-              className="flex items-center gap-2"
-            >
-              {isSaving ? "Saving..." : "Save to Database"}
-              {!isSaving && <Save className="h-4 w-4" />}
-            </Button>
-          </div>
-        )}
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Base Vinyl Pricing</CardTitle>
-            <CardDescription>
-              Add custom pricing tiers based on quantity, size, and type. This price should include all fixed cost pricing like any set-up fees, lacquer/DMM cutting and/or electroplating, and centre labels. This base pricing is for black 140gm vinyl.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            {vinylPricing?.map((tier, index) => {
-              if (tier.status == 'deleted') {
-                return null;
-              }
-              return (
-                <div key={index} className="mb-6 pb-6 border-b border-border last:border-0 last:pb-0">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                    <div>
-                      <Label htmlFor={`quantity-${index}`}>Quantity</Label>
-                      <Select
-                        disabled={disabled}
-                        value={tier.quantity.toString()}
-                        onValueChange={(value) => handlePriceTierChange(tier.id, 'quantity', parseInt(value))}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select quantity" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="50">50</SelectItem>
-                          <SelectItem value="100">100</SelectItem>
-                          <SelectItem value="150">150</SelectItem>
-                          <SelectItem value="200">200</SelectItem>
-                          <SelectItem value="300">300</SelectItem>
-                          <SelectItem value="500">500</SelectItem>
-                          <SelectItem value="700">700</SelectItem>
-                          <SelectItem value="1000">1000</SelectItem>
-                          <SelectItem value="1500">1500</SelectItem>
-                          <SelectItem value="2000">2000</SelectItem>
-                          <SelectItem value="3000">3000</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    <div>
-                      <Label htmlFor={`size-${index}`}>Size</Label>
-                      <Select
-                        disabled={disabled}
-                        value={tier.size}
-                        onValueChange={(value) => handlePriceTierChange(tier.id, 'size', value)}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select size" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value={`12"`}>12"</SelectItem>
-                          <SelectItem disabled value={`10"`}>10" (Coming soon)</SelectItem>
-                          <SelectItem disabled value={`7"`}>7" (Coming soon)</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    <div>
-                      <Label htmlFor={`type-${index}`}>Type</Label>
-                      <Select
-                        disabled={disabled}
-                        value={tier.type}
-                        onValueChange={(value) => handlePriceTierChange(tier.id, 'type', value)}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select type" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="1LP">1LP</SelectItem>
-                          <SelectItem disabled value="2LP">2LP (Coming soon)</SelectItem>
-                          <SelectItem disabled value="3LP">3LP (Coming soon)</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    <div>
-                      <Label htmlFor={`price-${index}`}>Price per unit ($)</Label>
-                      <Input
-                        id={`price-${index}`}
-                        type="number"
-                        step="0.01"
-                        value={tier.price}
-                        onChange={(e) => handlePriceTierChange(tier.id, 'price', parseFloat(e.target.value) || 0)}
-                        disabled={disabled}
-                      />
-                    </div>
+      <Card>
+        <CardHeader>
+          <CardTitle>Base Vinyl Pricing</CardTitle>
+          <CardDescription>
+            Add custom pricing tiers based on quantity, size, and type. This price should include all fixed cost pricing like any set-up fees, lacquer/DMM cutting and/or electroplating, and centre labels. This base pricing is for black 140gm vinyl.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {vinylPricing?.map((tier, index) => {
+            if (tier.status == 'deleted') {
+              return null;
+            }
+            return (
+              <div key={index} className="mb-6 pb-6 border-b border-border last:border-0 last:pb-0">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                  <div>
+                    <Label htmlFor={`quantity-${index}`}>Quantity</Label>
+                    <Select
+                      disabled={disabled}
+                      value={tier.quantity.toString()}
+                      onValueChange={(value) => handlePriceTierChange(tier.id, 'quantity', parseInt(value))}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select quantity" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="50">50</SelectItem>
+                        <SelectItem value="100">100</SelectItem>
+                        <SelectItem value="150">150</SelectItem>
+                        <SelectItem value="200">200</SelectItem>
+                        <SelectItem value="300">300</SelectItem>
+                        <SelectItem value="500">500</SelectItem>
+                        <SelectItem value="700">700</SelectItem>
+                        <SelectItem value="1000">1000</SelectItem>
+                        <SelectItem value="1500">1500</SelectItem>
+                        <SelectItem value="2000">2000</SelectItem>
+                        <SelectItem value="3000">3000</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
 
-                  <div className="flex justify-end">
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      onClick={() => handleRemovePriceTier(tier.id)}
-                      disabled={disabled || (vinylPricing?.length || 0) <= 1}
+                  <div>
+                    <Label htmlFor={`size-${index}`}>Size</Label>
+                    <Select
+                      disabled={disabled}
+                      value={tier.size}
+                      onValueChange={(value) => handlePriceTierChange(tier.id, 'size', value)}
                     >
-                      <Minus className="h-4 w-4 mr-2" />
-                      Remove Tier
-                    </Button>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select size" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value={`12"`}>12"</SelectItem>
+                        <SelectItem disabled value={`10"`}>10" (Coming soon)</SelectItem>
+                        <SelectItem disabled value={`7"`}>7" (Coming soon)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div>
+                    <Label htmlFor={`type-${index}`}>Type</Label>
+                    <Select
+                      disabled={disabled}
+                      value={tier.type}
+                      onValueChange={(value) => handlePriceTierChange(tier.id, 'type', value)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="1LP">1LP</SelectItem>
+                        <SelectItem disabled value="2LP">2LP (Coming soon)</SelectItem>
+                        <SelectItem disabled value="3LP">3LP (Coming soon)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div>
+                    <Label htmlFor={`price-${index}`}>Price per unit ($)</Label>
+                    <Input
+                      id={`price-${index}`}
+                      type="number"
+                      step="0.01"
+                      value={tier.price}
+                      onChange={(e) => handlePriceTierChange(tier.id, 'price', parseFloat(e.target.value) || 0)}
+                      disabled={disabled}
+                    />
                   </div>
                 </div>
-              )
-            }
-            )}
 
-            <Button
-              variant="outline"
-              className="w-full mt-4"
-              onClick={handleAddPriceTier}
-              disabled={disabled}
-            >
-              <Plus className="h-4 w-4 mr-2" />
-              Add Price Tier
-            </Button>
-          </CardContent>
-        </Card>
+                <div className="flex justify-end">
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={() => handleRemovePriceTier(tier.id)}
+                    disabled={disabled || (vinylPricing?.length || 0) <= 1}
+                  >
+                    <Minus className="h-4 w-4 mr-2" />
+                    Remove Tier
+                  </Button>
+                </div>
+              </div>
+            )
+          }
+          )}
 
-        {/* <Card>
+          <Button
+            variant="outline"
+            className="w-full mt-4"
+            onClick={handleAddPriceTier}
+            disabled={disabled}
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            Add Price Tier
+          </Button>
+        </CardContent>
+      </Card>
+
+      {/* <Card>
         <CardHeader>
           <CardTitle>Colour Options</CardTitle>
           <CardDescription>
@@ -755,8 +788,8 @@ const PlantProfilePricing: React.FC<PlantProfilePricingProps> = ({
           </Button>
         </CardContent>
       </Card> */}
-      </div>
-    );
+    </div>
+  );
 };
 
 export default PlantProfilePricing;

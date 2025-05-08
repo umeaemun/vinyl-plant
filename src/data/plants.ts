@@ -60,12 +60,6 @@ export interface Plant {
   image_url: string;
   website: string;
   reviews: PlantReview[];
-  // prices?: PlantPrice[];
-  // priceTiers?: PriceTier[];
-  // colorOptions?: ColorOption[];
-  // weightOptions?: WeightOption[];
-  // packagingPricing?: PackagingPrice[];
- 
 }
 
 export const features: PlantFeature[] = [

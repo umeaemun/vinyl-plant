@@ -33,89 +33,28 @@ const PlantProfileTabs: React.FC<PlantProfileTabsProps> = ({
     }
   };
 
-  const [packagingPricing, setPackagingPricing] = React.useState<PackagingPrice[]>(
-    plant.packagingPricing || [
-      {
-        type: 'innerSleeve',
-        option: 'White Paper',
-        prices: [{ quantity: 100, price: 0.5 }]
-      },
-      {
-        type: 'innerSleeve',
-        option: 'White Poly-lined',
-        prices: [{ quantity: 100, price: 0.75 }]
-      },
-      {
-        type: 'innerSleeve',
-        option: 'Black Paper',
-        prices: [{ quantity: 100, price: 0.6 }]
-      },
-      {
-        type: 'innerSleeve',
-        option: 'Black Poly-lined',
-        prices: [{ quantity: 100, price: 0.85 }]
-      },
-      {
-        type: 'innerSleeve',
-        option: 'Printed',
-        prices: [{ quantity: 100, price: 1.25 }]
-      },
-      {
-        type: 'jacket',
-        option: 'Single Pocket (3mm Spine)',
-        prices: [{ quantity: 100, price: 2.0 }]
-      },
-      {
-        type: 'jacket',
-        option: 'Single Pocket (5mm Spine)',
-        prices: [{ quantity: 100, price: 2.5 }]
-      },
-      {
-        type: 'jacket',
-        option: 'Gatefold Jacket',
-        prices: [{ quantity: 100, price: 4.0 }]
-      },
-      {
-        type: 'inserts',
-        option: 'No Insert',
-        prices: [{ quantity: 100, price: 0 }]
-      },
-      {
-        type: 'inserts',
-        option: 'Single Insert',
-        prices: [{ quantity: 100, price: 0.75 }]
-      },
-      {
-        type: 'shrinkWrap',
-        option: 'Yes',
-        prices: [{ quantity: 100, price: 0.25 }]
-      },
-      {
-        type: 'shrinkWrap',
-        option: 'No',
-        prices: [{ quantity: 100, price: 0 }]
-      },
-    ]
-  );
 
-  React.useEffect(() => {
-    if (plant) {
-      const updatedPricing = packagingPricing.map(item => {
-        if ((item.type === 'inserts' && item.option.toLowerCase().includes('no')) || 
-            (item.type === 'shrinkWrap' && item.option.toLowerCase() === 'no')) {
-          return {
-            ...item,
-            prices: item.prices.map(price => ({ ...price, price: 0 }))
-          };
-        }
-        return item;
-      });
+
+  const [packagingPricing, setPackagingPricing] = React.useState<PackagingPrice[]>([]);
+
+//   React.useEffect(() => {
+//     if (plant) {
+//       const updatedPricing = packagingPricing.map(item => {
+//         if ((item.type === 'inserts' && item.option.toLowerCase().includes('no')) || 
+//             (item.type === 'shrinkWrap' && item.option.toLowerCase() === 'no')) {
+//           return {
+//             ...item,
+//             prices: item.prices.map(price => ({ ...price, price: 0 }))
+//           };
+//         }
+//         return item;
+//       });
       
-      setPackagingPricing(updatedPricing);
-      handleChange('packagingPricing', updatedPricing);
-    }
-  // }, [packagingPricing, plant]);
-}, []);
+//       setPackagingPricing(updatedPricing);
+//       handleChange('packagingPricing', updatedPricing);
+//     }
+//   // }, [packagingPricing, plant]);
+// }, []);
 
 
   const [equipment, setEquipment] = React.useState([

@@ -69,7 +69,6 @@ const PlantProfile = () => {
             owner: plant.owner || '',
             description: plant.description || 'N/A',
             features: plant.features || [],
-            prices: plant.prices || [],
             rating: plant.rating || 0,
             review_count: plant.review_count || 0,
             minimum_order: plant.minimum_order || 100,
@@ -117,7 +116,6 @@ const PlantProfile = () => {
             owner: '',
             description: 'Your personal pressing plant profile',
             features: [],
-            prices: [],
             rating: 0,
             review_count: 0,
             minimum_order: 100,
@@ -167,7 +165,7 @@ const PlantProfile = () => {
         <Navbar />
         <main className="flex-grow pt-20 flex items-center justify-center">
           <div className="text-center">
-            <h2 className="text-xl font-medium mb-4">Loading plant profile...</h2>
+            <h2 className="text-xl font-medium mb-4">Loading...</h2>
           </div>
         </main>
         <Footer />

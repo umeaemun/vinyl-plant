@@ -11,100 +11,44 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      orders: {
+      profiles: {
         Row: {
-          buyer_id: string
-          created_at: string
           id: string
-          plant_id: string
-          project_name: string
-          quantity: number
-          status: string
-          updated_at: string
-          vinyl_type: string
-        }
-        Insert: {
-          buyer_id: string
-          created_at?: string
-          id?: string
-          plant_id: string
-          project_name: string
-          quantity: number
-          status?: string
-          updated_at?: string
-          vinyl_type: string
-        }
-        Update: {
-          buyer_id?: string
-          created_at?: string
-          id?: string
-          plant_id?: string
-          project_name?: string
-          quantity?: number
-          status?: string
-          updated_at?: string
-          vinyl_type?: string
-        }
-        Relationships: []
-      }
-      packaging_price_tiers: {
-        Row: {
+          email: string | null
+          phone: string | null
+          company: string | null
+          address_street: string | null
+          address_city: string | null
+          address_state: string | null
+          address_postal_code: string | null
+          avatar_url: string | null
           created_at: string
-          id: string
-          packaging_id: string
-          price: number
-          quantity: number
           updated_at: string
         }
         Insert: {
-          created_at?: string
-          id?: string
-          packaging_id: string
-          price: number
-          quantity: number
-          updated_at?: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          packaging_id?: string
-          price?: number
-          quantity?: number
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "packaging_price_tiers_packaging_id_fkey"
-            columns: ["packaging_id"]
-            isOneToOne: false
-            referencedRelation: "packaging_pricing"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      packaging_pricing: {
-        Row: {
-          created_at: string
           id: string
-          option: string
-          plant_id: string
-          type: string
-          updated_at: string
-        }
-        Insert: {
+          email?: string | null
+          phone?: string | null
+          company?: string | null
+          address_street?: string | null
+          address_city?: string | null
+          address_state?: string | null
+          address_postal_code?: string | null
+          avatar_url?: string | null
           created_at?: string
-          id?: string
-          option: string
-          plant_id: string
-          type: string
           updated_at?: string
         }
         Update: {
-          created_at?: string
           id?: string
-          option?: string
-          plant_id?: string
-          type?: string
+          email?: string | null
+          phone?: string | null
+          company?: string | null
+          address_street?: string | null
+          address_city?: string | null
+          address_state?: string | null
+          address_postal_code?: string | null
+          avatar_url?: string | null
+          created_at?: string
           updated_at?: string
         }
         Relationships: []
@@ -116,14 +60,32 @@ export type Database = {
           location: string
           country: string
           owner: UUID
+          description: string
+          minimum_order: number
+          turnaround_time: string
+          rating: number
+          review_count: number
+          features: string[]
+          specialties: string[]
+          image_url: string
+          website: string
           created_at: string
         }
         Insert: {
           id: string
-          name?: string
-          location?: string
-          country?: string
-          owner?: UUID
+          name: string
+          location: string
+          country: string
+          owner: UUID
+          description: string
+          minimum_order: number
+          turnaround_time: string
+          rating: number
+          review_count: number
+          features: string[]
+          specialties: string[]
+          image_url: string
+          website: string
           created_at?: string
         }
         Update: {
@@ -132,78 +94,18 @@ export type Database = {
           location?: string
           country?: string
           owner?: UUID
+          description?: string
+          minimum_order?: number
+          turnaround_time?: string
+          rating?: number
+          review_count?: number
+          features?: string[]
+          specialties?: string[]
+          image_url?: string
+          website?: string
           created_at?: string
         }
 
-      }
-      profiles: {
-        Row: {
-          address_city: string | null
-          address_postal_code: string | null
-          address_state: string | null
-          address_street: string | null
-          avatar_url: string | null
-          company: string | null
-          created_at: string
-          id: string
-          email: string | null
-          phone: string | null
-          updated_at: string
-        }
-        Insert: {
-          address_city?: string | null
-          address_postal_code?: string | null
-          address_state?: string | null
-          address_street?: string | null
-          avatar_url?: string | null
-          company?: string | null
-          created_at?: string
-          id: string
-          email?: string | null
-          phone?: string | null
-          updated_at?: string
-        }
-        Update: {
-          address_city?: string | null
-          address_postal_code?: string | null
-          address_state?: string | null
-          address_street?: string | null
-          avatar_url?: string | null
-          company?: string | null
-          created_at?: string
-          id?: string
-          email?: string | null
-          phone?: string | null
-          updated_at?: string
-        }
-        Relationships: []
-      }
-      vinyl_color_options: {
-        Row: {
-          additional_cost: number
-          created_at: string
-          id: string
-          name: string
-          plant_id: string
-          updated_at: string
-        }
-        Insert: {
-          additional_cost: number
-          created_at?: string
-          id?: string
-          name: string
-          plant_id: string
-          updated_at?: string
-        }
-        Update: {
-          additional_cost?: number
-          created_at?: string
-          id?: string
-          name?: string
-          plant_id?: string
-          updated_at?: string
-        }
-        Relationships: []
       }
       vinyl_pricing: {
         Row: {
@@ -238,30 +140,126 @@ export type Database = {
         }
         Relationships: []
       }
-      vinyl_weight_options: {
+      packaging_pricing: {
         Row: {
-          additional_cost: number
-          created_at: string
           id: string
-          name: string
           plant_id: string
+          type: string
+          option: string
+          price: string
+          quantity: number
+          created_at: string
           updated_at: string
         }
         Insert: {
-          additional_cost: number
-          created_at?: string
-          id?: string
-          name: string
+          id: string
           plant_id: string
+          type: string
+          option: string
+          price: string
+          quantity: number
+          created_at?: string
           updated_at?: string
         }
         Update: {
+          id?: string
+          plant_id?: string
+          type?: string
+          option?: string
+          price?: string
+          quantity?: number
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      vinyl_color_options: {
+        Row: {
+          id: string
+          plant_id: string
+          color: string
+          additional_cost: number
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id: string
+          plant_id: string
+          color: string
+          additional_cost: number
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          plant_id?: string
+          color?: string
           additional_cost?: number
           created_at?: string
-          id?: string
-          name?: string
-          plant_id?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      vinyl_weight_options: {
+        Row: {
+          id: string
+          plant_id: string
+          weight: string
+          additional_cost: number
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id: string
+          plant_id: string
+          weight: string
+          additional_cost: number
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          plant_id?: string
+          weight?: string
+          additional_cost?: number
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      orders: {
+        Row: {
+          buyer_id: string
+          created_at: string
+          id: string
+          plant_id: string
+          project_name: string
+          quantity: number
+          status: string
+          updated_at: string
+          vinyl_type: string
+        }
+        Insert: {
+          buyer_id: string
+          created_at?: string
+          id?: string
+          plant_id: string
+          project_name: string
+          quantity: number
+          status?: string
+          updated_at?: string
+          vinyl_type: string
+        }
+        Update: {
+          buyer_id?: string
+          created_at?: string
+          id?: string
+          plant_id?: string
+          project_name?: string
+          quantity?: number
+          status?: string
+          updated_at?: string
+          vinyl_type?: string
         }
         Relationships: []
       }

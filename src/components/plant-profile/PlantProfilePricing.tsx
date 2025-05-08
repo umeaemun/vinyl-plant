@@ -157,6 +157,8 @@ const PlantProfilePricing: React.FC<PlantProfilePricingProps> = ({
     const newPlant = {...plant};
     let needsUpdate = false;
 
+    console.log("1", newPlant);
+
     if (!newPlant.priceTiers && newPlant.prices) {
       newPlant.priceTiers = newPlant.prices.map(p => ({
         quantity: p.quantity,
@@ -442,10 +444,10 @@ const PlantProfilePricing: React.FC<PlantProfilePricingProps> = ({
       
       setPlant(updatedPlant);
       
-      toast({
-        title: "Success",
-        description: "Pricing data loaded successfully"
-      });
+      // toast({
+      //   title: "Success",
+      //   description: "Pricing data loaded successfully"
+      // });
     } catch (error) {
       console.error('Error loading pricing data:', error);
       toast({

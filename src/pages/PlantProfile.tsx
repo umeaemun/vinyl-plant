@@ -62,7 +62,7 @@ const PlantProfile = () => {
           // Add default values for fields not in the profile table
           const plant = plantData[0];
           setPlant({
-            id: id,
+            id: plant.id,
             name: plant.name || 'My Pressing Plant',
             location: plant.location || 'Unknown Location',
             country: plant.country || 'Unknown Country',
@@ -94,11 +94,11 @@ const PlantProfile = () => {
           if (!vinylPricing || vinylPricing.length === 0) {
             // If it's a newly created profile, show a welcome message
             if (profile && user && user.id === id) {
-              toast({
-                title: "Welcome to Your Plant Profile",
-                description: "Start building your plant profile by adding your information, features, and pricing data.",
-                duration: 8000
-              });
+              // toast({
+              //   title: "Welcome to Your Plant Profile",
+              //   description: "Start building your plant profile by adding your information, features, and pricing data.",
+              //   duration: 8000
+              // });
             } else {
               toast({
                 title: "Data Not Found in Database",

@@ -55,16 +55,17 @@ export interface Plant {
   turnaround_time: string;
   rating: number;
   review_count: number;
-  prices: PlantPrice[];
-  priceTiers?: PriceTier[];
-  colorOptions?: ColorOption[];
-  weightOptions?: WeightOption[];
-  packagingPricing?: PackagingPrice[];
   features: string[];
   specialties: string[];
   image_url: string;
   website: string;
   reviews: PlantReview[];
+  // prices?: PlantPrice[];
+  // priceTiers?: PriceTier[];
+  // colorOptions?: ColorOption[];
+  // weightOptions?: WeightOption[];
+  // packagingPricing?: PackagingPrice[];
+ 
 }
 
 export const features: PlantFeature[] = [
@@ -172,11 +173,6 @@ export const plants: Plant[] = [
     turnaround_time: '10-12 weeks',
     rating: 4.8,
     review_count: 124,
-    prices: [
-      { quantity: 300, price: 12.50 },
-      { quantity: 500, price: 10.75 },
-      { quantity: 1000, price: 8.25 }
-    ],
     features: ['colored-vinyl', 'heavyweight', 'packaging', 'mastering'],
     specialties: ['Indie Rock', 'Jazz', 'Electronic'],
     image_url: 'https://images.unsplash.com/photo-1487180144351-b8472da7d491',
@@ -209,11 +205,6 @@ export const plants: Plant[] = [
     turnaround_time: '14-16 weeks',
     rating: 4.5,
     review_count: 276,
-    prices: [
-      { quantity: 500, price: 9.80 },
-      { quantity: 1000, price: 7.50 },
-      { quantity: 2000, price: 6.20 }
-    ],
     features: ['heavyweight', 'packaging', 'mastering'],
     specialties: ['Blues', 'Soul', 'Classical'],
     image_url: 'https://images.unsplash.com/photo-1545671913-b89ac1b4ac10',
@@ -246,11 +237,6 @@ export const plants: Plant[] = [
     turnaround_time: '8-10 weeks',
     rating: 4.2,
     review_count: 98,
-    prices: [
-      { quantity: 200, price: 14.80 },
-      { quantity: 500, price: 11.50 },
-      { quantity: 1000, price: 9.75 }
-    ],
     features: ['eco-friendly', 'colored-vinyl', 'short-run', 'digital'],
     specialties: ['Indie Folk', 'Alternative', 'Ambient'],
     image_url: 'https://images.unsplash.com/photo-1603048588665-791ca8aeaa20',
@@ -283,11 +269,6 @@ export const plants: Plant[] = [
     turnaround_time: '12-14 weeks',
     rating: 4.6,
     review_count: 188,
-    prices: [
-      { quantity: 300, price: 11.75 },
-      { quantity: 500, price: 9.50 },
-      { quantity: 1000, price: 7.80 }
-    ],
     features: ['colored-vinyl', 'picture-disc', 'packaging', 'digital'],
     specialties: ['Electronic', 'Dance', 'Hip-Hop'],
     image_url: 'https://images.unsplash.com/photo-1583207836464-2f467abb3c99',

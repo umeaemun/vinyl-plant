@@ -32,7 +32,7 @@ const PlantProfilePricing: React.FC<PlantProfilePricingProps> = ({
   const handleAddPriceTier = () => {
     const newVinylPricing = [...vinylPricing, {
       id: Date.now().toString(),
-      quantity: 0,
+      quantity: 50,
       size: '12"',
       type: '1LP',
       price: 0,
@@ -48,7 +48,6 @@ const PlantProfilePricing: React.FC<PlantProfilePricingProps> = ({
       return tier.id == id ? { ...tier, status: 'deleted' } : tier;
     })
 
-    console.log("newVinylPricing", newVinylPricing);
     setVinylPricing(newVinylPricing);
   };
 
@@ -59,7 +58,7 @@ const PlantProfilePricing: React.FC<PlantProfilePricingProps> = ({
       if (tier.id === id) {
         if (tier.status == 'new') {
           return { ...tier, [field]: value };
-        }else if (tier.status == 'same') {
+        }else if (tier.status == 'same' || tier.status == 'updated') {
           return { ...tier, [field]: value, status: 'updated' };
         }
       }
@@ -203,11 +202,9 @@ const PlantProfilePricing: React.FC<PlantProfilePricingProps> = ({
 
     try {
 
-      console.log("vinylPricing", vinylPricing);
-
       // filter out deleted tiers
       const deletedVinylPricing = vinylPricing.filter(tier => tier.status == 'deleted');
-      deletedVinylPricing.forEach(tier => {
+      deletedVinylPricing.forEach(async tier => {
         const { data: deletedVinylPricingData, error: deletedVinylPricingError } = await supabase
           .from('vinyl_pricing')
           .delete()

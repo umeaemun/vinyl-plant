@@ -25,7 +25,7 @@ const PlantProfileContainer = ({ plant, setPlant }: { plant: Plant , setPlant: R
   useEffect(() => {
 
       // New users should be in edit mode by default
-      if (plant && plant.name || plant.name === 'My Pressing Plant') {
+      if (plant && (!plant.name || plant.name === 'My Pressing Plant')) {
         setIsEditing(true);
 
     };
@@ -35,46 +35,6 @@ const PlantProfileContainer = ({ plant, setPlant }: { plant: Plant , setPlant: R
   if (!plant) {
     return null;
   }
-
-  // Save changes handler
-  const handleSave = async () => {
-    if (user && user.id === id && plant) {
-      try {
-        // In a real app, this would update the database
-        const { error } = await supabase
-          .from('plants')
-          .update({
-            name: plant.name,
-            location: plant.location,
-            country: plant.country,
-            updated_at: new Date().toISOString()
-          });
-
-        if (error) throw error;
-
-        toast({
-          title: "Profile updated",
-          description: "Your profile changes have been saved successfully.",
-        });
-
-        setIsEditing(false);
-      } catch (error: any) {
-        console.error('Error saving profile:', error);
-        toast({
-          title: "Error saving profile",
-          description: error.message || "An error occurred while saving your profile.",
-          variant: "destructive"
-        });
-      }
-    } else {
-      // For demo profiles or non-authenticated users
-      toast({
-        title: "Profile updated",
-        description: "Your profile changes have been saved successfully.",
-      });
-      setIsEditing(false);
-    }
-  };
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -87,10 +47,10 @@ const PlantProfileContainer = ({ plant, setPlant }: { plant: Plant , setPlant: R
             {isEditing ? (
               <div className="flex gap-2">
                 <Button variant="outline" onClick={() => setIsEditing(false)}>Cancel</Button>
-                <Button onClick={handleSave}>
+                {/* <Button onClick={handleSave}>
                   <Save className="h-4 w-4 mr-2" />
                   Save Changes
-                </Button>
+                </Button> */}
               </div>
             ) : (
               <Button onClick={() => setIsEditing(true)}>Edit Profile</Button>

@@ -34,30 +34,6 @@ const PlantProfileTabs: React.FC<PlantProfileTabsProps> = ({
     }
   };
 
-
-
-  const [packagingPricing, setPackagingPricing] = React.useState<PackagingPrice[]>([]);
-
-//   React.useEffect(() => {
-//     if (plant) {
-//       const updatedPricing = packagingPricing.map(item => {
-//         if ((item.type === 'inserts' && item.option.toLowerCase().includes('no')) || 
-//             (item.type === 'shrinkWrap' && item.option.toLowerCase() === 'no')) {
-//           return {
-//             ...item,
-//             prices: item.prices.map(price => ({ ...price, price: 0 }))
-//           };
-//         }
-//         return item;
-//       });
-      
-//       setPackagingPricing(updatedPricing);
-//       handleChange('packagingPricing', updatedPricing);
-//     }
-//   // }, [packagingPricing, plant]);
-// }, []);
-
-
   const [equipment, setEquipment] = React.useState([
     {
       name: "Record Press",
@@ -104,35 +80,7 @@ const PlantProfileTabs: React.FC<PlantProfileTabsProps> = ({
     }
   ]);
 
-  const addEquipment = () => {
-    setEquipment([...equipment, { name: "", model: "", description: "" }]);
-  };
-
-  const updateEquipment = (index: number, field: string, value: string) => {
-    const updatedEquipment = [...equipment];
-    updatedEquipment[index] = { ...updatedEquipment[index], [field]: value };
-    setEquipment(updatedEquipment);
-  };
-
-  const removeEquipment = (index: number) => {
-    setEquipment(equipment.filter((_, i) => i !== index));
-  };
-
-  const addClient = () => {
-    setClients([...clients, { name: "", type: "", notable: "" }]);
-  };
-
-  const updateClient = (index: number, field: string, value: string) => {
-    const updatedClients = [...clients];
-    updatedClients[index] = { ...updatedClients[index], [field]: value };
-    setClients(updatedClients);
-  };
-
-  const removeClient = (index: number) => {
-    setClients(clients.filter((_, i) => i !== index));
-  };
-
-  const savePlantDetails = async () => {
+  const savePlantDescription = async () => {
     if (!plant.id) {
       toast({
         title: "Error",
@@ -172,6 +120,36 @@ const PlantProfileTabs: React.FC<PlantProfileTabsProps> = ({
       setIsSaving(false);
     }
   };
+  
+  const addEquipment = () => {
+    setEquipment([...equipment, { name: "", model: "", description: "" }]);
+  };
+
+  const updateEquipment = (index: number, field: string, value: string) => {
+    const updatedEquipment = [...equipment];
+    updatedEquipment[index] = { ...updatedEquipment[index], [field]: value };
+    setEquipment(updatedEquipment);
+  };
+
+  const removeEquipment = (index: number) => {
+    setEquipment(equipment.filter((_, i) => i !== index));
+  };
+
+  const addClient = () => {
+    setClients([...clients, { name: "", type: "", notable: "" }]);
+  };
+
+  const updateClient = (index: number, field: string, value: string) => {
+    const updatedClients = [...clients];
+    updatedClients[index] = { ...updatedClients[index], [field]: value };
+    setClients(updatedClients);
+  };
+
+  const removeClient = (index: number) => {
+    setClients(clients.filter((_, i) => i !== index));
+  };
+
+ 
 
   return (
     <div className="md:col-span-2">
@@ -194,7 +172,7 @@ const PlantProfileTabs: React.FC<PlantProfileTabsProps> = ({
               {!disabled && (
                 <div className="flex justify-end mb-4">
                   <Button 
-                    onClick={savePlantDetails} 
+                    onClick={savePlantDescription} 
                     disabled={isSaving}
                     className="flex items-center gap-2"
                   >

@@ -295,6 +295,26 @@ const PlantPackagingPricing: React.FC<PlantPackagingPricingProps> = ({
 
   return (
     <div className="space-y-8">
+       {!disabled && (
+              <div className="flex justify-end gap-2 mb-6">
+                <Button
+                  variant="outline"
+                  onClick={loadFromSupabase}
+                  disabled={isSaving || !plant.id}
+                >
+                  Reload from Database
+                </Button>
+                <Button
+                  onClick={saveToSupabase}
+                  disabled={isSaving || !plant.id}
+                  className="flex items-center gap-2"
+                >
+                  {isSaving ? "Saving..." : "Save to Database"}
+                  {!isSaving && <Save className="h-4 w-4" />}
+                </Button>
+              </div>
+            )}
+      
       {(['innerSleeve', 'jacket', 'inserts', 'shrinkWrap'] as const).map(type => (
         <Card key={type}>
           <CardHeader>

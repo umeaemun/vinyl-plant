@@ -25,49 +25,42 @@ const PlantProfilePricing: React.FC<PlantProfilePricingProps> = ({
   const { toast } = useToast();
 
 
-  const [vinylPricing, setVinylPricing] = React.useState<any[]>([]);
+  const [vinylPricing, setVinylPricing] = React.useState<any[]>(null);
   const [packagingPricing, setPackagingPricing] = React.useState<any[]>([]);
   const [isSaving, setIsSaving] = React.useState(false);
 
   const handleAddPriceTier = () => {
-    // const newPlant = {...plant};
-    // if (!newPlant.priceTiers) {
-    //   newPlant.priceTiers = [];
-    // }
+    const newVinylPricing = [...vinylPricing, {
+      id: Date.now().toString(),
+      quantity: 0,
+      size: '12"',
+      type: '1LP',
+      price: 0,
+      status: 'new'
+    }];
+    setVinylPricing(newVinylPricing);
 
-    // const defaultTier: PriceTier = {
-    //   quantity: newPlant.priceTiers?.length > 0 ? 
-    //     (newPlant.priceTiers[newPlant.priceTiers.length - 1].quantity + 500) : 
-    //     500,
-    //   size: "12",
-    //   type: "1LP",
-    //   price: newPlant.priceTiers?.length > 0 ? 
-    //     (newPlant.priceTiers[newPlant.priceTiers.length - 1].price * 0.9) : 
-    //     15
-    // };
-
-    // newPlant.priceTiers = [...(newPlant.priceTiers || []), defaultTier];
-    // setPlant(newPlant);
   };
 
   const handleRemovePriceTier = (id: string) => {
-    // const newPlant = {...plant};
-    // if (newPlant.priceTiers) {
-    //   newPlant.priceTiers = newPlant.priceTiers.filter((_, i) => i !== index);
-    //   setPlant(newPlant);
-    // }
+
+    const newVinylPricing = vinylPricing.map((tier) => {
+     return tier.id == id ? { ...tier, status: 'deleted' } : tier;
+    })
+
+    console.log("newVinylPricing", newVinylPricing);
+    setVinylPricing(newVinylPricing);
   };
 
   const handlePriceTierChange = (id: string, field: keyof PriceTier, value: any) => {
-   
+
     // update the vinyl pricing state
     const newVinylPricing = vinylPricing.map((tier) => {
       if (tier.id === id) {
-        return { ...tier, [field]: value };
+        return { ...tier, [field]: value, status: 'updated' };
       }
       return tier;
     });
-    console.log("newVinylPricing", newVinylPricing);
 
     setVinylPricing(newVinylPricing);
   };
@@ -157,8 +150,6 @@ const PlantProfilePricing: React.FC<PlantProfilePricingProps> = ({
   // };
 
   React.useEffect(() => {
-
-
     // if (!newPlant.colorOptions) {
     //   newPlant.colorOptions = [
     //     { name: "solid-colour", additionalCost: 1.5 },
@@ -192,7 +183,7 @@ const PlantProfilePricing: React.FC<PlantProfilePricingProps> = ({
       loadFromSupabase();
     }
 
-  }, [plant, setPlant]);
+  }, [plant]);
 
   const saveToSupabase = async () => {
     // if (!plant.id) {
@@ -460,7 +451,14 @@ const PlantProfilePricing: React.FC<PlantProfilePricingProps> = ({
         console.error('Error fetching vinyl pricing:', error);
         return [];
       }
-      setVinylPricing(vinylPricing);
+
+      // add a field to each vinyl pricing object
+      const updatedVinylPricing = vinylPricing.map((pricing: any) => ({
+        ...pricing,
+        status: 'same',
+      }));
+
+      setVinylPricing(updatedVinylPricing);
     }
 
     const getPackagingPricing = async () => {
@@ -480,144 +478,149 @@ const PlantProfilePricing: React.FC<PlantProfilePricingProps> = ({
 
   }
 
-  return (
-    <div className="space-y-6">
-      {!disabled && (
-        <div className="flex justify-end gap-2 mb-6">
-          <Button
-            variant="outline"
-            onClick={loadFromSupabase}
-            disabled={isSaving || !plant.id}
-          >
-            Reload from Database
-          </Button>
-          <Button
-            onClick={saveToSupabase}
-            disabled={isSaving || !plant.id}
-            className="flex items-center gap-2"
-          >
-            {isSaving ? "Saving..." : "Save to Database"}
-            {!isSaving && <Save className="h-4 w-4" />}
-          </Button>
-        </div>
-      )}
+  console.log("vinylPricing", vinylPricing);
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Base Vinyl Pricing</CardTitle>
-          <CardDescription>
-            Add custom pricing tiers based on quantity, size, and type. This price should include all fixed cost pricing like any set-up fees, lacquer/DMM cutting and/or electroplating, and centre labels. This base pricing is for black 140gm vinyl.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          {vinylPricing?.map((tier, index) => {
-            return (
-              <div key={index} className="mb-6 pb-6 border-b border-border last:border-0 last:pb-0">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                  <div>
-                    <Label htmlFor={`quantity-${index}`}>Quantity</Label>
-                    <Select
-                      disabled={disabled}
-                      value={tier.quantity.toString()}
-                      onValueChange={(value) => handlePriceTierChange(tier.id, 'quantity', parseInt(value))}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select quantity" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="50">50</SelectItem>
-                        <SelectItem value="100">100</SelectItem>
-                        <SelectItem value="150">150</SelectItem>
-                        <SelectItem value="200">200</SelectItem>
-                        <SelectItem value="300">300</SelectItem>
-                        <SelectItem value="500">500</SelectItem>
-                        <SelectItem value="700">700</SelectItem>
-                        <SelectItem value="1000">1000</SelectItem>
-                        <SelectItem value="1500">1500</SelectItem>
-                        <SelectItem value="2000">2000</SelectItem>
-                        <SelectItem value="3000">3000</SelectItem>
-                      </SelectContent>
-                    </Select>
+    return (
+      <div className="space-y-6">
+        {!disabled && (
+          <div className="flex justify-end gap-2 mb-6">
+            <Button
+              variant="outline"
+              onClick={loadFromSupabase}
+              disabled={isSaving || !plant.id}
+            >
+              Reload from Database
+            </Button>
+            <Button
+              onClick={saveToSupabase}
+              disabled={isSaving || !plant.id}
+              className="flex items-center gap-2"
+            >
+              {isSaving ? "Saving..." : "Save to Database"}
+              {!isSaving && <Save className="h-4 w-4" />}
+            </Button>
+          </div>
+        )}
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Base Vinyl Pricing</CardTitle>
+            <CardDescription>
+              Add custom pricing tiers based on quantity, size, and type. This price should include all fixed cost pricing like any set-up fees, lacquer/DMM cutting and/or electroplating, and centre labels. This base pricing is for black 140gm vinyl.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {vinylPricing?.map((tier, index) => {
+              if (tier.status == 'deleted') {
+                return null;
+              }
+              return (
+                <div key={index} className="mb-6 pb-6 border-b border-border last:border-0 last:pb-0">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                      <Label htmlFor={`quantity-${index}`}>Quantity</Label>
+                      <Select
+                        disabled={disabled}
+                        value={tier.quantity.toString()}
+                        onValueChange={(value) => handlePriceTierChange(tier.id, 'quantity', parseInt(value))}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select quantity" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="50">50</SelectItem>
+                          <SelectItem value="100">100</SelectItem>
+                          <SelectItem value="150">150</SelectItem>
+                          <SelectItem value="200">200</SelectItem>
+                          <SelectItem value="300">300</SelectItem>
+                          <SelectItem value="500">500</SelectItem>
+                          <SelectItem value="700">700</SelectItem>
+                          <SelectItem value="1000">1000</SelectItem>
+                          <SelectItem value="1500">1500</SelectItem>
+                          <SelectItem value="2000">2000</SelectItem>
+                          <SelectItem value="3000">3000</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div>
+                      <Label htmlFor={`size-${index}`}>Size</Label>
+                      <Select
+                        disabled={disabled}
+                        value={tier.size}
+                        onValueChange={(value) => handlePriceTierChange(tier.id, 'size', value)}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select size" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value={`12"`}>12"</SelectItem>
+                          <SelectItem disabled value={`10"`}>10" (Coming soon)</SelectItem>
+                          <SelectItem disabled value={`7"`}>7" (Coming soon)</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div>
+                      <Label htmlFor={`type-${index}`}>Type</Label>
+                      <Select
+                        disabled={disabled}
+                        value={tier.type}
+                        onValueChange={(value) => handlePriceTierChange(tier.id, 'type', value)}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="1LP">1LP</SelectItem>
+                          <SelectItem disabled value="2LP">2LP (Coming soon)</SelectItem>
+                          <SelectItem disabled value="3LP">3LP (Coming soon)</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div>
+                      <Label htmlFor={`price-${index}`}>Price per unit ($)</Label>
+                      <Input
+                        id={`price-${index}`}
+                        type="number"
+                        step="0.01"
+                        value={tier.price}
+                        onChange={(e) => handlePriceTierChange(tier.id, 'price', parseFloat(e.target.value) || 0)}
+                        disabled={disabled}
+                      />
+                    </div>
                   </div>
 
-                  <div>
-                    <Label htmlFor={`size-${index}`}>Size</Label>
-                    <Select
-                      disabled={disabled}
-                      value={tier.size}
-                      onValueChange={(value) => handlePriceTierChange(tier.id, 'size', value)}
+                  <div className="flex justify-end">
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => handleRemovePriceTier(tier.id)}
+                      disabled={disabled || (vinylPricing?.length || 0) <= 1}
                     >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select size" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value={`12"`}>12"</SelectItem>
-                        <SelectItem disabled value={`10"`}>10" (Coming soon)</SelectItem>
-                        <SelectItem disabled value={`7"`}>7" (Coming soon)</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div>
-                    <Label htmlFor={`type-${index}`}>Type</Label>
-                    <Select
-                      disabled={disabled}
-                      value={tier.type}
-                      onValueChange={(value) => handlePriceTierChange(tier.id, 'type', value)}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select type" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="1LP">1LP</SelectItem>
-                        <SelectItem disabled value="2LP">2LP (Coming soon)</SelectItem>
-                        <SelectItem disabled value="3LP">3LP (Coming soon)</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div>
-                    <Label htmlFor={`price-${index}`}>Price per unit ($)</Label>
-                    <Input
-                      id={`price-${index}`}
-                      type="number"
-                      step="0.01"
-                      value={tier.price}
-                      onChange={(e) => handlePriceTierChange(tier.id, 'price', parseFloat(e.target.value) || 0)}
-                      disabled={disabled}
-                    />
+                      <Minus className="h-4 w-4 mr-2" />
+                      Remove Tier
+                    </Button>
                   </div>
                 </div>
+              )
+            }
+            )}
 
-                <div className="flex justify-end">
-                  <Button
-                    variant="destructive"
-                    size="sm"
-                    onClick={() => handleRemovePriceTier(tier.id)}
-                    disabled={disabled || (vinylPricing?.length || 0) <= 1}
-                  >
-                    <Minus className="h-4 w-4 mr-2" />
-                    Remove Tier
-                  </Button>
-                </div>
-              </div>
-            )
-          }
-          )}
+            <Button
+              variant="outline"
+              className="w-full mt-4"
+              onClick={handleAddPriceTier}
+              disabled={disabled}
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Add Price Tier
+            </Button>
+          </CardContent>
+        </Card>
 
-          <Button
-            variant="outline"
-            className="w-full mt-4"
-            onClick={handleAddPriceTier}
-            disabled={disabled}
-          >
-            <Plus className="h-4 w-4 mr-2" />
-            Add Price Tier
-          </Button>
-        </CardContent>
-      </Card>
-
-      {/* <Card>
+        {/* <Card>
         <CardHeader>
           <CardTitle>Colour Options</CardTitle>
           <CardDescription>
@@ -752,8 +755,8 @@ const PlantProfilePricing: React.FC<PlantProfilePricingProps> = ({
           </Button>
         </CardContent>
       </Card> */}
-    </div>
-  );
+      </div>
+    );
 };
 
 export default PlantProfilePricing;

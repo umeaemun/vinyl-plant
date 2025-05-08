@@ -141,62 +141,62 @@ const PlantPackagingPricing: React.FC<PlantPackagingPricingProps> = ({
           {
             type: 'innerSleeve',
             option: 'White Paper',
-            prices: [{ quantity: 100, price: 0.5 }]
+            // prices: [{ quantity: 100, price: 0.5 }]
           },
           {
             type: 'innerSleeve',
             option: 'White Poly-lined',
-            prices: [{ quantity: 100, price: 0.75 }]
+            // prices: [{ quantity: 100, price: 0.75 }]
           },
           {
             type: 'innerSleeve',
             option: 'Black Paper',
-            prices: [{ quantity: 100, price: 0.6 }]
+            // prices: [{ quantity: 100, price: 0.6 }]
           },
           {
             type: 'innerSleeve',
             option: 'Black Poly-lined',
-            prices: [{ quantity: 100, price: 0.85 }]
+            // prices: [{ quantity: 100, price: 0.85 }]
           },
           {
             type: 'innerSleeve',
             option: 'Printed',
-            prices: [{ quantity: 100, price: 1.25 }]
+            // prices: [{ quantity: 100, price: 1.25 }]
           },
           {
             type: 'jacket',
             option: 'Single Pocket (3mm Spine)',
-            prices: [{ quantity: 100, price: 2.0 }]
+            // prices: [{ quantity: 100, price: 2.0 }]
           },
           {
             type: 'jacket',
             option: 'Single Pocket (5mm Spine)',
-            prices: [{ quantity: 100, price: 2.5 }]
+            // prices: [{ quantity: 100, price: 2.5 }]
           },
           {
             type: 'jacket',
             option: 'Gatefold Jacket',
-            prices: [{ quantity: 100, price: 4.0 }]
+            // prices: [{ quantity: 100, price: 4.0 }]
           },
           {
             type: 'inserts',
             option: 'No Insert',
-            prices: [{ quantity: 100, price: 0 }]
+            // prices: [{ quantity: 100, price: 0 }]
           },
           {
             type: 'inserts',
             option: 'Single Insert',
-            prices: [{ quantity: 100, price: 0.75 }]
+            // prices: [{ quantity: 100, price: 0.75 }]
           },
           {
             type: 'shrinkWrap',
             option: 'Yes',
-            prices: [{ quantity: 100, price: 0.25 }]
+            // prices: [{ quantity: 100, price: 0.25 }]
           },
           {
             type: 'shrinkWrap',
             option: 'No',
-            prices: [{ quantity: 100, price: 0 }]
+            // prices: [{ quantity: 100, price: 0 }]
           },
         ]
         );

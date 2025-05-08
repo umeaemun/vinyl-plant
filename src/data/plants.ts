@@ -295,11 +295,6 @@ export const plants: Plant[] = [
     turnaround_time: '6-8 weeks',
     rating: 4.1,
     review_count: 245,
-    prices: [
-      { quantity: 1000, price: 6.80 },
-      { quantity: 2000, price: 5.90 },
-      { quantity: 5000, price: 5.20 }
-    ],
     features: ['colored-vinyl', 'packaging', 'digital'],
     specialties: ['Pop', 'Rock', 'Soundtracks'],
     image_url: 'https://images.unsplash.com/photo-1576615278693-f8e095e37e01',

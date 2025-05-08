@@ -7,7 +7,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Factory, Plus, Trash2, Save } from 'lucide-react';
-import PlantProfilePricing from './PlantProfilePricing';
+import PlantVinylPricing from './PlantVinylPricing';
+import PlantPackagingPricing from './PlantPackagingPricing';
 import PlantProfileFeatures from './PlantProfileFeatures';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useToast } from '@/hooks/use-toast';
@@ -129,68 +130,6 @@ const PlantProfileTabs: React.FC<PlantProfileTabsProps> = ({
 
   const removeClient = (index: number) => {
     setClients(clients.filter((_, i) => i !== index));
-  };
-
-  const updatePackagingPrice = (
-    type: 'innerSleeve' | 'jacket' | 'inserts' | 'shrinkWrap',
-    option: string,
-    quantityIndex: number,
-    field: 'quantity' | 'price',
-    value: number
-  ) => {
-    const updatedPricing = [...packagingPricing];
-    const priceItemIndex = updatedPricing.findIndex(p => p.type === type && p.option === option);
-    
-    if (priceItemIndex !== -1) {
-      if ((type === 'inserts' && option.toLowerCase().includes('no')) || 
-          (type === 'shrinkWrap' && option.toLowerCase() === 'no')) {
-        if (field === 'price') {
-          value = 0; // Force price to be 0
-        }
-      }
-      
-      updatedPricing[priceItemIndex].prices[quantityIndex][field] = value;
-      setPackagingPricing(updatedPricing);
-    }
-  };
-
-  const addPriceTier = (type: 'innerSleeve' | 'jacket' | 'inserts' | 'shrinkWrap', option: string) => {
-    const updatedPricing = [...packagingPricing];
-    const priceItemIndex = updatedPricing.findIndex(p => p.type === type && p.option === option);
-    
-    if (priceItemIndex !== -1) {
-      const highestQuantity = Math.max(...updatedPricing[priceItemIndex].prices.map(p => p.quantity));
-      const lastPrice = updatedPricing[priceItemIndex].prices[updatedPricing[priceItemIndex].prices.length - 1].price;
-      updatedPricing[priceItemIndex].prices.push({
-        quantity: highestQuantity * 2,
-        price: lastPrice * 0.9
-      });
-      setPackagingPricing(updatedPricing);
-    }
-  };
-
-  const removePriceTier = (type: 'innerSleeve' | 'jacket' | 'inserts' | 'shrinkWrap', option: string, quantityIndex: number) => {
-    const updatedPricing = [...packagingPricing];
-    const priceItemIndex = updatedPricing.findIndex(p => p.type === type && p.option === option);
-    
-    if (priceItemIndex !== -1 && updatedPricing[priceItemIndex].prices.length > 1) {
-      updatedPricing[priceItemIndex].prices.splice(quantityIndex, 1);
-      setPackagingPricing(updatedPricing);
-    }
-  };
-
-  const getPackagingOptions = (type: 'innerSleeve' | 'jacket' | 'inserts' | 'shrinkWrap') => {
-    return packagingPricing.filter(p => p.type === type);
-  };
-
-  const getTypeName = (type: 'innerSleeve' | 'jacket' | 'inserts' | 'shrinkWrap') => {
-    switch (type) {
-      case 'innerSleeve': return 'Inner Sleeve';
-      case 'jacket': return 'Jacket';
-      case 'inserts': return 'Inserts';
-      case 'shrinkWrap': return 'Shrink Wrap';
-      default: return type;
-    }
   };
 
   const savePlantDetails = async () => {
@@ -316,7 +255,7 @@ const PlantProfileTabs: React.FC<PlantProfileTabsProps> = ({
                 </TabsList>
                 
                 <TabsContent value="vinyl">
-                  <PlantProfilePricing 
+                  <PlantVinylPricing 
                     plant={plant} 
                     setPlant={setPlant} 
                     disabled={disabled} 
@@ -324,7 +263,7 @@ const PlantProfileTabs: React.FC<PlantProfileTabsProps> = ({
                 </TabsContent>
                 
                 <TabsContent value="packaging">
-                  <div className="space-y-8">
+                  {/* <div className="space-y-8">
                     {(['innerSleeve', 'jacket', 'inserts', 'shrinkWrap'] as const).map(type => (
                       <Card key={type}>
                         <CardHeader>
@@ -422,7 +361,12 @@ const PlantProfileTabs: React.FC<PlantProfileTabsProps> = ({
                         </CardContent>
                       </Card>
                     ))}
-                  </div>
+                  </div> */}
+                  <PlantPackagingPricing
+                    plant={plant}
+                    setPlant={setPlant}
+                    disabled={disabled}
+                    />
                 </TabsContent>
               </Tabs>
             </CardContent>

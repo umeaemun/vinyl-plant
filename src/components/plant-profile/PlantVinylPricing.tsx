@@ -9,13 +9,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 
-interface PlantProfilePricingProps {
+interface PlantVinylPricingProps {
   plant: Plant;
   setPlant: React.Dispatch<React.SetStateAction<Plant | null>>;
   disabled: boolean;
 }
 
-const PlantProfilePricing: React.FC<PlantProfilePricingProps> = ({
+const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
   plant,
   setPlant,
   disabled
@@ -236,7 +236,6 @@ const PlantProfilePricing: React.FC<PlantProfilePricingProps> = ({
           throw new Error(`Error saving vinyl pricing: ${newVinylPricingError.message}`);
         }
       });
-
 
 
       // filter out updated tiers
@@ -492,21 +491,9 @@ const PlantProfilePricing: React.FC<PlantProfilePricingProps> = ({
 
       setVinylPricing(updatedVinylPricing);
     }
-
-    const getPackagingPricing = async () => {
-      const { data: packagingPricing, error } = await supabase
-        .from('packaging_pricing')
-        .select('*')
-        .eq('plant_id', plant.id);
-      if (error) {
-        console.error('Error fetching packaging pricing:', error);
-        return [];
-      }
-      setPackagingPricing(packagingPricing);
-    }
-
+    PlantVinylPricing
+   
     getVinylPricing();
-    getPackagingPricing();
 
   }
 
@@ -789,4 +776,4 @@ const PlantProfilePricing: React.FC<PlantProfilePricingProps> = ({
   );
 };
 
-export default PlantProfilePricing;
+export default PlantVinylPricing;

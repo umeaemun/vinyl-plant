@@ -93,18 +93,18 @@ const PlantPackagingPricing: React.FC<PlantPackagingPricingProps> = ({
   };
 
   const addPriceTier = (type: 'innerSleeve' | 'jacket' | 'inserts' | 'shrinkWrap', option: string) => {
-    // const updatedPricing = [...packagingPricing];
-    // const priceItemIndex = updatedPricing.findIndex(p => p.type === type && p.option === option);
+    const updatedPricing = [...packagingPricing];
+    const priceItemIndex = updatedPricing.findIndex(p => p.type === type && p.option === option);
 
-    // if (priceItemIndex !== -1) {
-    //   const highestQuantity = Math.max(...updatedPricing[priceItemIndex].prices.map(p => p.quantity));
-    //   const lastPrice = updatedPricing[priceItemIndex].prices[updatedPricing[priceItemIndex].prices.length - 1].price;
-    //   updatedPricing[priceItemIndex].prices.push({
-    //     quantity: highestQuantity * 2,
-    //     price: lastPrice * 0.9
-    //   });
-    //   setPackagingPricing(updatedPricing);
-    // }
+    if (priceItemIndex !== -1) {
+      const highestQuantity = Math.max(...updatedPricing[priceItemIndex].prices.map(p => p.quantity));
+      const lastPrice = updatedPricing[priceItemIndex].prices[updatedPricing[priceItemIndex].prices.length - 1].price;
+      updatedPricing[priceItemIndex].prices.push({
+        quantity: highestQuantity * 2,
+        price: lastPrice * 0.9
+      });
+      setPackagingPricing(updatedPricing);
+    }
   };
 
   const removePriceTier = (type: 'innerSleeve' | 'jacket' | 'inserts' | 'shrinkWrap', option: string, quantityIndex: number) => {
@@ -134,10 +134,9 @@ const PlantPackagingPricing: React.FC<PlantPackagingPricingProps> = ({
         status: 'same',
       }));
 
-
       if (updatedPackagingPricing.length > 0) {
-        setPackagingPricing(updatedPackagingPricing);
-      } else {
+      setPackagingPricing(updatedPackagingPricing);
+      }else {
         setPackagingPricing([
           {
             type: 'innerSleeve',
@@ -199,7 +198,8 @@ const PlantPackagingPricing: React.FC<PlantPackagingPricingProps> = ({
             option: 'No',
             prices: [{ quantity: 100, price: 0 }]
           },
-        ]);
+        ]
+        );
       }
     }
 
@@ -207,7 +207,6 @@ const PlantPackagingPricing: React.FC<PlantPackagingPricingProps> = ({
 
   }
 
-  console.log("packagingPricing", packagingPricing);
 
   React.useEffect(() => {
 
@@ -413,8 +412,9 @@ const PlantPackagingPricing: React.FC<PlantPackagingPricingProps> = ({
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {option.prices.map((price, priceIndex) => (
+                      {option?.prices?.map((price, priceIndex) => (
                         <TableRow key={priceIndex}>
+                          {/* quantity */}
                           <TableCell>
                             <Input
                               type="number"
@@ -430,6 +430,8 @@ const PlantPackagingPricing: React.FC<PlantPackagingPricingProps> = ({
                               className="w-full"
                             />
                           </TableCell>
+
+                          {/* price */}
                           <TableCell>
                             <Input
                               type="number"
@@ -448,13 +450,15 @@ const PlantPackagingPricing: React.FC<PlantPackagingPricingProps> = ({
                               step="0.01"
                             />
                           </TableCell>
+
+                          {/* actions */}
                           <TableCell>
                             {!disabled && (
                               <Button
                                 variant="destructive"
                                 size="sm"
                                 onClick={() => removePriceTier(type, option.option, priceIndex)}
-                                disabled={option.prices.length <= 1}
+                                // disabled={option.prices.length <= 1}
                                 className="w-full"
                               >
                                 Remove
@@ -462,25 +466,21 @@ const PlantPackagingPricing: React.FC<PlantPackagingPricingProps> = ({
                             )}
                           </TableCell>
                         </TableRow>
-
                       ))}
-                      {!disabled && (
-                        <Button
-                          onClick={() => addPriceTier(type, option.option)}
-                          className="mt-4"
-                          variant="outline"
-                        >
-                          <Plus className="h-4 w-4 mr-2" /> Add Quantity Tier
-                        </Button>
-                      )}
                     </TableBody>
                   </Table>
                 </div>
-
+                {!disabled && (
+                  <Button
+                    onClick={() => addPriceTier(type, option.option)}
+                    className="mt-4"
+                    variant="outline"
+                  >
+                    <Plus className="h-4 w-4 mr-2" /> Add Quantity Tier
+                  </Button>
+                )}
               </div>
             ))}
-
-
           </CardContent>
         </Card>
       ))}

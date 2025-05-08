@@ -27,48 +27,47 @@ const PlantPackagingPricing: React.FC<PlantPackagingPricingProps> = ({
   const { toast } = useToast();
 
 
-  const [vinylPricing, setVinylPricing] = React.useState<any[]>(null);
   const [packagingPricing, setPackagingPricing] = React.useState<any[]>([]);
   const [isSaving, setIsSaving] = React.useState(false);
 
-  const handleAddPriceTier = () => {
-    const newVinylPricing = [...vinylPricing, {
-      id: Date.now().toString(),
-      quantity: 50,
-      size: '12"',
-      type: '1LP',
-      price: 0,
-      status: 'new'
-    }];
-    setVinylPricing(newVinylPricing);
+  // const handleAddPriceTier = () => {
+  //   const newVinylPricing = [...vinylPricing, {
+  //     id: Date.now().toString(),
+  //     quantity: 50,
+  //     size: '12"',
+  //     type: '1LP',
+  //     price: 0,
+  //     status: 'new'
+  //   }];
+  //   setVinylPricing(newVinylPricing);
 
-  };
+  // };
 
-  const handleRemovePriceTier = (id: string) => {
+  // const handleRemovePriceTier = (id: string) => {
 
-    const newVinylPricing = vinylPricing.map((tier) => {
-      return tier.id == id ? { ...tier, status: 'deleted' } : tier;
-    })
+  //   const newVinylPricing = vinylPricing.map((tier) => {
+  //     return tier.id == id ? { ...tier, status: 'deleted' } : tier;
+  //   })
 
-    setVinylPricing(newVinylPricing);
-  };
+  //   setVinylPricing(newVinylPricing);
+  // };
 
-  const handlePriceTierChange = (id: string, field: keyof PriceTier, value: any) => {
+  // const handlePriceTierChange = (id: string, field: keyof PriceTier, value: any) => {
 
-    // update the vinyl pricing state
-    const newVinylPricing = vinylPricing.map((tier) => {
-      if (tier.id === id) {
-        if (tier.status == 'new') {
-          return { ...tier, [field]: value };
-        } else if (tier.status == 'same' || tier.status == 'updated') {
-          return { ...tier, [field]: value, status: 'updated' };
-        }
-      }
-      return tier;
-    });
+  //   // update the vinyl pricing state
+  //   const newVinylPricing = vinylPricing.map((tier) => {
+  //     if (tier.id === id) {
+  //       if (tier.status == 'new') {
+  //         return { ...tier, [field]: value };
+  //       } else if (tier.status == 'same' || tier.status == 'updated') {
+  //         return { ...tier, [field]: value, status: 'updated' };
+  //       }
+  //     }
+  //     return tier;
+  //   });
 
-    setVinylPricing(newVinylPricing);
-  };
+  //   setVinylPricing(newVinylPricing);
+  // };
 
   const updatePackagingPrice = (
     type: 'innerSleeve' | 'jacket' | 'inserts' | 'shrinkWrap',
@@ -79,39 +78,39 @@ const PlantPackagingPricing: React.FC<PlantPackagingPricingProps> = ({
   ) => {
     const updatedPricing = [...packagingPricing];
     const priceItemIndex = updatedPricing.findIndex(p => p.type === type && p.option === option);
-    
+
     if (priceItemIndex !== -1) {
-      if ((type === 'inserts' && option.toLowerCase().includes('no')) || 
-          (type === 'shrinkWrap' && option.toLowerCase() === 'no')) {
+      if ((type === 'inserts' && option.toLowerCase().includes('no')) ||
+        (type === 'shrinkWrap' && option.toLowerCase() === 'no')) {
         if (field === 'price') {
           value = 0; // Force price to be 0
         }
       }
-      
+
       updatedPricing[priceItemIndex].prices[quantityIndex][field] = value;
       setPackagingPricing(updatedPricing);
     }
   };
 
   const addPriceTier = (type: 'innerSleeve' | 'jacket' | 'inserts' | 'shrinkWrap', option: string) => {
-    const updatedPricing = [...packagingPricing];
-    const priceItemIndex = updatedPricing.findIndex(p => p.type === type && p.option === option);
-    
-    if (priceItemIndex !== -1) {
-      const highestQuantity = Math.max(...updatedPricing[priceItemIndex].prices.map(p => p.quantity));
-      const lastPrice = updatedPricing[priceItemIndex].prices[updatedPricing[priceItemIndex].prices.length - 1].price;
-      updatedPricing[priceItemIndex].prices.push({
-        quantity: highestQuantity * 2,
-        price: lastPrice * 0.9
-      });
-      setPackagingPricing(updatedPricing);
-    }
+    // const updatedPricing = [...packagingPricing];
+    // const priceItemIndex = updatedPricing.findIndex(p => p.type === type && p.option === option);
+
+    // if (priceItemIndex !== -1) {
+    //   const highestQuantity = Math.max(...updatedPricing[priceItemIndex].prices.map(p => p.quantity));
+    //   const lastPrice = updatedPricing[priceItemIndex].prices[updatedPricing[priceItemIndex].prices.length - 1].price;
+    //   updatedPricing[priceItemIndex].prices.push({
+    //     quantity: highestQuantity * 2,
+    //     price: lastPrice * 0.9
+    //   });
+    //   setPackagingPricing(updatedPricing);
+    // }
   };
 
   const removePriceTier = (type: 'innerSleeve' | 'jacket' | 'inserts' | 'shrinkWrap', option: string, quantityIndex: number) => {
     const updatedPricing = [...packagingPricing];
     const priceItemIndex = updatedPricing.findIndex(p => p.type === type && p.option === option);
-    
+
     if (priceItemIndex !== -1 && updatedPricing[priceItemIndex].prices.length > 1) {
       updatedPricing[priceItemIndex].prices.splice(quantityIndex, 1);
       setPackagingPricing(updatedPricing);
@@ -134,12 +133,81 @@ const PlantPackagingPricing: React.FC<PlantPackagingPricingProps> = ({
         ...pricing,
         status: 'same',
       }));
-      setPackagingPricing(updatedPackagingPricing);
+
+
+      if (updatedPackagingPricing.length > 0) {
+        setPackagingPricing(updatedPackagingPricing);
+      } else {
+        setPackagingPricing([
+          {
+            type: 'innerSleeve',
+            option: 'White Paper',
+            prices: [{ quantity: 100, price: 0.5 }]
+          },
+          {
+            type: 'innerSleeve',
+            option: 'White Poly-lined',
+            prices: [{ quantity: 100, price: 0.75 }]
+          },
+          {
+            type: 'innerSleeve',
+            option: 'Black Paper',
+            prices: [{ quantity: 100, price: 0.6 }]
+          },
+          {
+            type: 'innerSleeve',
+            option: 'Black Poly-lined',
+            prices: [{ quantity: 100, price: 0.85 }]
+          },
+          {
+            type: 'innerSleeve',
+            option: 'Printed',
+            prices: [{ quantity: 100, price: 1.25 }]
+          },
+          {
+            type: 'jacket',
+            option: 'Single Pocket (3mm Spine)',
+            prices: [{ quantity: 100, price: 2.0 }]
+          },
+          {
+            type: 'jacket',
+            option: 'Single Pocket (5mm Spine)',
+            prices: [{ quantity: 100, price: 2.5 }]
+          },
+          {
+            type: 'jacket',
+            option: 'Gatefold Jacket',
+            prices: [{ quantity: 100, price: 4.0 }]
+          },
+          {
+            type: 'inserts',
+            option: 'No Insert',
+            prices: [{ quantity: 100, price: 0 }]
+          },
+          {
+            type: 'inserts',
+            option: 'Single Insert',
+            prices: [{ quantity: 100, price: 0.75 }]
+          },
+          {
+            type: 'shrinkWrap',
+            option: 'Yes',
+            prices: [{ quantity: 100, price: 0.25 }]
+          },
+          {
+            type: 'shrinkWrap',
+            option: 'No',
+            prices: [{ quantity: 100, price: 0 }]
+          },
+        ]);
+      }
     }
 
     getPackagingPricing();
 
   }
+
+  console.log("packagingPricing", packagingPricing);
 
   React.useEffect(() => {
 
@@ -164,62 +232,62 @@ const PlantPackagingPricing: React.FC<PlantPackagingPricingProps> = ({
 
     try {
 
-      // filter out deleted tiers
-      const deletedVinylPricing = vinylPricing.filter(tier => tier.status == 'deleted');
-      deletedVinylPricing.forEach(async tier => {
-        const { data: deletedVinylPricingData, error: deletedVinylPricingError } = await supabase
-          .from('vinyl_pricing')
-          .delete()
-          .eq('id', tier.id)
-          .eq('plant_id', plant.id);
+      // // filter out deleted tiers
+      // const deletedVinylPricing = vinylPricing.filter(tier => tier.status == 'deleted');
+      // deletedVinylPricing.forEach(async tier => {
+      //   const { data: deletedVinylPricingData, error: deletedVinylPricingError } = await supabase
+      //     .from('vinyl_pricing')
+      //     .delete()
+      //     .eq('id', tier.id)
+      //     .eq('plant_id', plant.id);
 
-        if (deletedVinylPricingError) {
-          console.error('Error deleting vinyl pricing:', deletedVinylPricingError);
-          throw new Error(`Error deleting vinyl pricing: ${deletedVinylPricingError.message}`);
-        }
-      })
+      //   if (deletedVinylPricingError) {
+      //     console.error('Error deleting vinyl pricing:', deletedVinylPricingError);
+      //     throw new Error(`Error deleting vinyl pricing: ${deletedVinylPricingError.message}`);
+      //   }
+      // })
 
-      // filter out new tiers
-      const newVinylPricing = vinylPricing.filter(tier => tier.status == 'new');
-      const newVinylPricingData = newVinylPricing.forEach(async tier => {
-        const { data: newVinylPricingData, error: newVinylPricingError } = await supabase
-          .from('vinyl_pricing')
-          .insert({
-            plant_id: plant.id,
-            quantity: tier.quantity,
-            size: tier.size,
-            type: tier.type,
-            price: tier.price
-          })
-          .select();
+      // // filter out new tiers
+      // const newVinylPricing = vinylPricing.filter(tier => tier.status == 'new');
+      // const newVinylPricingData = newVinylPricing.forEach(async tier => {
+      //   const { data: newVinylPricingData, error: newVinylPricingError } = await supabase
+      //     .from('vinyl_pricing')
+      //     .insert({
+      //       plant_id: plant.id,
+      //       quantity: tier.quantity,
+      //       size: tier.size,
+      //       type: tier.type,
+      //       price: tier.price
+      //     })
+      //     .select();
 
-        if (newVinylPricingError) {
-          console.error('Error saving vinyl pricing:', newVinylPricingError);
-          throw new Error(`Error saving vinyl pricing: ${newVinylPricingError.message}`);
-        }
-      });
+      //   if (newVinylPricingError) {
+      //     console.error('Error saving vinyl pricing:', newVinylPricingError);
+      //     throw new Error(`Error saving vinyl pricing: ${newVinylPricingError.message}`);
+      //   }
+      // });
 
 
-      // filter out updated tiers
-      const updatedVinylPricing = vinylPricing.filter(tier => tier.status == 'updated');
-      const updatedVinylPricingData = updatedVinylPricing.forEach(async tier => {
-        const { data: updatedVinylPricingData, error: updatedVinylPricingError } = await supabase
-          .from('vinyl_pricing')
-          .update({
-            quantity: tier.quantity,
-            size: tier.size,
-            type: tier.type,
-            price: tier.price
-          })
-          .eq('id', tier.id)
-          .eq('plant_id', plant.id)
-          .select();
+      // // filter out updated tiers
+      // const updatedVinylPricing = vinylPricing.filter(tier => tier.status == 'updated');
+      // const updatedVinylPricingData = updatedVinylPricing.forEach(async tier => {
+      //   const { data: updatedVinylPricingData, error: updatedVinylPricingError } = await supabase
+      //     .from('vinyl_pricing')
+      //     .update({
+      //       quantity: tier.quantity,
+      //       size: tier.size,
+      //       type: tier.type,
+      //       price: tier.price
+      //     })
+      //     .eq('id', tier.id)
+      //     .eq('plant_id', plant.id)
+      //     .select();
 
-        if (updatedVinylPricingError) {
-          console.error('Error saving vinyl pricing:', updatedVinylPricingError);
-          throw new Error(`Error saving vinyl pricing: ${updatedVinylPricingError.message}`);
-        }
-      });
+      //   if (updatedVinylPricingError) {
+      //     console.error('Error saving vinyl pricing:', updatedVinylPricingError);
+      //     throw new Error(`Error saving vinyl pricing: ${updatedVinylPricingError.message}`);
+      //   }
+      // });
 
 
       // if (plant.packagingPricing && plant.packagingPricing.length > 0) {
@@ -295,26 +363,26 @@ const PlantPackagingPricing: React.FC<PlantPackagingPricingProps> = ({
 
   return (
     <div className="space-y-8">
-       {!disabled && (
-              <div className="flex justify-end gap-2 mb-6">
-                <Button
-                  variant="outline"
-                  onClick={loadFromSupabase}
-                  disabled={isSaving || !plant.id}
-                >
-                  Reload from Database
-                </Button>
-                <Button
-                  onClick={saveToSupabase}
-                  disabled={isSaving || !plant.id}
-                  className="flex items-center gap-2"
-                >
-                  {isSaving ? "Saving..." : "Save to Database"}
-                  {!isSaving && <Save className="h-4 w-4" />}
-                </Button>
-              </div>
-            )}
-      
+      {!disabled && (
+        <div className="flex justify-end gap-2 mb-6">
+          <Button
+            variant="outline"
+            onClick={loadFromSupabase}
+            disabled={isSaving || !plant.id}
+          >
+            Reload from Database
+          </Button>
+          <Button
+            onClick={saveToSupabase}
+            disabled={isSaving || !plant.id}
+            className="flex items-center gap-2"
+          >
+            {isSaving ? "Saving..." : "Save to Database"}
+            {!isSaving && <Save className="h-4 w-4" />}
+          </Button>
+        </div>
+      )}
+
       {(['innerSleeve', 'jacket', 'inserts', 'shrinkWrap'] as const).map(type => (
         <Card key={type}>
           <CardHeader>
@@ -394,21 +462,25 @@ const PlantPackagingPricing: React.FC<PlantPackagingPricingProps> = ({
                             )}
                           </TableCell>
                         </TableRow>
+
                       ))}
+                      {!disabled && (
+                        <Button
+                          onClick={() => addPriceTier(type, option.option)}
+                          className="mt-4"
+                          variant="outline"
+                        >
+                          <Plus className="h-4 w-4 mr-2" /> Add Quantity Tier
+                        </Button>
+                      )}
                     </TableBody>
                   </Table>
                 </div>
-                {!disabled && (
-                  <Button
-                    onClick={() => addPriceTier(type, option.option)}
-                    className="mt-4"
-                    variant="outline"
-                  >
-                    <Plus className="h-4 w-4 mr-2" /> Add Quantity Tier
-                  </Button>
-                )}
+
               </div>
             ))}
+
+
           </CardContent>
         </Card>
       ))}

@@ -93,6 +93,7 @@ const PlantPackagingPricing: React.FC<PlantPackagingPricingProps> = ({
   };
 
   const addPriceTier = (type: 'innerSleeve' | 'jacket' | 'inserts' | 'shrinkWrap', option: string) => {
+
     const updatedPricing = [...packagingPricing];
     const priceItemIndex = updatedPricing.findIndex(p => p.type === type && p.option === option);
 
@@ -105,6 +106,9 @@ const PlantPackagingPricing: React.FC<PlantPackagingPricingProps> = ({
       });
       setPackagingPricing(updatedPricing);
     }
+
+
+
   };
 
   const removePriceTier = (type: 'innerSleeve' | 'jacket' | 'inserts' | 'shrinkWrap', option: string, quantityIndex: number) => {
@@ -141,62 +145,74 @@ const PlantPackagingPricing: React.FC<PlantPackagingPricingProps> = ({
           {
             type: 'innerSleeve',
             option: 'White Paper',
-            // prices: [{ quantity: 100, price: 0.5 }]
+            prices: [{ quantity: 100, price: 0.5 }]
+            // prices: []
           },
           {
             type: 'innerSleeve',
             option: 'White Poly-lined',
-            // prices: [{ quantity: 100, price: 0.75 }]
+            prices: [{ quantity: 100, price: 0.75 }]
+            // prices: []
           },
           {
             type: 'innerSleeve',
             option: 'Black Paper',
-            // prices: [{ quantity: 100, price: 0.6 }]
+            prices: [{ quantity: 100, price: 0.6 }]
+            // prices: []
           },
           {
             type: 'innerSleeve',
             option: 'Black Poly-lined',
-            // prices: [{ quantity: 100, price: 0.85 }]
+            prices: [{ quantity: 100, price: 0.85 }]
+            // prices: []
           },
           {
             type: 'innerSleeve',
             option: 'Printed',
-            // prices: [{ quantity: 100, price: 1.25 }]
+            prices: [{ quantity: 100, price: 1.25 }]
+            // prices: []
           },
           {
             type: 'jacket',
             option: 'Single Pocket (3mm Spine)',
-            // prices: [{ quantity: 100, price: 2.0 }]
+            prices: [{ quantity: 100, price: 2.0 }]
+            // prices: []
           },
           {
             type: 'jacket',
             option: 'Single Pocket (5mm Spine)',
-            // prices: [{ quantity: 100, price: 2.5 }]
+            prices: [{ quantity: 100, price: 2.5 }]
+            // prices: []
           },
           {
             type: 'jacket',
             option: 'Gatefold Jacket',
-            // prices: [{ quantity: 100, price: 4.0 }]
+            prices: [{ quantity: 100, price: 4.0 }]
+            // prices: []
           },
           {
             type: 'inserts',
             option: 'No Insert',
-            // prices: [{ quantity: 100, price: 0 }]
+            prices: [{ quantity: 100, price: 0 }]
+            // prices: []
           },
           {
             type: 'inserts',
             option: 'Single Insert',
-            // prices: [{ quantity: 100, price: 0.75 }]
+            prices: [{ quantity: 100, price: 0.75 }]
+            // prices: []
           },
           {
             type: 'shrinkWrap',
             option: 'Yes',
-            // prices: [{ quantity: 100, price: 0.25 }]
+            prices: [{ quantity: 100, price: 0.25 }]
+            // prices: []
           },
           {
             type: 'shrinkWrap',
             option: 'No',
-            // prices: [{ quantity: 100, price: 0 }]
+            prices: [{ quantity: 100, price: 0 }]
+            // prices: []
           },
         ]
         );

@@ -45,10 +45,27 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
   const handleRemovePriceTier = (id: string) => {
 
     const newVinylPricing = vinylPricing.map((tier) => {
-      return tier.id == id ? { ...tier, status: 'deleted' } : tier;
+      // return tier.id == id ? { ...tier, status: 'deleted' } : tier;
+      if (tier.id == id) {
+          if (tier.status !== 'new') {
+            return { ...tier, status: 'deleted' };
+          }else{
+            return { ...tier, status: 'removeNow' };
+          }
+         
+      }else {
+        return tier;
+      }
     })
 
-    setVinylPricing(newVinylPricing);
+    console.log("newVinylPricing", newVinylPricing);
+
+    // filter out the removed tier
+    const filteredVinylPricing = newVinylPricing.filter((tier) => tier.status !== 'removeNow');
+
+    console.log("filteredVinylPricing", filteredVinylPricing);
+
+    setVinylPricing(filteredVinylPricing);
   };
 
   const handlePriceTierChange = (id: string, field: keyof PriceTier, value: any) => {

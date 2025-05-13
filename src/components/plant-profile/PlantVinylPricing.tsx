@@ -26,7 +26,8 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
 
 
   const [vinylPricing, setVinylPricing] = React.useState<any[]>(null);
-  const [packagingPricing, setPackagingPricing] = React.useState<any[]>([]);
+  const [colorOptions, setColorOptions] = React.useState<ColorOption[]>([]);
+  const [weightOptions, setWeightOptions] = React.useState<WeightOption[]>([]);
   const [isSaving, setIsSaving] = React.useState(false);
 
   const handleAddPriceTier = () => {
@@ -81,89 +82,89 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
     setVinylPricing(newVinylPricing);
   };
 
-  // const handleAddColorOption = () => {
-  //   const newPlant = {...plant};
-  //   if (!newPlant.colorOptions) {
-  //     newPlant.colorOptions = [];
-  //   }
+  const handleAddColorOption = () => {
+    // const newPlant = {...plant};
+    // if (!newPlant.colorOptions) {
+    //   newPlant.colorOptions = [];
+    // }
 
-  //   const defaultColor: ColorOption = {
-  //     name: "solid-colour",
-  //     additionalCost: 1.5
-  //   };
+    // const defaultColor: ColorOption = {
+    //   name: "solid-colour",
+    //   additionalCost: 1.5
+    // };
 
-  //   newPlant.colorOptions = [...(newPlant.colorOptions || []), defaultColor];
-  //   setPlant(newPlant);
-  // };
+    // newPlant.colorOptions = [...(newPlant.colorOptions || []), defaultColor];
+    // setPlant(newPlant);
+  };
 
-  // const handleRemoveColorOption = (index: number) => {
-  //   const newPlant = {...plant};
-  //   if (newPlant.colorOptions) {
-  //     newPlant.colorOptions = newPlant.colorOptions.filter((_, i) => i !== index);
-  //     setPlant(newPlant);
-  //   }
-  // };
+  const handleRemoveColorOption = (index: number) => {
+    // const newPlant = {...plant};
+    // if (newPlant.colorOptions) {
+    //   newPlant.colorOptions = newPlant.colorOptions.filter((_, i) => i !== index);
+    //   setPlant(newPlant);
+    // }
+  };
 
-  // const handleColorOptionChange = (index: number, field: keyof ColorOption, value: any) => {
-  //   const newPlant = {...plant};
-  //   if (!newPlant.colorOptions) {
-  //     newPlant.colorOptions = [];
-  //   }
+  const handleColorOptionChange = (index: number, field: keyof ColorOption, value: any) => {
+    // const newPlant = {...plant};
+    // if (!newPlant.colorOptions) {
+    //   newPlant.colorOptions = [];
+    // }
 
-  //   newPlant.colorOptions = [...(newPlant.colorOptions || [])];
-  //   newPlant.colorOptions[index] = {
-  //     name: newPlant.colorOptions[index]?.name || "solid-colour",
-  //     additionalCost: newPlant.colorOptions[index]?.additionalCost || 1.5,
-  //     [field]: value
-  //   };
-  //   setPlant(newPlant);
-  // };
+    // newPlant.colorOptions = [...(newPlant.colorOptions || [])];
+    // newPlant.colorOptions[index] = {
+    //   name: newPlant.colorOptions[index]?.name || "solid-colour",
+    //   additionalCost: newPlant.colorOptions[index]?.additionalCost || 1.5,
+    //   [field]: value
+    // };
+    // setPlant(newPlant);
+  };
 
-  // const handleAddWeightOption = () => {
-  //   const newPlant = {...plant};
-  //   if (!newPlant.weightOptions) {
-  //     newPlant.weightOptions = [];
-  //   }
+  const handleAddWeightOption = () => {
+    // const newPlant = {...plant};
+    // if (!newPlant.weightOptions) {
+    //   newPlant.weightOptions = [];
+    // }
 
-  //   if (!newPlant.weightOptions.some(option => option.name === "180gm")) {
-  //     const defaultWeight: WeightOption = {
-  //       name: "180gm",
-  //       additionalCost: 1
-  //     };
+    // if (!newPlant.weightOptions.some(option => option.name === "180gm")) {
+    //   const defaultWeight: WeightOption = {
+    //     name: "180gm",
+    //     additionalCost: 1
+    //   };
 
-  //     newPlant.weightOptions = [...(newPlant.weightOptions || []), defaultWeight];
-  //     setPlant(newPlant);
-  //   } else {
-  //     toast({
-  //       title: "Option already exists",
-  //       description: "180gm weight option already exists",
-  //       variant: "destructive"
-  //     });
-  //   }
-  // };
+    //   newPlant.weightOptions = [...(newPlant.weightOptions || []), defaultWeight];
+    //   setPlant(newPlant);
+    // } else {
+    //   toast({
+    //     title: "Option already exists",
+    //     description: "180gm weight option already exists",
+    //     variant: "destructive"
+    //   });
+    // }
+  };
 
-  // const handleRemoveWeightOption = (index: number) => {
-  //   const newPlant = {...plant};
-  //   if (newPlant.weightOptions) {
-  //     newPlant.weightOptions = newPlant.weightOptions.filter((_, i) => i !== index);
-  //     setPlant(newPlant);
-  //   }
-  // };
+  const handleRemoveWeightOption = (index: number) => {
+    // const newPlant = {...plant};
+    // if (newPlant.weightOptions) {
+    //   newPlant.weightOptions = newPlant.weightOptions.filter((_, i) => i !== index);
+    //   setPlant(newPlant);
+    // }
+  };
 
-  // const handleWeightOptionChange = (index: number, field: keyof WeightOption, value: any) => {
-  //   const newPlant = {...plant};
-  //   if (!newPlant.weightOptions) {
-  //     newPlant.weightOptions = [];
-  //   }
+  const handleWeightOptionChange = (index: number, field: keyof WeightOption, value: any) => {
+    // const newPlant = {...plant};
+    // if (!newPlant.weightOptions) {
+    //   newPlant.weightOptions = [];
+    // }
 
-  //   newPlant.weightOptions = [...(newPlant.weightOptions || [])];
-  //   newPlant.weightOptions[index] = {
-  //     name: "180gm",
-  //     additionalCost: newPlant.weightOptions[index]?.additionalCost || 0,
-  //     [field]: value
-  //   };
-  //   setPlant(newPlant);
-  // };
+    // newPlant.weightOptions = [...(newPlant.weightOptions || [])];
+    // newPlant.weightOptions[index] = {
+    //   name: "180gm",
+    //   additionalCost: newPlant.weightOptions[index]?.additionalCost || 0,
+    //   [field]: value
+    // };
+    // setPlant(newPlant);
+  };
 
   React.useEffect(() => {
     // if (!newPlant.colorOptions) {
@@ -505,7 +506,6 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
 
       setVinylPricing(updatedVinylPricing);
     }
-    PlantVinylPricing
 
     getVinylPricing();
 
@@ -652,7 +652,7 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
           </CardContent>
         </Card>
 
-        {/* <Card>
+        <Card>
         <CardHeader>
           <CardTitle>Colour Options</CardTitle>
           <CardDescription>
@@ -786,7 +786,7 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
             Add Weight Option
           </Button>
         </CardContent>
-      </Card> */}
+      </Card>
       </div>
     );
   }

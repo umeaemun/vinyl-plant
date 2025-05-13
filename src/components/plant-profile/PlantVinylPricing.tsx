@@ -235,7 +235,6 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
       }
     }
 
-
     const getWeightOptions = async () => {
       const { data: weightOptions, error } = await supabase
         .from('vinyl_weight_options')
@@ -404,6 +403,55 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
 
 
       // WEIGHT OPTIONS
+
+      // filter out deleted weight options
+      const deletedWeightOptions = weightOptions.filter(option => option.status == 'deleted');
+      deletedWeightOptions.forEach(async option => {
+        const { data: deletedWeightOptionsData, error: deletedWeightOptionsError } = await supabase
+          .from('vinyl_weight_options')
+          .delete()
+          .eq('id', option.id)
+          .eq('plant_id', plant.id);
+        if (deletedWeightOptionsError) {
+          console.error('Error deleting weight options:', deletedWeightOptionsError);
+          throw new Error(`Error deleting weight options: ${deletedWeightOptionsError.message}`);
+        }
+      });
+
+      // filter out new weight options
+      const newWeightOptions = weightOptions.filter(option => option.status == 'new');
+      const newWeightOptionsData = newWeightOptions.forEach(async option => {
+        const { data: newWeightOptionsData, error: newWeightOptionsError } = await supabase
+          .from('vinyl_weight_options')
+          .insert({
+            plant_id: plant.id,
+            name: option.name,
+            additionalCost: option.additionalCost
+          })
+          .select();
+        if (newWeightOptionsError) {
+          console.error('Error saving weight options:', newWeightOptionsError);
+          throw new Error(`Error saving weight options: ${newWeightOptionsError.message}`);
+        }
+      });
+
+      // filter out updated weight options
+      const updatedWeightOptions = weightOptions.filter(option => option.status == 'updated');
+      const updatedWeightOptionsData = updatedWeightOptions.forEach(async option => {
+        const { data: updatedWeightOptionsData, error: updatedWeightOptionsError } = await supabase
+          .from('vinyl_weight_options')
+          .update({
+            name: option.name,
+            additionalCost: option.additionalCost
+          })
+          .eq('id', option.id)
+          .eq('plant_id', plant.id)
+          .select();
+        if (updatedWeightOptionsError) {
+          console.error('Error saving weight options:', updatedWeightOptionsError);
+          throw new Error(`Error saving weight options: ${updatedWeightOptionsError.message}`);
+        }
+      });
 
 
       toast({

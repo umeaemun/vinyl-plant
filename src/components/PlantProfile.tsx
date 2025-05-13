@@ -151,7 +151,7 @@ const PlantProfile: React.FC<PlantProfileProps> = ({ plant }) => {
           
           <h2 className="font-display text-xl font-semibold mb-3">Specialties</h2>
           <div className="flex flex-wrap gap-2 mb-8">
-            {plant.specialties?.map(feature => (
+            {plant.features?.map(feature => (
               <Badge key={feature} variant="outline" className="bg-secondary">
                 {getFeatureName(feature)}
               </Badge>
@@ -277,7 +277,7 @@ const PlantProfile: React.FC<PlantProfileProps> = ({ plant }) => {
         <TabsContent value="features">
           <h2 className="font-display text-2xl font-semibold mb-4">Specialties & Capabilities</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {plant.specialties?.map(featureId => (
+            {plant.features?.map(featureId => (
               <div key={featureId} className="bg-card p-5 rounded-lg border border-border">
                 <h3 className="font-semibold text-lg mb-2">{getFeatureName(featureId)}</h3>
                 <p className="text-muted-foreground">{getFeatureDescription(featureId)}</p>

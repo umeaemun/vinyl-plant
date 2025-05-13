@@ -75,8 +75,6 @@ const PlantProfile = () => {
             turnaround_time: plant.turnaround_time || '8-12',
             website: plant.website || '#',
             image_url: plant.image_url || '',
-            specialties: plant.specialties || [],
-            reviews: plant.reviews || []
           });
 
           // Check if the user has any pricing data

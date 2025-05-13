@@ -58,7 +58,7 @@ export interface Plant {
   turnaround_time: string;
   rating: number;
   review_count: number;
-  specialties: string[];
+  features: string[];
   image_url: string;
   website: string;
   // reviews: PlantReview[];
@@ -117,7 +117,7 @@ export const features: PlantFeature[] = [
   },
   {
     id: 'multi-color',
-    name: 'Other Multi-Colour Specialties',
+    name: 'Other Multi-Colour features',
     description: 'Various multi-color vinyl pressing options beyond standard techniques.'
   },
   {
@@ -169,7 +169,7 @@ export const plants: Plant[] = [
     turnaround_time: '10-12 weeks',
     rating: 4.8,
     review_count: 124,
-    specialties: ['colored-vinyl', 'heavyweight', 'packaging', 'mastering'],
+    features: ['colored-vinyl', 'heavyweight', 'packaging', 'mastering'],
     image_url: 'https://images.unsplash.com/photo-1487180144351-b8472da7d491',
     website: 'https://example.com/vinylpressco',
     // reviews: [
@@ -200,7 +200,7 @@ export const plants: Plant[] = [
     turnaround_time: '14-16 weeks',
     rating: 4.5,
     review_count: 276,
-    specialties: ['heavyweight', 'packaging', 'mastering'],
+    features: ['heavyweight', 'packaging', 'mastering'],
     image_url: 'https://images.unsplash.com/photo-1545671913-b89ac1b4ac10',
     website: 'https://example.com/classicpressings',
     // reviews: [
@@ -231,7 +231,7 @@ export const plants: Plant[] = [
     turnaround_time: '8-10 weeks',
     rating: 4.2,
     review_count: 98,
-    specialties: ['eco-friendly', 'colored-vinyl', 'short-run', 'digital'],
+    features: ['eco-friendly', 'colored-vinyl', 'short-run', 'digital'],
     image_url: 'https://images.unsplash.com/photo-1603048588665-791ca8aeaa20',
     website: 'https://example.com/ecovinyl',
     // reviews: [
@@ -262,7 +262,7 @@ export const plants: Plant[] = [
     turnaround_time: '12-14 weeks',
     rating: 4.6,
     review_count: 188,
-    specialties: ['colored-vinyl', 'picture-disc', 'packaging', 'digital'],
+    features: ['colored-vinyl', 'picture-disc', 'packaging', 'digital'],
     image_url: 'https://images.unsplash.com/photo-1583207836464-2f467abb3c99',
     website: 'https://example.com/vinylfactory',
     // reviews: [
@@ -293,7 +293,7 @@ export const plants: Plant[] = [
     turnaround_time: '6-8 weeks',
     rating: 4.1,
     review_count: 245,
-    specialties: ['colored-vinyl', 'packaging', 'digital'],
+    features: ['colored-vinyl', 'packaging', 'digital'],
     image_url: 'https://images.unsplash.com/photo-1576615278693-f8e095e37e01',
     website: 'https://example.com/pacificpress',
     // reviews: [

@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Factory, Plus, Trash2, Save } from 'lucide-react';
+
 import PlantVinylPricing from './PlantVinylPricing';
 import PlantPackagingPricing from './PlantPackagingPricing';
 import PlantProfileFeatures from './PlantProfileFeatures';

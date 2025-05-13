@@ -67,15 +67,12 @@ const PlantProfiles = () => {
                   owner: plant.owner || '',
                   description: plant.description || 'N/A',
                   features: plant.features || [],
-                  prices: plant.prices || [],
                   rating: plant.rating || 0,
                   review_count: plant.review_count || 0,
                   minimum_order: plant.minimum_order || 100,
                   turnaround_time: plant.turnaround_time || '8-12',
                   website: plant.website || '#',
                   image_url: plant.image_url || '',
-                  specialties: plant.specialties || [],
-                  reviews: plant.reviews || []
                 };
                 
                 return userPlant;

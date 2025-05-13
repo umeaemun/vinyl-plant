@@ -38,11 +38,9 @@ const PlantPackagingPricing: React.FC<PlantPackagingPricingProps> = ({
     if (priceItemIndex !== -1) {
       const highestQuantity = Math.max(...updatedPricing[priceItemIndex].prices.map(p => p.quantity));
       const lastPrice = updatedPricing[priceItemIndex].prices[updatedPricing[priceItemIndex].prices.length - 1].price;
-      // updatedPricing[priceItemIndex].status = 'new';
       updatedPricing[priceItemIndex].prices.push({
         quantity: highestQuantity * 2,
         price: (lastPrice * 0.9).toFixed(2),
-        status: 'new'
       });
       setPackagingPricing(updatedPricing);
     }
@@ -68,27 +66,18 @@ const PlantPackagingPricing: React.FC<PlantPackagingPricingProps> = ({
         }
       }
 
-      if (updatedPricing[priceItemIndex].prices[quantityIndex].status !== 'new') {
-        updatedPricing[priceItemIndex].prices[quantityIndex].status = 'updated';
-      }
-
       updatedPricing[priceItemIndex].prices[quantityIndex][field] = value;
       setPackagingPricing(updatedPricing);
 
     }
   };
 
-
   const removePriceTier = (type: 'innerSleeve' | 'jacket' | 'inserts' | 'shrinkWrap', option: string, quantityIndex: number) => {
     const updatedPricing = [...packagingPricing];
     const priceItemIndex = updatedPricing.findIndex(p => p.type === type && p.option === option);
 
     if (priceItemIndex !== -1 && updatedPricing[priceItemIndex].prices.length > 1) {
-      if(updatedPricing[priceItemIndex].prices[quantityIndex].status !== 'new') {
-      updatedPricing[priceItemIndex].prices[quantityIndex].status = 'deleted';
-      }else {
-        updatedPricing[priceItemIndex].prices.splice(quantityIndex, 1);
-      }
+      updatedPricing[priceItemIndex].prices.splice(quantityIndex, 1);
       setPackagingPricing(updatedPricing);
     }
   };
@@ -111,7 +100,6 @@ const PlantPackagingPricing: React.FC<PlantPackagingPricingProps> = ({
         const prices = row.prices.map((price: any) => ({
           quantity: price.quantity,
           price: price.price,
-          status: 'same'
         }));
 
         return {
@@ -128,62 +116,62 @@ const PlantPackagingPricing: React.FC<PlantPackagingPricingProps> = ({
           {
             type: 'innerSleeve',
             option: 'White Paper',
-            prices: [{ quantity: 100, price: 0.5, status: 'new' }]
+            prices: [{ quantity: 100, price: 0.5 }]
           },
           {
             type: 'innerSleeve',
             option: 'White Poly-lined',
-            prices: [{ quantity: 100, price: 0.75, status: 'new' }]
+            prices: [{ quantity: 100, price: 0.75 }]
           },
           {
             type: 'innerSleeve',
             option: 'Black Paper',
-            prices: [{ quantity: 100, price: 0.6, status: 'new' }]
+            prices: [{ quantity: 100, price: 0.6 }]
           },
           {
             type: 'innerSleeve',
             option: 'Black Poly-lined',
-            prices: [{ quantity: 100, price: 0.85, status: 'new' }]
+            prices: [{ quantity: 100, price: 0.85 }]
           },
           {
             type: 'innerSleeve',
             option: 'Printed',
-            prices: [{ quantity: 100, price: 1.25, status: 'new' }]
+            prices: [{ quantity: 100, price: 1.25 }]
           },
           {
             type: 'jacket',
             option: 'Single Pocket (3mm Spine)',
-            prices: [{ quantity: 100, price: 2.0, status: 'new' }]
+            prices: [{ quantity: 100, price: 2.0 }]
           },
           {
             type: 'jacket',
             option: 'Single Pocket (5mm Spine)',
-            prices: [{ quantity: 100, price: 2.5, status: 'new' }]
+            prices: [{ quantity: 100, price: 2.5 }]
           },
           {
             type: 'jacket',
             option: 'Gatefold Jacket',
-            prices: [{ quantity: 100, price: 4.0, status: 'new' }]
+            prices: [{ quantity: 100, price: 4.0 }]
           },
           {
             type: 'inserts',
             option: 'No Insert',
-            prices: [{ quantity: 100, price: 0, status: 'new' }]
+            prices: [{ quantity: 100, price: 0 }]
           },
           {
             type: 'inserts',
             option: 'Single Insert',
-            prices: [{ quantity: 100, price: 0.75, status: 'new' }]
+            prices: [{ quantity: 100, price: 0.75 }]
           },
           {
             type: 'shrinkWrap',
             option: 'Yes',
-            prices: [{ quantity: 100, price: 0.25, status: 'new' }]
+            prices: [{ quantity: 100, price: 0.25 }]
           },
           {
             type: 'shrinkWrap',
             option: 'No',
-            prices: [{ quantity: 100, price: 0, status: 'new' }]
+            prices: [{ quantity: 100, price: 0 }]
           },
         ]
         );
@@ -221,20 +209,9 @@ const PlantPackagingPricing: React.FC<PlantPackagingPricingProps> = ({
 
       console.log("Saving packaging pricing to Supabase", packagingPricing);
 
-      // // filter out deleted tiers
-      // const deletedVinylPricing = vinylPricing.filter(tier => tier.status == 'deleted');
-      // deletedVinylPricing.forEach(async tier => {
-      //   const { data: deletedVinylPricingData, error: deletedVinylPricingError } = await supabase
-      //     .from('vinyl_pricing')
-      //     .delete()
-      //     .eq('id', tier.id)
-      //     .eq('plant_id', plant.id);
+      // update the row in the database
 
-      //   if (deletedVinylPricingError) {
-      //     console.error('Error deleting vinyl pricing:', deletedVinylPricingError);
-      //     throw new Error(`Error deleting vinyl pricing: ${deletedVinylPricingError.message}`);
-      //   }
-      // })
+
 
       // // filter out new tiers
       // const newVinylPricing = vinylPricing.filter(tier => tier.status == 'new');
@@ -405,8 +382,7 @@ const PlantPackagingPricing: React.FC<PlantPackagingPricingProps> = ({
                         </TableHeader>
                         <TableBody>
                           {obj?.prices?.map((price, priceIndex) => {
-                            if (price.status === 'deleted') return null;
-
+                          
                             return <TableRow key={priceIndex}>
                               {/* quantity */}
                               <TableCell>

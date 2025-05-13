@@ -660,7 +660,7 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {plant.colorOptions?.map((option, index) => (
+          {colorOptions?.map((option, index) => (
             <div key={index} className="mb-4 pb-4 border-b border-border last:border-0 last:pb-0">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
                 <div>
@@ -701,7 +701,7 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
                   variant="destructive" 
                   size="sm" 
                   onClick={() => handleRemoveColorOption(index)}
-                  disabled={disabled || (plant.colorOptions?.length || 0) <= 1}
+                  disabled={disabled || (colorOptions?.length || 0) <= 1}
                 >
                   <Minus className="h-4 w-4 mr-2" />
                   Remove Option
@@ -730,7 +730,7 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {plant.weightOptions?.map((option, index) => (
+          {weightOptions?.map((option, index) => (
             <div key={index} className="mb-4 pb-4 border-b border-border last:border-0 last:pb-0">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
                 <div>
@@ -767,7 +767,7 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
                   variant="destructive" 
                   size="sm" 
                   onClick={() => handleRemoveWeightOption(index)}
-                  disabled={disabled || (plant.weightOptions?.length || 0) <= 1}
+                  disabled={disabled || (weightOptions?.length || 0) <= 1}
                 >
                   <Minus className="h-4 w-4 mr-2" />
                   Remove Option
@@ -780,7 +780,7 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
             variant="outline"
             className="w-full mt-2"
             onClick={handleAddWeightOption}
-            disabled={disabled || (plant.weightOptions?.length || 0) >= 1}
+            disabled={disabled || (weightOptions?.length || 0) >= 1}
           >
             <Plus className="h-4 w-4 mr-2" />
             Add Weight Option

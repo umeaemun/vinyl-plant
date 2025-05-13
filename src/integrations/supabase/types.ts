@@ -148,7 +148,7 @@ export type Database = {
           prices: {
             price: string;
             quantity: number;
-          };
+          }[];
           created_at: string;
           updated_at: string;
         };
@@ -160,7 +160,7 @@ export type Database = {
           prices: {
             price: string;
             quantity: number;
-          };
+          }[];
           created_at?: string;
           updated_at?: string;
         };
@@ -172,7 +172,7 @@ export type Database = {
           prices?: {
             price: string;
             quantity: number;
-          };
+          }[];
           created_at?: string;
           updated_at?: string;
         };

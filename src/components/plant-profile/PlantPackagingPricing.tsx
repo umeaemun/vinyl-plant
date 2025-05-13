@@ -209,91 +209,27 @@ const PlantPackagingPricing: React.FC<PlantPackagingPricingProps> = ({
 
       console.log("Saving packaging pricing to Supabase", packagingPricing);
 
-      // update the row in the database
+      // upsert the row in the database
 
+      const a = packagingPricing.forEach(async (obj) => {
+        const { type, option, prices } = obj;
+        const { data, error } = await supabase
+          .from('packaging_pricing')
+          .upsert({
+            plant_id: plant.id,
+            type,
+            option,
+            prices: prices
+          })
+          .select();
 
-
-      // // filter out new tiers
-      // const newVinylPricing = vinylPricing.filter(tier => tier.status == 'new');
-      // const newVinylPricingData = newVinylPricing.forEach(async tier => {
-      //   const { data: newVinylPricingData, error: newVinylPricingError } = await supabase
-      //     .from('vinyl_pricing')
-      //     .insert({
-      //       plant_id: plant.id,
-      //       quantity: tier.quantity,
-      //       size: tier.size,
-      //       type: tier.type,
-      //       price: tier.price
-      //     })
-      //     .select();
-
-      //   if (newVinylPricingError) {
-      //     console.error('Error saving vinyl pricing:', newVinylPricingError);
-      //     throw new Error(`Error saving vinyl pricing: ${newVinylPricingError.message}`);
-      //   }
-      // });
-
-
-      // // filter out updated tiers
-      // const updatedVinylPricing = vinylPricing.filter(tier => tier.status == 'updated');
-      // const updatedVinylPricingData = updatedVinylPricing.forEach(async tier => {
-      //   const { data: updatedVinylPricingData, error: updatedVinylPricingError } = await supabase
-      //     .from('vinyl_pricing')
-      //     .update({
-      //       quantity: tier.quantity,
-      //       size: tier.size,
-      //       type: tier.type,
-      //       price: tier.price
-      //     })
-      //     .eq('id', tier.id)
-      //     .eq('plant_id', plant.id)
-      //     .select();
-
-      //   if (updatedVinylPricingError) {
-      //     console.error('Error saving vinyl pricing:', updatedVinylPricingError);
-      //     throw new Error(`Error saving vinyl pricing: ${updatedVinylPricingError.message}`);
-      //   }
-      // });
-
-
-      // if (plant.packagingPricing && plant.packagingPricing.length > 0) {
-      //   for (const packaging of plant.packagingPricing) {
-      //     const { data: packagingData, error: packagingError } = await supabase
-      //       .from('packaging_pricing')
-      //       .insert({
-      //         plant_id: plant.id,
-      //         type: packaging.type,
-      //         option: packaging.option
-      //       })
-      //       .select();
-
-      //     if (packagingError) {
-      //       console.error('Error saving packaging pricing:', packagingError);
-      //       throw new Error(`Error saving packaging pricing: ${packagingError.message}`);
-      //     }
-
-      //     if (packagingData && packagingData.length > 0 && packaging.prices.length > 0) {
-      //       const packagingId = packagingData[0].id;
-
-      //       const priceTiersData = packaging.prices.map(price => ({
-      //         packaging_id: packagingId,
-      //         quantity: price.quantity,
-      //         price: price.price
-      //       }));
-
-      //       const { error: tierError } = await supabase
-      //         .from('packaging_price_tiers')
-      //         .insert(priceTiersData);
-
-      //       if (tierError) {
-      //         console.error('Error saving packaging price tiers:', tierError);
-      //         throw new Error(`Error saving packaging price tiers: ${tierError.message}`);
-      //       }
-      //     }
-      //   }
-      // }
-
-
+        if (error) {
+          console.error('Error saving packaging pricing:', error);
+        }
+      
+      });
+      
+   
       toast({
         title: "Success",
         description: "Pricing data saved successfully"

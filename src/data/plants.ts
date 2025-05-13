@@ -58,11 +58,10 @@ export interface Plant {
   turnaround_time: string;
   rating: number;
   review_count: number;
-  features: string[];
   specialties: string[];
   image_url: string;
   website: string;
-  reviews: PlantReview[];
+  // reviews: PlantReview[];
 }
 
 export const features: PlantFeature[] = [
@@ -170,26 +169,25 @@ export const plants: Plant[] = [
     turnaround_time: '10-12 weeks',
     rating: 4.8,
     review_count: 124,
-    features: ['colored-vinyl', 'heavyweight', 'packaging', 'mastering'],
-    specialties: ['Indie Rock', 'Jazz', 'Electronic'],
+    specialties: ['colored-vinyl', 'heavyweight', 'packaging', 'mastering'],
     image_url: 'https://images.unsplash.com/photo-1487180144351-b8472da7d491',
     website: 'https://example.com/vinylpressco',
-    reviews: [
-      {
-        id: 'r1',
-        username: 'IndieLabel123',
-        rating: 5,
-        comment: 'Exceptional quality and customer service. Our limited edition colored vinyl run came out perfectly.',
-        date: '2023-12-10'
-      },
-      {
-        id: 'r2',
-        username: 'VinylCollector',
-        rating: 4,
-        comment: 'Great quality, but turnaround time was longer than quoted by about 2 weeks.',
-        date: '2023-11-15'
-      }
-    ]
+    // reviews: [
+    //   {
+    //     id: 'r1',
+    //     username: 'IndieLabel123',
+    //     rating: 5,
+    //     comment: 'Exceptional quality and customer service. Our limited edition colored vinyl run came out perfectly.',
+    //     date: '2023-12-10'
+    //   },
+    //   {
+    //     id: 'r2',
+    //     username: 'VinylCollector',
+    //     rating: 4,
+    //     comment: 'Great quality, but turnaround time was longer than quoted by about 2 weeks.',
+    //     date: '2023-11-15'
+    //   }
+    // ]
   },
   {
     id: '2',
@@ -202,26 +200,25 @@ export const plants: Plant[] = [
     turnaround_time: '14-16 weeks',
     rating: 4.5,
     review_count: 276,
-    features: ['heavyweight', 'packaging', 'mastering'],
-    specialties: ['Blues', 'Soul', 'Classical'],
+    specialties: ['heavyweight', 'packaging', 'mastering'],
     image_url: 'https://images.unsplash.com/photo-1545671913-b89ac1b4ac10',
     website: 'https://example.com/classicpressings',
-    reviews: [
-      {
-        id: 'r3',
-        username: 'BluesLabel',
-        rating: 5,
-        comment: 'The sound quality is unmatched. Worth the wait for the premium pressing.',
-        date: '2023-10-22'
-      },
-      {
-        id: 'r4',
-        username: 'VinylProducer',
-        rating: 4,
-        comment: 'Excellent sound, but be prepared for longer waits than quoted.',
-        date: '2023-09-30'
-      }
-    ]
+    // reviews: [
+    //   {
+    //     id: 'r3',
+    //     username: 'BluesLabel',
+    //     rating: 5,
+    //     comment: 'The sound quality is unmatched. Worth the wait for the premium pressing.',
+    //     date: '2023-10-22'
+    //   },
+    //   {
+    //     id: 'r4',
+    //     username: 'VinylProducer',
+    //     rating: 4,
+    //     comment: 'Excellent sound, but be prepared for longer waits than quoted.',
+    //     date: '2023-09-30'
+    //   }
+    // ]
   },
   {
     id: '3',
@@ -234,26 +231,25 @@ export const plants: Plant[] = [
     turnaround_time: '8-10 weeks',
     rating: 4.2,
     review_count: 98,
-    features: ['eco-friendly', 'colored-vinyl', 'short-run', 'digital'],
-    specialties: ['Indie Folk', 'Alternative', 'Ambient'],
+    specialties: ['eco-friendly', 'colored-vinyl', 'short-run', 'digital'],
     image_url: 'https://images.unsplash.com/photo-1603048588665-791ca8aeaa20',
     website: 'https://example.com/ecovinyl',
-    reviews: [
-      {
-        id: 'r5',
-        username: 'GreenArtist',
-        rating: 5,
-        comment: 'Love the eco-friendly approach, and the quality is excellent!',
-        date: '2023-11-05'
-      },
-      {
-        id: 'r6',
-        username: 'SmallLabelOwner',
-        rating: 3,
-        comment: 'Good quality but pricier than most competitors.',
-        date: '2023-10-14'
-      }
-    ]
+    // reviews: [
+    //   {
+    //     id: 'r5',
+    //     username: 'GreenArtist',
+    //     rating: 5,
+    //     comment: 'Love the eco-friendly approach, and the quality is excellent!',
+    //     date: '2023-11-05'
+    //   },
+    //   {
+    //     id: 'r6',
+    //     username: 'SmallLabelOwner',
+    //     rating: 3,
+    //     comment: 'Good quality but pricier than most competitors.',
+    //     date: '2023-10-14'
+    //   }
+    // ]
   },
   {
     id: '4',
@@ -266,26 +262,25 @@ export const plants: Plant[] = [
     turnaround_time: '12-14 weeks',
     rating: 4.6,
     review_count: 188,
-    features: ['colored-vinyl', 'picture-disc', 'packaging', 'digital'],
-    specialties: ['Electronic', 'Dance', 'Hip-Hop'],
+    specialties: ['colored-vinyl', 'picture-disc', 'packaging', 'digital'],
     image_url: 'https://images.unsplash.com/photo-1583207836464-2f467abb3c99',
     website: 'https://example.com/vinylfactory',
-    reviews: [
-      {
-        id: 'r7',
-        username: 'DJProducer',
-        rating: 5,
-        comment: 'Their colored vinyl and picture discs are amazing quality. Perfect for our label releases.',
-        date: '2023-12-01'
-      },
-      {
-        id: 'r8',
-        username: 'RecordCollector',
-        rating: 4,
-        comment: 'Great quality but shipping to US was expensive and slow.',
-        date: '2023-10-28'
-      }
-    ]
+    // reviews: [
+    //   {
+    //     id: 'r7',
+    //     username: 'DJProducer',
+    //     rating: 5,
+    //     comment: 'Their colored vinyl and picture discs are amazing quality. Perfect for our label releases.',
+    //     date: '2023-12-01'
+    //   },
+    //   {
+    //     id: 'r8',
+    //     username: 'RecordCollector',
+    //     rating: 4,
+    //     comment: 'Great quality but shipping to US was expensive and slow.',
+    //     date: '2023-10-28'
+    //   }
+    // ]
   },
   {
     id: '5',

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plant, getFeatureName, getFeatureDescription } from '@/data/plants';
+import { Plant, getFeatureName, getFeatureDescription, PlantReview } from '@/data/plants';
 import { MapPin, Globe, Factory, Info, Star, FileText } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Separator } from '@/components/ui/separator';
@@ -34,6 +34,9 @@ const PlantProfile: React.FC<PlantProfileProps> = ({ plant }) => {
     .join('')
     .toUpperCase()
     .slice(0, 2);
+
+  const [reviews, setReviews] = React.useState<PlantReview[]>([]);
+  const [prices, setPrices] = React.useState<any[]>([]);
     
   const handleRequestQuote = () => {
     localStorage.setItem('selectedPlantId', plant.id);
@@ -148,7 +151,7 @@ const PlantProfile: React.FC<PlantProfileProps> = ({ plant }) => {
           
           <h2 className="font-display text-xl font-semibold mb-3">Specialties</h2>
           <div className="flex flex-wrap gap-2 mb-8">
-            {plant.features?.map(feature => (
+            {plant.specialties?.map(feature => (
               <Badge key={feature} variant="outline" className="bg-secondary">
                 {getFeatureName(feature)}
               </Badge>
@@ -255,7 +258,7 @@ const PlantProfile: React.FC<PlantProfileProps> = ({ plant }) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {plant.prices?.map((price, index) => (
+                  {prices?.map((price, index) => (
                     <tr key={index} className={index % 2 === 0 ? 'bg-card' : 'bg-muted/20'}>
                       <td className="p-4 border-t">{price.quantity} units</td>
                       <td className="p-4 border-t">${price.price.toFixed(2)}</td>
@@ -274,7 +277,7 @@ const PlantProfile: React.FC<PlantProfileProps> = ({ plant }) => {
         <TabsContent value="features">
           <h2 className="font-display text-2xl font-semibold mb-4">Specialties & Capabilities</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {plant.features?.map(featureId => (
+            {plant.specialties?.map(featureId => (
               <div key={featureId} className="bg-card p-5 rounded-lg border border-border">
                 <h3 className="font-semibold text-lg mb-2">{getFeatureName(featureId)}</h3>
                 <p className="text-muted-foreground">{getFeatureDescription(featureId)}</p>
@@ -332,8 +335,8 @@ const PlantProfile: React.FC<PlantProfileProps> = ({ plant }) => {
         <TabsContent value="reviews">
           <h2 className="font-display text-2xl font-semibold mb-4">Customer Reviews</h2>
           <div className="space-y-6">
-            {plant.reviews && plant.reviews.length > 0 ? (
-              plant.reviews?.map(review => (
+            {reviews && reviews.length > 0 ? (
+              reviews?.map(review => (
                 <div key={review.id} className="bg-card p-5 rounded-lg border border-border">
                   <div className="flex justify-between items-start mb-3">
                     <div>

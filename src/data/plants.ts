@@ -293,26 +293,25 @@ export const plants: Plant[] = [
     turnaround_time: '6-8 weeks',
     rating: 4.1,
     review_count: 245,
-    features: ['colored-vinyl', 'packaging', 'digital'],
-    specialties: ['Pop', 'Rock', 'Soundtracks'],
+    specialties: ['colored-vinyl', 'packaging', 'digital'],
     image_url: 'https://images.unsplash.com/photo-1576615278693-f8e095e37e01',
     website: 'https://example.com/pacificpress',
-    reviews: [
-      {
-        id: 'r9',
-        username: 'MajorLabel',
-        rating: 4,
-        comment: 'Fast and reliable for larger runs. Good quality control.',
-        date: '2023-11-18'
-      },
-      {
-        id: 'r10',
-        username: 'FilmProducer',
-        rating: 5,
-        comment: 'Excellent for our soundtrack releases. Quick turnaround is great.',
-        date: '2023-09-22'
-      }
-    ]
+    // reviews: [
+    //   {
+    //     id: 'r9',
+    //     username: 'MajorLabel',
+    //     rating: 4,
+    //     comment: 'Fast and reliable for larger runs. Good quality control.',
+    //     date: '2023-11-18'
+    //   },
+    //   {
+    //     id: 'r10',
+    //     username: 'FilmProducer',
+    //     rating: 5,
+    //     comment: 'Excellent for our soundtrack releases. Quick turnaround is great.',
+    //     date: '2023-09-22'
+    //   }
+    // ]
   }
 ];
 

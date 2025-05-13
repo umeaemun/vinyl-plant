@@ -211,22 +211,55 @@ const PlantPackagingPricing: React.FC<PlantPackagingPricingProps> = ({
 
       // upsert the row in the database
 
-      const a = packagingPricing.forEach(async (obj) => {
+      packagingPricing.forEach(async (obj) => {
         const { type, option, prices } = obj;
-        const { data, error } = await supabase
-          .from('packaging_pricing')
-          .upsert({
-            plant_id: plant.id,
-            type,
-            option,
-            prices: prices
-          })
-          .select();
 
-        if (error) {
-          console.error('Error saving packaging pricing:', error);
+        const { data: existingData, error: existingError } = await supabase
+          .from('packaging_pricing')
+          .select('*')
+          .eq('plant_id', plant.id)
+          .eq('type', type)
+          .eq('option', option)
+          .single();
+        if (existingError) {
+          console.error('Error fetching existing packaging pricing:', existingError);
+          return;
         }
+        
+        if (existingData) {
+          // Update existing row
+
+            const { data, error } = await supabase
+              .from('packaging_pricing')
+              .update({
+                prices: prices
+              })
+              .eq('plant_id', plant.id)
+              .eq('type', type)
+              .eq('option', option)
+              .select();
+
+            if (error) {
+              console.error('Error saving packaging pricing:', error);
+            }
       
+        }
+        else {
+          // Insert new row
+          const { data, error } = await supabase
+            .from('packaging_pricing')
+            .insert({
+              plant_id: plant.id,
+              type,
+              option,
+              prices: prices
+            })
+            .select();
+
+          if (error) {
+            console.error('Error saving packaging pricing:', error);
+          }
+        }
       });
       
    

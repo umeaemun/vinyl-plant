@@ -58,12 +58,8 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
       }
     })
 
-    console.log("newVinylPricing", newVinylPricing);
-
     // filter out the removed tier
     const filteredVinylPricing = newVinylPricing.filter((tier) => tier.status !== 'removeNow');
-
-    console.log("filteredVinylPricing", filteredVinylPricing);
 
     setVinylPricing(filteredVinylPricing);
   };

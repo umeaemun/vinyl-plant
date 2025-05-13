@@ -110,7 +110,7 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
     const filteredColorOptions = newColorOptions.filter((option) => option.status !== 'removeNow');
 
     setColorOptions(filteredColorOptions);
-    
+
   };
 
   const handleColorOptionChange = (id: string, field: keyof ColorOption, value: any) => {
@@ -174,7 +174,7 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
     setWeightOptions(newWeightOptions);
   };
 
-  
+
   const loadFromSupabase = async () => {
 
     const getVinylPricing = async () => {
@@ -502,7 +502,7 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
           </CardHeader>
           <CardContent>
             {vinylPricing?.map((tier, index) => {
-              if (tier.status == 'deleted') {
+              if (tier?.status == 'deleted') {
                 return null;
               }
               return (
@@ -620,8 +620,7 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
           </CardHeader>
           <CardContent>
             {colorOptions?.map((option, index) => {
-
-              if (option.status == 'deleted') {
+              if (option?.status == 'deleted') {
                 return null;
               }
               return (
@@ -696,51 +695,57 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
             </CardDescription>
           </CardHeader>
           <CardContent>
-            {weightOptions?.map((option, index) => (
-              <div key={index} className="mb-4 pb-4 border-b border-border last:border-0 last:pb-0">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
-                  <div>
-                    <Label htmlFor={`weight-${index}`}>Weight</Label>
-                    <Select
-                      disabled={true}
-                      value="180gm"
-                      onValueChange={() => { }}
+            {weightOptions?.map((option, index) => {
+              if (option?.status == 'deleted') {
+                return null;
+              }
+              return (
+                <div key={index} className="mb-4 pb-4 border-b border-border last:border-0 last:pb-0">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
+                    <div>
+                      <Label htmlFor={`weight-${index}`}>Weight</Label>
+                      <Select
+                        disabled={true}
+                        value="180gm"
+                        onValueChange={() => { }}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="180gm" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="180gm">180gm</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div>
+                      <Label htmlFor={`weight-cost-${index}`}>Additional Cost ($)</Label>
+                      <Input
+                        id={`weight-cost-${index}`}
+                        type="number"
+                        step="0.01"
+                        value={option.additionalCost}
+                        onChange={(e) => handleWeightOptionChange(option.id, 'additionalCost', parseFloat(e.target.value) || 0)}
+                        disabled={disabled}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex justify-end">
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => handleRemoveWeightOption(option.id)}
+                      disabled={disabled || (weightOptions?.length || 0) <= 1}
                     >
-                      <SelectTrigger>
-                        <SelectValue placeholder="180gm" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="180gm">180gm</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div>
-                    <Label htmlFor={`weight-cost-${index}`}>Additional Cost ($)</Label>
-                    <Input
-                      id={`weight-cost-${index}`}
-                      type="number"
-                      step="0.01"
-                      value={option.additionalCost}
-                      onChange={(e) => handleWeightOptionChange(option.id, 'additionalCost', parseFloat(e.target.value) || 0)}
-                      disabled={disabled}
-                    />
+                      <Minus className="h-4 w-4 mr-2" />
+                      Remove Option
+                    </Button>
                   </div>
                 </div>
-
-                <div className="flex justify-end">
-                  <Button
-                    variant="destructive"
-                    size="sm"
-                    onClick={() => handleRemoveWeightOption(option.id)}
-                    disabled={disabled || (weightOptions?.length || 0) <= 1}
-                  >
-                    <Minus className="h-4 w-4 mr-2" />
-                    Remove Option
-                  </Button>
-                </div>
-              </div>
-            ))}
+              )
+            }
+            )}
 
             <Button
               variant="outline"

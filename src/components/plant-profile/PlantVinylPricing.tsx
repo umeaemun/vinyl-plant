@@ -25,7 +25,7 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
   const { toast } = useToast();
 
 
-  const [vinylPricing, setVinylPricing] = React.useState<any[]>(null);
+  const [vinylPricing, setVinylPricing] = React.useState<PriceTier[]>(null);
   const [colorOptions, setColorOptions] = React.useState<ColorOption[]>([]);
   const [weightOptions, setWeightOptions] = React.useState<WeightOption[]>([]);
   const [isSaving, setIsSaving] = React.useState(false);
@@ -48,13 +48,13 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
     const newVinylPricing = vinylPricing.map((tier) => {
       // return tier.id == id ? { ...tier, status: 'deleted' } : tier;
       if (tier.id == id) {
-          if (tier.status !== 'new') {
-            return { ...tier, status: 'deleted' };
-          }else{
-            return { ...tier, status: 'removeNow' };
-          }
-         
-      }else {
+        if (tier.status !== 'new') {
+          return { ...tier, status: 'deleted' };
+        } else {
+          return { ...tier, status: 'removeNow' };
+        }
+
+      } else {
         return tier;
       }
     })
@@ -653,140 +653,147 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
         </Card>
 
         <Card>
-        <CardHeader>
-          <CardTitle>Colour Options</CardTitle>
-          <CardDescription>
-            Set additional costs for different colour options beyond the standard black vinyl
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          {colorOptions?.map((option, index) => (
-            <div key={index} className="mb-4 pb-4 border-b border-border last:border-0 last:pb-0">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
-                <div>
-                  <Label htmlFor={`color-${index}`}>Colour</Label>
-                  <Select
-                    disabled={disabled}
-                    value={option.name}
-                    onValueChange={(value) => handleColorOptionChange(index, 'name', value)}
+          <CardHeader>
+            <CardTitle>Colour Options</CardTitle>
+            <CardDescription>
+              Set additional costs for different colour options beyond the standard black vinyl
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {colorOptions?.map((option, index) => {
+
+              if (option.status == 'deleted') {
+                return null;
+              }
+              return (
+                <div key={index} className="mb-4 pb-4 border-b border-border last:border-0 last:pb-0">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
+                    <div>
+                      <Label htmlFor={`color-${index}`}>Colour</Label>
+                      <Select
+                        disabled={disabled}
+                        value={option.name}
+                        onValueChange={(value) => handleColorOptionChange(index, 'name', value)}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select colour" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="solid-colour">Solid Colour</SelectItem>
+                          <SelectItem value="translucent-colour">Translucent Colour</SelectItem>
+                          <SelectItem value="marbled">Marbled</SelectItem>
+                          <SelectItem value="splatter">Splatter</SelectItem>
+                          <SelectItem value="picture-disc">Picture Disc</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div>
+                      <Label htmlFor={`color-cost-${index}`}>Additional Cost ($)</Label>
+                      <Input
+                        id={`color-cost-${index}`}
+                        type="number"
+                        step="0.01"
+                        value={option.additionalCost}
+                        onChange={(e) => handleColorOptionChange(index, 'additionalCost', parseFloat(e.target.value) || 0)}
+                        disabled={disabled}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex justify-end">
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => handleRemoveColorOption(index)}
+                      disabled={disabled || (colorOptions?.length || 0) <= 1}
+                    >
+                      <Minus className="h-4 w-4 mr-2" />
+                      Remove Option
+                    </Button>
+                  </div>
+                </div>
+              )
+            }
+            )}
+
+            <Button
+              variant="outline"
+              className="w-full mt-2"
+              onClick={handleAddColorOption}
+              disabled={disabled}
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Add Colour Option
+            </Button>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Weight Options</CardTitle>
+            <CardDescription>
+              Set additional costs for different weight options
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {weightOptions?.map((option, index) => (
+              <div key={index} className="mb-4 pb-4 border-b border-border last:border-0 last:pb-0">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
+                  <div>
+                    <Label htmlFor={`weight-${index}`}>Weight</Label>
+                    <Select
+                      disabled={true}
+                      value="180gm"
+                      onValueChange={() => { }}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="180gm" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="180gm">180gm</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div>
+                    <Label htmlFor={`weight-cost-${index}`}>Additional Cost ($)</Label>
+                    <Input
+                      id={`weight-cost-${index}`}
+                      type="number"
+                      step="0.01"
+                      value={option.additionalCost}
+                      onChange={(e) => handleWeightOptionChange(index, 'additionalCost', parseFloat(e.target.value) || 0)}
+                      disabled={disabled}
+                    />
+                  </div>
+                </div>
+
+                <div className="flex justify-end">
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={() => handleRemoveWeightOption(index)}
+                    disabled={disabled || (weightOptions?.length || 0) <= 1}
                   >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select colour" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="solid-colour">Solid Colour</SelectItem>
-                      <SelectItem value="translucent-colour">Translucent Colour</SelectItem>
-                      <SelectItem value="marbled">Marbled</SelectItem>
-                      <SelectItem value="splatter">Splatter</SelectItem>
-                      <SelectItem value="picture-disc">Picture Disc</SelectItem>
-                    </SelectContent>
-                  </Select>
+                    <Minus className="h-4 w-4 mr-2" />
+                    Remove Option
+                  </Button>
                 </div>
+              </div>
+            ))}
 
-                <div>
-                  <Label htmlFor={`color-cost-${index}`}>Additional Cost ($)</Label>
-                  <Input
-                    id={`color-cost-${index}`}
-                    type="number"
-                    step="0.01"
-                    value={option.additionalCost}
-                    onChange={(e) => handleColorOptionChange(index, 'additionalCost', parseFloat(e.target.value) || 0)}
-                    disabled={disabled}
-                  />
-                </div>
-              </div>
-              
-              <div className="flex justify-end">
-                <Button 
-                  variant="destructive" 
-                  size="sm" 
-                  onClick={() => handleRemoveColorOption(index)}
-                  disabled={disabled || (colorOptions?.length || 0) <= 1}
-                >
-                  <Minus className="h-4 w-4 mr-2" />
-                  Remove Option
-                </Button>
-              </div>
-            </div>
-          ))}
-          
-          <Button
-            variant="outline"
-            className="w-full mt-2"
-            onClick={handleAddColorOption}
-            disabled={disabled}
-          >
-            <Plus className="h-4 w-4 mr-2" />
-            Add Colour Option
-          </Button>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Weight Options</CardTitle>
-          <CardDescription>
-            Set additional costs for different weight options
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          {weightOptions?.map((option, index) => (
-            <div key={index} className="mb-4 pb-4 border-b border-border last:border-0 last:pb-0">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
-                <div>
-                  <Label htmlFor={`weight-${index}`}>Weight</Label>
-                  <Select
-                    disabled={true}
-                    value="180gm"
-                    onValueChange={() => {}}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="180gm" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="180gm">180gm</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div>
-                  <Label htmlFor={`weight-cost-${index}`}>Additional Cost ($)</Label>
-                  <Input
-                    id={`weight-cost-${index}`}
-                    type="number"
-                    step="0.01"
-                    value={option.additionalCost}
-                    onChange={(e) => handleWeightOptionChange(index, 'additionalCost', parseFloat(e.target.value) || 0)}
-                    disabled={disabled}
-                  />
-                </div>
-              </div>
-              
-              <div className="flex justify-end">
-                <Button 
-                  variant="destructive" 
-                  size="sm" 
-                  onClick={() => handleRemoveWeightOption(index)}
-                  disabled={disabled || (weightOptions?.length || 0) <= 1}
-                >
-                  <Minus className="h-4 w-4 mr-2" />
-                  Remove Option
-                </Button>
-              </div>
-            </div>
-          ))}
-          
-          <Button
-            variant="outline"
-            className="w-full mt-2"
-            onClick={handleAddWeightOption}
-            disabled={disabled || (weightOptions?.length || 0) >= 1}
-          >
-            <Plus className="h-4 w-4 mr-2" />
-            Add Weight Option
-          </Button>
-        </CardContent>
-      </Card>
+            <Button
+              variant="outline"
+              className="w-full mt-2"
+              onClick={handleAddWeightOption}
+              disabled={disabled || (weightOptions?.length || 0) >= 1}
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Add Weight Option
+            </Button>
+          </CardContent>
+        </Card>
       </div>
     );
   }

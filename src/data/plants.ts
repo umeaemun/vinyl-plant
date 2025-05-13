@@ -1,27 +1,30 @@
-
-export interface PlantPrice {
-  quantity: number;
-  price: number;
-}
-
 export interface PriceTier {
+  id: string;
   quantity: number;
   size: string;
   type: string;
   price: number;
+  status? : string;
 }
 
 export interface ColorOption {
+  id: string;
   name: string;
   additionalCost: number;
+  status? : string;
+
 }
 
 export interface WeightOption {
+  id: string;
   name: string;
   additionalCost: number;
+  status? : string;
+
 }
 
 export interface PackagingPrice {
+  id: string;
   type: 'innerSleeve' | 'jacket' | 'inserts' | 'shrinkWrap';
   option: string;
   prices: Array<{

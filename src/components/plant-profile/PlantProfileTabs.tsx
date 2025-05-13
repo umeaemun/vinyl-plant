@@ -11,6 +11,8 @@ import { Factory, Plus, Trash2, Save } from 'lucide-react';
 import PlantVinylPricing from './PlantVinylPricing';
 import PlantPackagingPricing from './PlantPackagingPricing';
 import PlantProfileFeatures from './PlantProfileFeatures';
+import PlantEquipments from './PlantEquipments';
+import PlantReviews from './PlantReviews';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';

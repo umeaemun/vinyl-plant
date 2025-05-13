@@ -46,7 +46,6 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
   const handleRemovePriceTier = (id: string) => {
 
     const newVinylPricing = vinylPricing.map((tier) => {
-      // return tier.id == id ? { ...tier, status: 'deleted' } : tier;
       if (tier.id == id) {
         if (tier.status !== 'new') {
           return { ...tier, status: 'deleted' };
@@ -83,87 +82,96 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
   };
 
   const handleAddColorOption = () => {
-    // const newPlant = {...plant};
-    // if (!newPlant.colorOptions) {
-    //   newPlant.colorOptions = [];
-    // }
+    const newColorOptions: ColorOption[] = [...colorOptions, {
+      id: Date.now().toString(),
+      name: "solid-colour",
+      additionalCost: 1.5,
+      status: 'new'
+    }];
 
-    // const defaultColor: ColorOption = {
-    //   name: "solid-colour",
-    //   additionalCost: 1.5
-    // };
-
-    // newPlant.colorOptions = [...(newPlant.colorOptions || []), defaultColor];
-    // setPlant(newPlant);
+    setColorOptions(newColorOptions);
   };
 
-  const handleRemoveColorOption = (index: number) => {
-    // const newPlant = {...plant};
-    // if (newPlant.colorOptions) {
-    //   newPlant.colorOptions = newPlant.colorOptions.filter((_, i) => i !== index);
-    //   setPlant(newPlant);
-    // }
+  const handleRemoveColorOption = (id: string) => {
+    const newColorOptions = colorOptions.map((option) => {
+      if (option.id == id) {
+        if (option.status !== 'new') {
+          return { ...option, status: 'deleted' };
+        } else {
+          return { ...option, status: 'removeNow' };
+        }
+
+      } else {
+        return option;
+      }
+    })
+
+    // filter out the removed option
+    const filteredColorOptions = newColorOptions.filter((option) => option.status !== 'removeNow');
+
+    setColorOptions(filteredColorOptions);
+    
   };
 
-  const handleColorOptionChange = (index: number, field: keyof ColorOption, value: any) => {
-    // const newPlant = {...plant};
-    // if (!newPlant.colorOptions) {
-    //   newPlant.colorOptions = [];
-    // }
+  const handleColorOptionChange = (id: string, field: keyof ColorOption, value: any) => {
+    const newColorOptions = colorOptions.map((option) => {
+      if (option.id === id) {
+        if (option.status == 'new') {
+          return { ...option, [field]: value };
+        } else if (option.status == 'same' || option.status == 'updated') {
+          return { ...option, [field]: value, status: 'updated' };
+        }
+      }
+      return option;
+    });
 
-    // newPlant.colorOptions = [...(newPlant.colorOptions || [])];
-    // newPlant.colorOptions[index] = {
-    //   name: newPlant.colorOptions[index]?.name || "solid-colour",
-    //   additionalCost: newPlant.colorOptions[index]?.additionalCost || 1.5,
-    //   [field]: value
-    // };
-    // setPlant(newPlant);
+    setColorOptions(newColorOptions);
   };
 
   const handleAddWeightOption = () => {
-    // const newPlant = {...plant};
-    // if (!newPlant.weightOptions) {
-    //   newPlant.weightOptions = [];
-    // }
+    const newWeightOptions: WeightOption[] = [...weightOptions, {
+      id: Date.now().toString(),
+      name: "180gm",
+      additionalCost: 1,
+      status: 'new'
+    }];
 
-    // if (!newPlant.weightOptions.some(option => option.name === "180gm")) {
-    //   const defaultWeight: WeightOption = {
-    //     name: "180gm",
-    //     additionalCost: 1
-    //   };
-
-    //   newPlant.weightOptions = [...(newPlant.weightOptions || []), defaultWeight];
-    //   setPlant(newPlant);
-    // } else {
-    //   toast({
-    //     title: "Option already exists",
-    //     description: "180gm weight option already exists",
-    //     variant: "destructive"
-    //   });
-    // }
+    setWeightOptions(newWeightOptions);
   };
 
-  const handleRemoveWeightOption = (index: number) => {
-    // const newPlant = {...plant};
-    // if (newPlant.weightOptions) {
-    //   newPlant.weightOptions = newPlant.weightOptions.filter((_, i) => i !== index);
-    //   setPlant(newPlant);
-    // }
+  const handleRemoveWeightOption = (id: string) => {
+    const newWeightOptions = weightOptions.map((option) => {
+      if (option.id == id) {
+        if (option.status !== 'new') {
+          return { ...option, status: 'deleted' };
+        } else {
+          return { ...option, status: 'removeNow' };
+        }
+
+      } else {
+        return option;
+      }
+    })
+
+    // filter out the removed option
+    const filteredWeightOptions = newWeightOptions.filter((option) => option.status !== 'removeNow');
+
+    setWeightOptions(filteredWeightOptions);
   };
 
-  const handleWeightOptionChange = (index: number, field: keyof WeightOption, value: any) => {
-    // const newPlant = {...plant};
-    // if (!newPlant.weightOptions) {
-    //   newPlant.weightOptions = [];
-    // }
+  const handleWeightOptionChange = (id: string, field: keyof WeightOption, value: any) => {
+    const newWeightOptions = weightOptions.map((option) => {
+      if (option.id === id) {
+        if (option.status == 'new') {
+          return { ...option, [field]: value };
+        } else if (option.status == 'same' || option.status == 'updated') {
+          return { ...option, [field]: value, status: 'updated' };
+        }
+      }
+      return option;
+    });
 
-    // newPlant.weightOptions = [...(newPlant.weightOptions || [])];
-    // newPlant.weightOptions[index] = {
-    //   name: "180gm",
-    //   additionalCost: newPlant.weightOptions[index]?.additionalCost || 0,
-    //   [field]: value
-    // };
-    // setPlant(newPlant);
+    setWeightOptions(newWeightOptions);
   };
 
   
@@ -284,6 +292,8 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
 
     try {
 
+      // VINYL PRICING
+
       // filter out deleted tiers
       const deletedVinylPricing = vinylPricing.filter(tier => tier.status == 'deleted');
       deletedVinylPricing.forEach(async tier => {
@@ -341,74 +351,59 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
         }
       });
 
+      // COLOR OPTIONS
 
-      // if (plant.packagingPricing && plant.packagingPricing.length > 0) {
-      //   for (const packaging of plant.packagingPricing) {
-      //     const { data: packagingData, error: packagingError } = await supabase
-      //       .from('packaging_pricing')
-      //       .insert({
-      //         plant_id: plant.id,
-      //         type: packaging.type,
-      //         option: packaging.option
-      //       })
-      //       .select();
+      // filter out deleted color options
+      const deletedColorOptions = colorOptions.filter(option => option.status == 'deleted');
+      deletedColorOptions.forEach(async option => {
+        const { data: deletedColorOptionsData, error: deletedColorOptionsError } = await supabase
+          .from('vinyl_color_options')
+          .delete()
+          .eq('id', option.id)
+          .eq('plant_id', plant.id);
+        if (deletedColorOptionsError) {
+          console.error('Error deleting color options:', deletedColorOptionsError);
+          throw new Error(`Error deleting color options: ${deletedColorOptionsError.message}`);
+        }
+      });
 
-      //     if (packagingError) {
-      //       console.error('Error saving packaging pricing:', packagingError);
-      //       throw new Error(`Error saving packaging pricing: ${packagingError.message}`);
-      //     }
+      // filter out new color options
+      const newColorOptions = colorOptions.filter(option => option.status == 'new');
+      const newColorOptionsData = newColorOptions.forEach(async option => {
+        const { data: newColorOptionsData, error: newColorOptionsError } = await supabase
+          .from('vinyl_color_options')
+          .insert({
+            plant_id: plant.id,
+            name: option.name,
+            additionalCost: option.additionalCost
+          })
+          .select();
+        if (newColorOptionsError) {
+          console.error('Error saving color options:', newColorOptionsError);
+          throw new Error(`Error saving color options: ${newColorOptionsError.message}`);
+        }
+      });
 
-      //     if (packagingData && packagingData.length > 0 && packaging.prices.length > 0) {
-      //       const packagingId = packagingData[0].id;
-
-      //       const priceTiersData = packaging.prices.map(price => ({
-      //         packaging_id: packagingId,
-      //         quantity: price.quantity,
-      //         price: price.price
-      //       }));
-
-      //       const { error: tierError } = await supabase
-      //         .from('packaging_price_tiers')
-      //         .insert(priceTiersData);
-
-      //       if (tierError) {
-      //         console.error('Error saving packaging price tiers:', tierError);
-      //         throw new Error(`Error saving packaging price tiers: ${tierError.message}`);
-      //       }
-      //     }
-      //   }
-      // }
+      // filter out updated color options
+      const updatedColorOptions = colorOptions.filter(option => option.status == 'updated');
+      const updatedColorOptionsData = updatedColorOptions.forEach(async option => {
+        const { data: updatedColorOptionsData, error: updatedColorOptionsError } = await supabase
+          .from('vinyl_color_options')
+          .update({
+            name: option.name,
+            additionalCost: option.additionalCost
+          })
+          .eq('id', option.id)
+          .eq('plant_id', plant.id)
+          .select();
+        if (updatedColorOptionsError) {
+          console.error('Error saving color options:', updatedColorOptionsError);
+          throw new Error(`Error saving color options: ${updatedColorOptionsError.message}`);
+        }
+      });
 
 
-      // if (plant.colorOptions && plant.colorOptions.length > 0) {
-      //   const colorOptionsData = plant.colorOptions.map(option => ({
-      //     plant_id: plant.id,
-      //     name: option.name,
-      //     additional_cost: option.additionalCost
-      //   }));
-
-      //   const { error: colorError } = await supabase.from('vinyl_color_options').insert(colorOptionsData);
-
-      //   if (colorError) {
-      //     console.error('Error saving color options:', colorError);
-      //     throw new Error(`Error saving color options: ${colorError.message}`);
-      //   }
-      // }
-
-      // if (plant.weightOptions && plant.weightOptions.length > 0) {
-      //   const weightOptionsData = plant.weightOptions.map(option => ({
-      //     plant_id: plant.id,
-      //     name: option.name,
-      //     additional_cost: option.additionalCost
-      //   }));
-
-      //   const { error: weightError } = await supabase.from('vinyl_weight_options').insert(weightOptionsData);
-
-      //   if (weightError) {
-      //     console.error('Error saving weight options:', weightError);
-      //     throw new Error(`Error saving weight options: ${weightError.message}`);
-      //   }
-      // }
+      // WEIGHT OPTIONS
 
 
       toast({
@@ -427,7 +422,7 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
     }
   };
 
-  if (vinylPricing) {
+  if (vinylPricing && colorOptions && weightOptions) {
     return (
       <div className="space-y-6">
         {!disabled && (
@@ -589,7 +584,7 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
                       <Select
                         disabled={disabled}
                         value={option.name}
-                        onValueChange={(value) => handleColorOptionChange(index, 'name', value)}
+                        onValueChange={(value) => handleColorOptionChange(option.id, 'name', value)}
                       >
                         <SelectTrigger>
                           <SelectValue placeholder="Select colour" />
@@ -611,7 +606,7 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
                         type="number"
                         step="0.01"
                         value={option.additionalCost}
-                        onChange={(e) => handleColorOptionChange(index, 'additionalCost', parseFloat(e.target.value) || 0)}
+                        onChange={(e) => handleColorOptionChange(option.id, 'additionalCost', parseFloat(e.target.value) || 0)}
                         disabled={disabled}
                       />
                     </div>
@@ -621,7 +616,7 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
                     <Button
                       variant="destructive"
                       size="sm"
-                      onClick={() => handleRemoveColorOption(index)}
+                      onClick={() => handleRemoveColorOption(option.id)}
                       disabled={disabled || (colorOptions?.length || 0) <= 1}
                     >
                       <Minus className="h-4 w-4 mr-2" />
@@ -679,7 +674,7 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
                       type="number"
                       step="0.01"
                       value={option.additionalCost}
-                      onChange={(e) => handleWeightOptionChange(index, 'additionalCost', parseFloat(e.target.value) || 0)}
+                      onChange={(e) => handleWeightOptionChange(option.id, 'additionalCost', parseFloat(e.target.value) || 0)}
                       disabled={disabled}
                     />
                   </div>
@@ -689,7 +684,7 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
                   <Button
                     variant="destructive"
                     size="sm"
-                    onClick={() => handleRemoveWeightOption(index)}
+                    onClick={() => handleRemoveWeightOption(option.id)}
                     disabled={disabled || (weightOptions?.length || 0) <= 1}
                   >
                     <Minus className="h-4 w-4 mr-2" />

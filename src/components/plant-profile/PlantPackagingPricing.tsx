@@ -207,11 +207,11 @@ const PlantPackagingPricing: React.FC<PlantPackagingPricingProps> = ({
 
     try {
 
-      console.log("Saving packaging pricing to Supabase", packagingPricing);
+      // console.log("Saving packaging pricing to Supabase", packagingPricing);
 
       // upsert the row in the database
 
-      packagingPricing.forEach(async (obj) => {
+      const pricingUpdates = packagingPricing.map(async (obj) => {
         const { type, option, prices } = obj;
 
         const { data: existingData, error: existingError } = await supabase
@@ -225,7 +225,7 @@ const PlantPackagingPricing: React.FC<PlantPackagingPricingProps> = ({
           console.error('Error fetching existing packaging pricing:', existingError);
           return;
         }
-        
+
         if (existingData) {
           // Update existing row
 
@@ -263,6 +263,8 @@ const PlantPackagingPricing: React.FC<PlantPackagingPricingProps> = ({
       });
       
    
+      await Promise.all(pricingUpdates);
+      
       toast({
         title: "Success",
         description: "Pricing data saved successfully"

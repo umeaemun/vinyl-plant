@@ -166,35 +166,102 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
     // setPlant(newPlant);
   };
 
+  
+  const loadFromSupabase = async () => {
+
+    const getVinylPricing = async () => {
+      const { data: vinylPricing, error } = await supabase
+        .from('vinyl_pricing')
+        .select('*')
+        .eq('plant_id', plant.id);
+      if (error) {
+        console.error('Error fetching vinyl pricing:', error);
+        return [];
+      }
+
+      if (vinylPricing.length === 0) {
+        const defaultVinylPricing: PriceTier[] = [
+          { id: Date.now().toString(), quantity: 50, size: '12"', type: '1LP', price: 0, status: 'new' }
+        ];
+        setVinylPricing(defaultVinylPricing);
+
+      } else {
+
+        // add a field to each vinyl pricing object
+        const updatedVinylPricing = vinylPricing.map((pricing: any) => ({
+          ...pricing,
+          status: 'same',
+        }));
+
+        setVinylPricing(updatedVinylPricing);
+      }
+    }
+
+    const getColorOptions = async () => {
+      const { data: colorOptions, error } = await supabase
+        .from('vinyl_color_options')
+        .select('*')
+        .eq('plant_id', plant.id);
+      if (error) {
+        console.error('Error fetching color options:', error);
+        return [];
+      }
+
+      if (colorOptions.length === 0) {
+        const defaultColor: ColorOption[] = [
+          { name: "solid-colour", additionalCost: 1.5, status: 'new' },
+          { name: "translucent-colour", additionalCost: 2, status: 'new' },
+          { name: "marbled", additionalCost: 2.5, status: 'new' },
+          { name: "splatter", additionalCost: 3, status: 'new' },
+          { name: "picture-disc", additionalCost: 5, status: 'new' }
+        ];
+        setColorOptions(defaultColor);
+
+      } else {
+
+        const updatedColorOptions = colorOptions.map((option: any) => ({
+          ...option,
+          status: 'same',
+        }));
+        setColorOptions(updatedColorOptions);
+      }
+    }
+
+
+    const getWeightOptions = async () => {
+      const { data: weightOptions, error } = await supabase
+        .from('vinyl_weight_options')
+        .select('*')
+        .eq('plant_id', plant.id);
+      if (error) {
+        console.error('Error fetching weight options:', error);
+        return [];
+      }
+
+      if (weightOptions.length === 0) {
+        const defaultWeight: WeightOption[] = [
+          { name: "180gm", additionalCost: 1, status: 'new' }
+        ];
+        setWeightOptions(defaultWeight);
+
+      } else {
+
+        const updatedWeightOptions = weightOptions.map((option: any) => ({
+          ...option,
+          status: 'same',
+        }));
+        setWeightOptions(updatedWeightOptions);
+      }
+
+    }
+
+    getVinylPricing();
+    getColorOptions();
+    getWeightOptions();
+
+  }
+
   React.useEffect(() => {
-    // if (!newPlant.colorOptions) {
-    //   newPlant.colorOptions = [
-    //     { name: "solid-colour", additionalCost: 1.5 },
-    //     { name: "translucent-colour", additionalCost: 2 },
-    //     { name: "marbled", additionalCost: 2.5 },
-    //     { name: "splatter", additionalCost: 3 },
-    //     { name: "picture-disc", additionalCost: 5 }
-    //   ];
-    //   needsUpdate = true;
-    // }
-
-    // if (!newPlant.weightOptions || newPlant.weightOptions.length === 0) {
-    //   newPlant.weightOptions = [
-    //     { name: "180gm", additionalCost: 1 }
-    //   ];
-    //   needsUpdate = true;
-    // } else {
-    //   newPlant.weightOptions = newPlant.weightOptions.filter(
-    //     option => option.name === "180gm"
-    //   );
-
-    //   if (newPlant.weightOptions.length === 0) {
-    //     newPlant.weightOptions = [
-    //       { name: "180gm", additionalCost: 1 }
-    //     ];
-    //   }
-    //   needsUpdate = true;
-    // }
 
     if (plant && plant.id && !vinylPricing) {
       // console.log("Loading vinyl pricing from Supabase");
@@ -359,157 +426,6 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
       setIsSaving(false);
     }
   };
-
-  // const loadFromSupabase = async () => {
-  //   if (!plant.id) {
-  //     toast({
-  //       title: "Error",
-  //       description: "Plant ID is missing",
-  //       variant: "destructive"
-  //     });
-  //     return;
-  //   }
-
-  //   setIsSaving(true);
-
-  //   try {
-  //     const { data: vinylPricingData, error: vinylError } = await supabase
-  //       .from('vinyl_pricing')
-  //       .select('*')
-  //       .eq('plant_id', plant.id);
-
-  //     if (vinylError) {
-  //       throw new Error(`Error loading vinyl pricing: ${vinylError.message}`);
-  //     }
-
-  //     const { data: colorOptionsData, error: colorError } = await supabase
-  //       .from('vinyl_color_options')
-  //       .select('*')
-  //       .eq('plant_id', plant.id);
-
-  //     if (colorError) {
-  //       throw new Error(`Error loading color options: ${colorError.message}`);
-  //     }
-
-  //     const { data: weightOptionsData, error: weightError } = await supabase
-  //       .from('vinyl_weight_options')
-  //       .select('*')
-  //       .eq('plant_id', plant.id);
-
-  //     if (weightError) {
-  //       throw new Error(`Error loading weight options: ${weightError.message}`);
-  //     }
-
-  //     const { data: packagingData, error: packagingError } = await supabase
-  //       .from('packaging_pricing')
-  //       .select('*')
-  //       .eq('plant_id', plant.id);
-
-  //     if (packagingError) {
-  //       throw new Error(`Error loading packaging pricing: ${packagingError.message}`);
-  //     }
-
-  //     const packagingPricing = [];
-
-  //     if (packagingData && packagingData.length > 0) {
-  //       for (const packaging of packagingData) {
-  //         const { data: tiersData, error: tiersError } = await supabase
-  //           .from('packaging_price_tiers')
-  //           .select('*')
-  //           .eq('packaging_id', packaging.id);
-
-  //         if (tiersError) {
-  //           throw new Error(`Error loading packaging price tiers: ${tiersError.message}`);
-  //         }
-
-  //         packagingPricing.push({
-  //           type: packaging.type,
-  //           option: packaging.option,
-  //           prices: tiersData?.map(tier => ({
-  //             quantity: tier.quantity,
-  //             price: tier.price
-  //           })) || []
-  //         });
-  //       }
-  //     }
-
-  //     const updatedPlant = { ...plant };
-
-  //     if (vinylPricingData && vinylPricingData.length > 0) {
-  //       updatedPlant.priceTiers = vinylPricingData.map(pricing => ({
-  //         quantity: pricing.quantity,
-  //         size: pricing.size,
-  //         type: pricing.type,
-  //         price: pricing.price
-  //       }));
-  //     }
-
-  //     if (colorOptionsData && colorOptionsData.length > 0) {
-  //       updatedPlant.colorOptions = colorOptionsData.map(option => ({
-  //         name: option.name,
-  //         additionalCost: option.additional_cost
-  //       }));
-  //     }
-
-  //     if (weightOptionsData && weightOptionsData.length > 0) {
-  //       updatedPlant.weightOptions = weightOptionsData.map(option => ({
-  //         name: option.name,
-  //         additionalCost: option.additional_cost
-  //       }));
-  //     }
-
-  //     if (packagingPricing.length > 0) {
-  //       updatedPlant.packagingPricing = packagingPricing;
-  //     }
-
-  //     setPlant(updatedPlant);
-
-  //     // toast({
-  //     //   title: "Success",
-  //     //   description: "Pricing data loaded successfully"
-  //     // });
-  //   } catch (error) {
-  //     console.error('Error loading pricing data:', error);
-  //     toast({
-  //       title: "Error",
-  //       description: error instanceof Error ? error.message : "An error occurred while loading pricing data",
-  //       variant: "destructive"
-  //     });
-  //   } finally {
-  //     setIsSaving(false);
-  //   }
-  // };
-
-  // React.useEffect(() => {
-  //   if (plant.id) {
-  //     loadFromSupabase();
-  //   }
-  // }, [plant.id]);
-
-  const loadFromSupabase = async () => {
-
-    const getVinylPricing = async () => {
-      const { data: vinylPricing, error } = await supabase
-        .from('vinyl_pricing')
-        .select('*')
-        .eq('plant_id', plant.id);
-      if (error) {
-        console.error('Error fetching vinyl pricing:', error);
-        return [];
-      }
-
-      // add a field to each vinyl pricing object
-      const updatedVinylPricing = vinylPricing.map((pricing: any) => ({
-        ...pricing,
-        status: 'same',
-      }));
-
-      setVinylPricing(updatedVinylPricing);
-    }
-
-    getVinylPricing();
-
-  }
 
   if (vinylPricing) {
     return (

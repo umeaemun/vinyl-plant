@@ -1,5 +1,5 @@
 export interface PriceTier {
-  id: string;
+  id?: string;
   quantity: number;
   size: string;
   type: string;
@@ -8,7 +8,7 @@ export interface PriceTier {
 }
 
 export interface ColorOption {
-  id: string;
+  id?: string;
   name: string;
   additionalCost: number;
   status? : string;
@@ -16,7 +16,7 @@ export interface ColorOption {
 }
 
 export interface WeightOption {
-  id: string;
+  id?: string;
   name: string;
   additionalCost: number;
   status? : string;
@@ -24,7 +24,7 @@ export interface WeightOption {
 }
 
 export interface PackagingPrice {
-  id: string;
+  id?: string;
   type: 'innerSleeve' | 'jacket' | 'inserts' | 'shrinkWrap';
   option: string;
   prices: Array<{

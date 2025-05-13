@@ -93,18 +93,28 @@ const PlantProfileTabs: React.FC<PlantProfileTabsProps> = ({
     setIsSaving(true);
     
     try {
-      const { error: profileError } = await supabase
+      console.log('Saving plant details:', plant);
+
+      const { data, error: profileError } = await supabase
         .from('plants')
         .update({
           name: plant.name,
           location: plant.location,
-          country: plant.country
-        });
-      
+          country: plant.country,
+          website: plant.website,
+          description: plant.description,
+          minimum_order: plant.minimum_order,
+          turnaround_time: plant.turnaround_time,
+        })
+        .eq('id', plant.id)
+        .select()
+        .single();
+   
       if (profileError) {
         throw new Error(`Error saving plant profile: ${profileError.message}`);
       }
       
+      console.log('Plant profile updated successfully', data);
       toast({
         title: "Success",
         description: "Plant details saved successfully"

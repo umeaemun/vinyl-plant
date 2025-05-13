@@ -30,44 +30,24 @@ const PlantPackagingPricing: React.FC<PlantPackagingPricingProps> = ({
   const [packagingPricing, setPackagingPricing] = React.useState<any[]>(null);
   const [isSaving, setIsSaving] = React.useState(false);
 
-  // const handleAddPriceTier = () => {
-  //   const newVinylPricing = [...vinylPricing, {
-  //     id: Date.now().toString(),
-  //     quantity: 50,
-  //     size: '12"',
-  //     type: '1LP',
-  //     price: 0,
-  //     status: 'new'
-  //   }];
-  //   setVinylPricing(newVinylPricing);
+  const addPriceTier = (type: 'innerSleeve' | 'jacket' | 'inserts' | 'shrinkWrap', option: string) => {
 
-  // };
+    const updatedPricing = [...packagingPricing];
+    const priceItemIndex = updatedPricing.findIndex(p => p.type === type && p.option === option);
 
-  // const handleRemovePriceTier = (id: string) => {
+    if (priceItemIndex !== -1) {
+      const highestQuantity = Math.max(...updatedPricing[priceItemIndex].prices.map(p => p.quantity));
+      const lastPrice = updatedPricing[priceItemIndex].prices[updatedPricing[priceItemIndex].prices.length - 1].price;
+      // updatedPricing[priceItemIndex].status = 'new';
+      updatedPricing[priceItemIndex].prices.push({
+        quantity: highestQuantity * 2,
+        price: (lastPrice * 0.9).toFixed(2),
+        status: 'new'
+      });
+      setPackagingPricing(updatedPricing);
+    }
 
-  //   const newVinylPricing = vinylPricing.map((tier) => {
-  //     return tier.id == id ? { ...tier, status: 'deleted' } : tier;
-  //   })
-
-  //   setVinylPricing(newVinylPricing);
-  // };
-
-  // const handlePriceTierChange = (id: string, field: keyof PriceTier, value: any) => {
-
-  //   // update the vinyl pricing state
-  //   const newVinylPricing = vinylPricing.map((tier) => {
-  //     if (tier.id === id) {
-  //       if (tier.status == 'new') {
-  //         return { ...tier, [field]: value };
-  //       } else if (tier.status == 'same' || tier.status == 'updated') {
-  //         return { ...tier, [field]: value, status: 'updated' };
-  //       }
-  //     }
-  //     return tier;
-  //   });
-
-  //   setVinylPricing(newVinylPricing);
-  // };
+  };
 
   const updatePackagingPrice = (
     type: 'innerSleeve' | 'jacket' | 'inserts' | 'shrinkWrap',
@@ -79,44 +59,36 @@ const PlantPackagingPricing: React.FC<PlantPackagingPricingProps> = ({
     const updatedPricing = [...packagingPricing];
     const priceItemIndex = updatedPricing.findIndex(p => p.type === type && p.option === option);
 
+    // found
     if (priceItemIndex !== -1) {
-      if ((type === 'inserts' && option.toLowerCase().includes('no')) ||
-        (type === 'shrinkWrap' && option.toLowerCase() === 'no')) {
+
+      if ((type === 'inserts' && option.toLowerCase().includes('no')) || (type === 'shrinkWrap' && option.toLowerCase() === 'no')) {
         if (field === 'price') {
           value = 0; // Force price to be 0
         }
       }
 
+      if (updatedPricing[priceItemIndex].prices[quantityIndex].status !== 'new') {
+        updatedPricing[priceItemIndex].prices[quantityIndex].status = 'updated';
+      }
+
       updatedPricing[priceItemIndex].prices[quantityIndex][field] = value;
       setPackagingPricing(updatedPricing);
+
     }
   };
 
-  const addPriceTier = (type: 'innerSleeve' | 'jacket' | 'inserts' | 'shrinkWrap', option: string) => {
-
-    const updatedPricing = [...packagingPricing];
-    const priceItemIndex = updatedPricing.findIndex(p => p.type === type && p.option === option);
-
-    if (priceItemIndex !== -1) {
-      const highestQuantity = Math.max(...updatedPricing[priceItemIndex].prices.map(p => p.quantity));
-      const lastPrice = updatedPricing[priceItemIndex].prices[updatedPricing[priceItemIndex].prices.length - 1].price;
-      updatedPricing[priceItemIndex].prices.push({
-        quantity: highestQuantity * 2,
-        price: (lastPrice * 0.9).toFixed(2)
-      });
-      setPackagingPricing(updatedPricing);
-    }
-
-
-
-  };
 
   const removePriceTier = (type: 'innerSleeve' | 'jacket' | 'inserts' | 'shrinkWrap', option: string, quantityIndex: number) => {
     const updatedPricing = [...packagingPricing];
     const priceItemIndex = updatedPricing.findIndex(p => p.type === type && p.option === option);
 
     if (priceItemIndex !== -1 && updatedPricing[priceItemIndex].prices.length > 1) {
-      updatedPricing[priceItemIndex].prices.splice(quantityIndex, 1);
+      if(updatedPricing[priceItemIndex].prices[quantityIndex].status !== 'new') {
+      updatedPricing[priceItemIndex].prices[quantityIndex].status = 'deleted';
+      }else {
+        updatedPricing[priceItemIndex].prices.splice(quantityIndex, 1);
+      }
       setPackagingPricing(updatedPricing);
     }
   };
@@ -132,11 +104,22 @@ const PlantPackagingPricing: React.FC<PlantPackagingPricingProps> = ({
         console.error('Error fetching packaging pricing:', error);
         return [];
       }
+
       // add a field to each packaging pricing object
-      const updatedPackagingPricing = packagingPricing.map((pricing: any) => ({
-        ...pricing,
-        status: 'same',
-      }));
+      const updatedPackagingPricing = packagingPricing.map((row: any) => {
+        // const prices = JSON.parse(row.prices);
+        const prices = row.prices.map((price: any) => ({
+          quantity: price.quantity,
+          price: price.price,
+          status: 'same'
+        }));
+
+        return {
+          ...row,
+          prices: prices,
+        };
+
+      });
 
       if (updatedPackagingPricing.length > 0) {
         setPackagingPricing(updatedPackagingPricing);
@@ -145,62 +128,62 @@ const PlantPackagingPricing: React.FC<PlantPackagingPricingProps> = ({
           {
             type: 'innerSleeve',
             option: 'White Paper',
-            prices: [{ quantity: 100, price: 0.5 }]
+            prices: [{ quantity: 100, price: 0.5, status: 'new' }]
           },
           {
             type: 'innerSleeve',
             option: 'White Poly-lined',
-            prices: [{ quantity: 100, price: 0.75 }]
+            prices: [{ quantity: 100, price: 0.75, status: 'new' }]
           },
           {
             type: 'innerSleeve',
             option: 'Black Paper',
-            prices: [{ quantity: 100, price: 0.6 }]
+            prices: [{ quantity: 100, price: 0.6, status: 'new' }]
           },
           {
             type: 'innerSleeve',
             option: 'Black Poly-lined',
-            prices: [{ quantity: 100, price: 0.85 }]
+            prices: [{ quantity: 100, price: 0.85, status: 'new' }]
           },
           {
             type: 'innerSleeve',
             option: 'Printed',
-            prices: [{ quantity: 100, price: 1.25 }]
+            prices: [{ quantity: 100, price: 1.25, status: 'new' }]
           },
           {
             type: 'jacket',
             option: 'Single Pocket (3mm Spine)',
-            prices: [{ quantity: 100, price: 2.0 }]
+            prices: [{ quantity: 100, price: 2.0, status: 'new' }]
           },
           {
             type: 'jacket',
             option: 'Single Pocket (5mm Spine)',
-            prices: [{ quantity: 100, price: 2.5 }]
+            prices: [{ quantity: 100, price: 2.5, status: 'new' }]
           },
           {
             type: 'jacket',
             option: 'Gatefold Jacket',
-            prices: [{ quantity: 100, price: 4.0 }]
+            prices: [{ quantity: 100, price: 4.0, status: 'new' }]
           },
           {
             type: 'inserts',
             option: 'No Insert',
-            prices: [{ quantity: 100, price: 0 }]
+            prices: [{ quantity: 100, price: 0, status: 'new' }]
           },
           {
             type: 'inserts',
             option: 'Single Insert',
-            prices: [{ quantity: 100, price: 0.75 }]
+            prices: [{ quantity: 100, price: 0.75, status: 'new' }]
           },
           {
             type: 'shrinkWrap',
             option: 'Yes',
-            prices: [{ quantity: 100, price: 0.25 }]
+            prices: [{ quantity: 100, price: 0.25, status: 'new' }]
           },
           {
             type: 'shrinkWrap',
             option: 'No',
-            prices: [{ quantity: 100, price: 0 }]
+            prices: [{ quantity: 100, price: 0, status: 'new' }]
           },
         ]
         );
@@ -235,6 +218,8 @@ const PlantPackagingPricing: React.FC<PlantPackagingPricingProps> = ({
     setIsSaving(true);
 
     try {
+
+      console.log("Saving packaging pricing to Supabase", packagingPricing);
 
       // // filter out deleted tiers
       // const deletedVinylPricing = vinylPricing.filter(tier => tier.status == 'deleted');
@@ -397,96 +382,101 @@ const PlantPackagingPricing: React.FC<PlantPackagingPricingProps> = ({
               </CardDescription>
             </CardHeader>
             <CardContent>
-              {getPackagingOptions(type).map((option, optionIndex) => (
-                <div key={optionIndex} className="mb-8 last:mb-0">
-                  <h4 className="text-lg font-medium mb-4">
-                    {option.option}
-                    {((type === 'inserts' && option.option.toLowerCase().includes('no')) ||
-                      (type === 'shrinkWrap' && option.option.toLowerCase() === 'no')) && (
-                        <span className="text-sm text-muted-foreground ml-2">(Always $0)</span>
-                      )}
-                  </h4>
-                  <div className="overflow-x-auto">
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead className="w-1/3">Quantity</TableHead>
-                          <TableHead className="w-1/3">Price Per Unit ($)</TableHead>
-                          <TableHead className="w-1/3">
-                            {!disabled && <span>Actions</span>}
-                          </TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {option?.prices?.map((price, priceIndex) => (
-                          <TableRow key={priceIndex}>
-                            {/* quantity */}
-                            <TableCell>
-                              <Input
-                                type="number"
-                                value={price.quantity}
-                                onChange={(e) => updatePackagingPrice(
-                                  type,
-                                  option.option,
-                                  priceIndex,
-                                  'quantity',
-                                  parseInt(e.target.value) || 0
-                                )}
-                                disabled={disabled}
-                                className="w-full"
-                              />
-                            </TableCell>
-
-                            {/* price */}
-                            <TableCell>
-                              <Input
-                                type="number"
-                                value={price.price}
-                                onChange={(e) => updatePackagingPrice(
-                                  type,
-                                  option.option,
-                                  priceIndex,
-                                  'price',
-                                  parseFloat(e.target.value) || 0
-                                )}
-                                disabled={disabled ||
-                                  (type === 'inserts' && option.option.toLowerCase().includes('no')) ||
-                                  (type === 'shrinkWrap' && option.option.toLowerCase() === 'no')}
-                                className="w-full"
-                                step="0.01"
-                              />
-                            </TableCell>
-
-                            {/* actions */}
-                            <TableCell>
-                              {!disabled && (
-                                <Button
-                                  variant="destructive"
-                                  size="sm"
-                                  onClick={() => removePriceTier(type, option.option, priceIndex)}
-                                  // disabled={option.prices.length <= 1}
-                                  className="w-full"
-                                >
-                                  Remove
-                                </Button>
-                              )}
-                            </TableCell>
+              {getPackagingOptions(type).map((obj, optionIndex) => {
+                return (
+                  <div key={optionIndex} className="mb-8 last:mb-0">
+                    <h4 className="text-lg font-medium mb-4">
+                      {obj.option}
+                      {((type === 'inserts' && obj.option.toLowerCase().includes('no')) ||
+                        (type === 'shrinkWrap' && obj.option.toLowerCase() === 'no')) && (
+                          <span className="text-sm text-muted-foreground ml-2">(Always $0)</span>
+                        )}
+                    </h4>
+                    <div className="overflow-x-auto">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead className="w-1/3">Quantity</TableHead>
+                            <TableHead className="w-1/3">Price Per Unit ($)</TableHead>
+                            <TableHead className="w-1/3">
+                              {!disabled && <span>Actions</span>}
+                            </TableHead>
                           </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
+                        </TableHeader>
+                        <TableBody>
+                          {obj?.prices?.map((price, priceIndex) => {
+                            if (price.status === 'deleted') return null;
+
+                            return <TableRow key={priceIndex}>
+                              {/* quantity */}
+                              <TableCell>
+                                <Input
+                                  type="number"
+                                  value={price.quantity}
+                                  onChange={(e) => updatePackagingPrice(
+                                    type,
+                                    obj.option,
+                                    priceIndex,
+                                    'quantity',
+                                    parseInt(e.target.value) || 0
+                                  )}
+                                  disabled={disabled}
+                                  className="w-full"
+                                />
+                              </TableCell>
+
+                              {/* price */}
+                              <TableCell>
+                                <Input
+                                  type="number"
+                                  value={price.price}
+                                  onChange={(e) => updatePackagingPrice(
+                                    type,
+                                    obj.option,
+                                    priceIndex,
+                                    'price',
+                                    parseFloat(e.target.value) || 0
+                                  )}
+                                  disabled={disabled ||
+                                    (type === 'inserts' && obj.option.toLowerCase().includes('no')) ||
+                                    (type === 'shrinkWrap' && obj.option.toLowerCase() === 'no')}
+                                  className="w-full"
+                                  step="0.01"
+                                />
+                              </TableCell>
+
+                              {/* actions */}
+                              <TableCell>
+                                {!disabled && (
+                                  <Button
+                                    variant="destructive"
+                                    size="sm"
+                                    onClick={() => removePriceTier(type, obj.option, priceIndex)}
+                                    disabled={obj.prices.length <= 1}
+                                    className="w-full"
+                                  >
+                                    Remove
+                                  </Button>
+                                )}
+                              </TableCell>
+                            </TableRow>
+                          })}
+                        </TableBody>
+                      </Table>
+                    </div>
+                    {!disabled && (
+                      <Button
+                        onClick={() => addPriceTier(type, obj.option)}
+                        className="mt-4"
+                        variant="outline"
+                      >
+                        <Plus className="h-4 w-4 mr-2" /> Add Quantity Tier
+                      </Button>
+                    )}
                   </div>
-                  {!disabled && (
-                    <Button
-                      onClick={() => addPriceTier(type, option.option)}
-                      className="mt-4"
-                      variant="outline"
-                    >
-                      <Plus className="h-4 w-4 mr-2" /> Add Quantity Tier
-                    </Button>
-                  )}
-                </div>
-              ))}
+                )
+              }
+              )}
             </CardContent>
           </Card>
         ))}

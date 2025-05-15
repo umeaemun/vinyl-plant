@@ -249,7 +249,7 @@ const PlantReviews: React.FC<PlantVinylPricingProps> = ({
             </TableHeader>
             <TableBody>
               {reviews.map((review, index) => {
-                if (review.status === 'deleted' || review.status === 'removeNow') {
+                if (review?.status === 'deleted' || review?.status === 'removeNow') {
                   return null;
                 }
                 return (

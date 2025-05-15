@@ -46,7 +46,7 @@ const PlantEquipments: React.FC<PlantVinylPricingProps> = ({
   };
 
   const removeEquipment = (id: string) => {
-    console.log("Removing equipment with ID:", id);
+    
     const updatedEquipments = equipments.map((item) => {
       if (item.id === id) {
         if (item.status !== 'new') {
@@ -58,8 +58,6 @@ const PlantEquipments: React.FC<PlantVinylPricingProps> = ({
       }
       return item;
     });
-
-    console.log("Updated equipments after removal:", updatedEquipments);
 
     const filteredEquipments = updatedEquipments.filter((item) => item.status !== 'removeNow');
     setEquipments(filteredEquipments);
@@ -242,7 +240,7 @@ const PlantEquipments: React.FC<PlantVinylPricingProps> = ({
       <CardContent>
         <div className="space-y-6">
           {equipments?.map((item, index) => {
-            if (item.status === 'deleted' || item.status === 'removeNow') {
+            if (item?.status === 'deleted' || item?.status === 'removeNow') {
               return null;
             }
             return (

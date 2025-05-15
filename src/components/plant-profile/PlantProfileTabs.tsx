@@ -305,69 +305,6 @@ const PlantProfileTabs: React.FC<PlantProfileTabsProps> = ({
         </TabsContent>
 
         <TabsContent value="clients">
-          {/* <Card>
-            <CardHeader>
-              <CardTitle>Notable Clients & Projects</CardTitle>
-              <CardDescription>Manage the clients and projects your plant has worked with</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="overflow-x-auto">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Name</TableHead>
-                      <TableHead>Type</TableHead>
-                      <TableHead>Notable Work</TableHead>
-                      {!disabled && <TableHead>Actions</TableHead>}
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {clients.map((client, index) => (
-                      <TableRow key={index}>
-                        <TableCell>
-                          <Input 
-                            value={client.name} 
-                            onChange={(e) => updateClient(index, 'name', e.target.value)}
-                            disabled={disabled}
-                          />
-                        </TableCell>
-                        <TableCell>
-                          <Input 
-                            value={client.type} 
-                            onChange={(e) => updateClient(index, 'type', e.target.value)}
-                            disabled={disabled}
-                          />
-                        </TableCell>
-                        <TableCell>
-                          <Input 
-                            value={client.notable} 
-                            onChange={(e) => updateClient(index, 'notable', e.target.value)}
-                            disabled={disabled}
-                          />
-                        </TableCell>
-                        {!disabled && (
-                          <TableCell>
-                            <Button 
-                              variant="destructive" 
-                              size="sm"
-                              onClick={() => removeClient(index)}
-                            >
-                              Remove
-                            </Button>
-                          </TableCell>
-                        )}
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
-              {!disabled && (
-                <Button onClick={addClient} className="mt-4">
-                  Add Client
-                </Button>
-              )}
-            </CardContent>
-          </Card> */}
           <PlantReviews 
             plant={plant} 
             setPlant={setPlant} 

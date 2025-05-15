@@ -229,6 +229,60 @@ export type Database = {
         };
         Relationships: [];
       };
+      plant_equipments: {
+        Row: {
+          id: string;
+          plant_id: string;
+          name: string;
+          model: string;
+          description: string;
+          created_at: string;
+        };
+        Insert: {
+          id: string;
+          plant_id: string;
+          name: string;
+          model: string;
+          description: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          plant_id?: string;
+          name?: string;
+          model?: string;
+          description?: string;
+          created_at?: string;
+        };
+        Relationships: [];
+      }
+      plant_reviews: {
+        Row: {
+          id: string;
+          plant_id: string;
+          name: string;
+          type: string;
+          notable_work: string;
+          created_at: string;
+        };
+        Insert: {
+          id: string;
+          plant_id: string;
+          name: string;
+          type: string;
+          notable_work: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          plant_id?: string;
+          name?: string;
+          type?: string;
+          notable_work?: string;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
       orders: {
         Row: {
           buyer_id: string;
@@ -265,6 +319,7 @@ export type Database = {
         };
         Relationships: [];
       };
+
     };
     Views: {
       [_ in never]: never;

@@ -151,7 +151,7 @@ const PlantReviews: React.FC<PlantVinylPricingProps> = ({
 
       console.log("Saving reviews data to Supabase", reviews);
 
-      // loadFromSupabase();
+      loadFromSupabase();
 
       toast({
         title: "Success",

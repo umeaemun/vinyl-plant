@@ -22,20 +22,30 @@ const PlantReviews: React.FC<PlantVinylPricingProps> = ({
 }) => {
   const { toast } = useToast();
   const [isSaving, setIsSaving] = React.useState(false);
-  const [clients, setClients] = React.useState<any[]>(null);
+  const [reviews, setReviews] = React.useState<any[]>(null);
 
-  const addClient = () => {
-    setClients([...clients, { name: "", type: "", notable: "" }]);
+  const addReview = () => {
+    setReviews([...reviews, {id: Date.now(), name: "", type: "", notable: "", status: 'new' }]);
   };
 
-  const updateClient = (index: number, field: string, value: string) => {
-    const updatedClients = [...clients];
-    updatedClients[index] = { ...updatedClients[index], [field]: value };
-    setClients(updatedClients);
+  const updateReview = (id: string, field: any , value: any) => {
+
+    const updatedReviews = reviews.map((item) => {
+      if (item.id === id) {
+        if (item.status === 'new') {
+          return { ...item, [field]: value };
+        } else if (item.status === 'same' || item.status === 'updated') {
+          return { ...item, [field]: value, status: 'updated' };
+        }
+      }
+      return item;
+    });
+    setReviews(updatedReviews);
+
   };
 
-  const removeClient = (index: number) => {
-    setClients(clients.filter((_, i) => i !== index));
+  const removeReview = (index: number) => {
+    setReviews(reviews.filter((_, i) => i !== index));
   };
 
   const loadFromSupabase = async () => {
@@ -43,7 +53,7 @@ const PlantReviews: React.FC<PlantVinylPricingProps> = ({
     try {
 
       const { data, error } = await supabase
-        .from('plant_clients')
+        .from('plant_reviews')
         .select('*')
         .eq('plant_id', plant.id);
 
@@ -57,10 +67,10 @@ const PlantReviews: React.FC<PlantVinylPricingProps> = ({
           ...item,
           status: 'same',
         }));
-        setClients(formattedData);
+        setReviews(formattedData);
 
       } else {
-        setClients([
+        setReviews([
           {
             id: 1,
             name: "Indie Records",
@@ -105,7 +115,7 @@ const PlantReviews: React.FC<PlantVinylPricingProps> = ({
 
   React.useEffect(() => {
 
-    if (plant && plant.id && !clients) {
+    if (plant && plant.id && !reviews) {
       // console.log("Loading vinyl pricing from Supabase");
       loadFromSupabase();
     }
@@ -126,7 +136,7 @@ const PlantReviews: React.FC<PlantVinylPricingProps> = ({
 
     try {
 
-      console.log("Saving reviews data to Supabase", clients);
+      console.log("Saving reviews data to Supabase", reviews);
 
       loadFromSupabase();
 
@@ -179,26 +189,26 @@ const PlantReviews: React.FC<PlantVinylPricingProps> = ({
               </TableRow>
             </TableHeader>
             <TableBody>
-              {clients.map((client, index) => (
+              {reviews.map((review, index) => (
                 <TableRow key={index}>
                   <TableCell>
                     <Input
-                      value={client.name}
-                      onChange={(e) => updateClient(index, 'name', e.target.value)}
+                      value={review.name}
+                      onChange={(e) => updateReview(review.id, 'name', e.target.value)}
                       disabled={disabled}
                     />
                   </TableCell>
                   <TableCell>
                     <Input
-                      value={client.type}
-                      onChange={(e) => updateClient(index, 'type', e.target.value)}
+                      value={review.type}
+                      onChange={(e) => updateReview(review.id, 'type', e.target.value)}
                       disabled={disabled}
                     />
                   </TableCell>
                   <TableCell>
                     <Input
-                      value={client.notable}
-                      onChange={(e) => updateClient(index, 'notable', e.target.value)}
+                      value={review.notable}
+                      onChange={(e) => updateReview(review.id, 'notable', e.target.value)}
                       disabled={disabled}
                     />
                   </TableCell>
@@ -207,7 +217,7 @@ const PlantReviews: React.FC<PlantVinylPricingProps> = ({
                       <Button
                         variant="destructive"
                         size="sm"
-                        onClick={() => removeClient(index)}
+                        onClick={() => removeReview(review.id)}
                       >
                         Remove
                       </Button>
@@ -219,7 +229,7 @@ const PlantReviews: React.FC<PlantVinylPricingProps> = ({
           </Table>
         </div>
         {!disabled && (
-          <Button onClick={addClient} className="mt-4">
+          <Button onClick={addReview} className="mt-4">
             Add Client
           </Button>
         )}

@@ -26,18 +26,28 @@ const PlantEquipments: React.FC<PlantVinylPricingProps> = ({
   const [isSaving, setIsSaving] = React.useState(false);
 
   const addEquipment = () => {
-    setEquipments([...equipments, { name: "", model: "", description: "" }]);
+    setEquipments([...equipments, { id: Date.now(), name: "", model: "", description: "", status: 'new' }]);
   };
 
-  const updateEquipment = (index: number, field: string, value: string) => {
-    const updatedEquipment = [...equipments];
-    updatedEquipment[index] = { ...updatedEquipment[index], [field]: value };
-    setEquipments(updatedEquipment);
+  const updateEquipment = (id: string, field: any, value: any) => {
+
+    const updatedEquipments = equipments.map((item) => {
+      if (item.id === id) {
+        if (item.status === 'new') {
+          return { ...item, [field]: value };
+        } else if (item.status === 'same' || item.status === 'updated') {
+          return { ...item, [field]: value, status: 'updated' };
+        }
+      }
+      return item;
+    });
+    
+    setEquipments(updatedEquipments);
   };
 
-  const removeEquipment = (index: number) => {
-    setEquipments(equipments.filter((_, i) => i !== index));
-  };
+  const removeEquipment = (id: string) => {
+    const updatedEquipments = equipments.filter((item) => item.id !== id);
+    setEquipments(updatedEquipments);};
 
   const loadFromSupabase = async () => {
 
@@ -177,7 +187,7 @@ const PlantEquipments: React.FC<PlantVinylPricingProps> = ({
                   <Button
                     variant="destructive"
                     size="sm"
-                    onClick={() => removeEquipment(index)}
+                    onClick={() => removeEquipment(item.id)}
                     className="ml-auto"
                   >
                     Remove
@@ -189,7 +199,7 @@ const PlantEquipments: React.FC<PlantVinylPricingProps> = ({
                   <Label>Equipment Name</Label>
                   <Input
                     value={item.name}
-                    onChange={(e) => updateEquipment(index, 'name', e.target.value)}
+                    onChange={(e) => updateEquipment(item.id, 'name', e.target.value)}
                     disabled={disabled}
                   />
                 </div>
@@ -197,7 +207,7 @@ const PlantEquipments: React.FC<PlantVinylPricingProps> = ({
                   <Label>Model</Label>
                   <Input
                     value={item.model}
-                    onChange={(e) => updateEquipment(index, 'model', e.target.value)}
+                    onChange={(e) => updateEquipment(item.id, 'model', e.target.value)}
                     disabled={disabled}
                   />
                 </div>
@@ -205,7 +215,7 @@ const PlantEquipments: React.FC<PlantVinylPricingProps> = ({
                   <Label>Description</Label>
                   <Textarea
                     value={item.description}
-                    onChange={(e) => updateEquipment(index, 'description', e.target.value)}
+                    onChange={(e) => updateEquipment(item.id, 'description', e.target.value)}
                     disabled={disabled}
                   />
                 </div>

@@ -9,16 +9,16 @@ export interface PriceTier {
 
 export interface ColorOption {
   id?: string;
-  name: string;
-  additionalCost: number;
+  color: string;
+  additional_cost: number;
   status? : string;
 
 }
 
 export interface WeightOption {
   id?: string;
-  name: string;
-  additionalCost: number;
+  weight: string;
+  additional_cost: number;
   status? : string;
 
 }

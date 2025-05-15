@@ -84,8 +84,8 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
   const handleAddColorOption = () => {
     const newColorOptions: ColorOption[] = [...colorOptions, {
       id: Date.now().toString(),
-      name: "solid-colour",
-      additionalCost: 1.5,
+      color: "solid-colour",
+      additional_cost: 1.5,
       status: 'new'
     }];
 
@@ -131,8 +131,8 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
   const handleAddWeightOption = () => {
     const newWeightOptions: WeightOption[] = [...weightOptions, {
       id: Date.now().toString(),
-      name: "180gm",
-      additionalCost: 1,
+      weight: "180gm",
+      additional_cost: 1,
       status: 'new'
     }];
 
@@ -217,11 +217,11 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
 
       if (colorOptions.length === 0) {
         const defaultColor: ColorOption[] = [
-          { id: "1", name: "solid-colour", additionalCost: 1.5, status: 'new' },
-          { id: "2", name: "translucent-colour", additionalCost: 2, status: 'new' },
-          { id: "3", name: "marbled", additionalCost: 2.5, status: 'new' },
-          { id: "4", name: "splatter", additionalCost: 3, status: 'new' },
-          { id: "5", name: "picture-disc", additionalCost: 5, status: 'new' }
+          { id: "1", color: "solid-colour", additional_cost: 1.5, status: 'new' },
+          { id: "2", color: "translucent-colour", additional_cost: 2, status: 'new' },
+          { id: "3", color: "marbled", additional_cost: 2.5, status: 'new' },
+          { id: "4", color: "splatter", additional_cost: 3, status: 'new' },
+          { id: "5", color: "picture-disc", additional_cost: 5, status: 'new' }
         ];
         setColorOptions(defaultColor);
 
@@ -247,7 +247,7 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
 
       if (weightOptions.length === 0) {
         const defaultWeight: WeightOption[] = [
-          {id:"1", name: "180gm", additionalCost: 1, status: 'new' }
+          {id:"1", weight: "180gm", additional_cost: 1, status: 'new' }
         ];
         setWeightOptions(defaultWeight);
 
@@ -373,8 +373,8 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
           .from('vinyl_color_options')
           .insert({
             plant_id: plant.id,
-            color: option.name,
-            additional_cost: option.additionalCost
+            color: option.color,
+            additional_cost: option.additional_cost
           })
           .select();
         if (newColorOptionsError) {
@@ -389,8 +389,8 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
         const { data: updatedColorOptionsData, error: updatedColorOptionsError } = await supabase
           .from('vinyl_color_options')
           .update({
-            color: option.name,
-            additional_cost: option.additionalCost
+            color: option.color,
+            additional_cost: option.additional_cost
           })
           .eq('id', option.id)
           .eq('plant_id', plant.id)
@@ -425,8 +425,8 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
           .from('vinyl_weight_options')
           .insert({
             plant_id: plant.id,
-            weight: option.name,
-            additional_cost: option.additionalCost
+            weight: option.weight,
+            additional_cost: option.additional_cost
           })
           .select();
         if (newWeightOptionsError) {
@@ -441,8 +441,8 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
         const { data: updatedWeightOptionsData, error: updatedWeightOptionsError } = await supabase
           .from('vinyl_weight_options')
           .update({
-            weight: option.name,
-            additional_cost: option.additionalCost
+            weight: option.weight,
+            additional_cost: option.additional_cost
           })
           .eq('id', option.id)
           .eq('plant_id', plant.id)
@@ -453,7 +453,7 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
         }
       });
 
-      loadFromSupabase();
+      // loadFromSupabase();
 
       toast({
         title: "Success",
@@ -632,8 +632,8 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
                       <Label htmlFor={`color-${index}`}>Colour</Label>
                       <Select
                         disabled={disabled}
-                        value={option.name}
-                        onValueChange={(value) => handleColorOptionChange(option.id, 'name', value)}
+                        value={option.color}
+                        onValueChange={(value) => handleColorOptionChange(option.id, 'color', value)}
                       >
                         <SelectTrigger>
                           <SelectValue placeholder="Select colour" />
@@ -654,8 +654,8 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
                         id={`color-cost-${index}`}
                         type="number"
                         step="0.01"
-                        value={option.additionalCost}
-                        onChange={(e) => handleColorOptionChange(option.id, 'additionalCost', parseFloat(e.target.value) || 0)}
+                        value={option.additional_cost}
+                        onChange={(e) => handleColorOptionChange(option.id, 'additional_cost', parseFloat(e.target.value) || 0)}
                         disabled={disabled}
                       />
                     </div>
@@ -707,15 +707,18 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
                     <div>
                       <Label htmlFor={`weight-${index}`}>Weight</Label>
                       <Select
-                        disabled={true}
+                        disabled={disabled}
                         value="180gm"
-                        onValueChange={() => { }}
+                        onValueChange={(value) => handleWeightOptionChange(option.id, 'weight', value)}
                       >
                         <SelectTrigger>
                           <SelectValue placeholder="180gm" />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="180gm">180gm</SelectItem>
+                          <SelectItem value="200gm">200gm</SelectItem>
+                          <SelectItem value="220gm">220gm</SelectItem>
+                          <SelectItem value="250gm">250gm</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -726,8 +729,8 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
                         id={`weight-cost-${index}`}
                         type="number"
                         step="0.01"
-                        value={option.additionalCost}
-                        onChange={(e) => handleWeightOptionChange(option.id, 'additionalCost', parseFloat(e.target.value) || 0)}
+                        value={option.additional_cost}
+                        onChange={(e) => handleWeightOptionChange(option.id, 'additional_cost', parseFloat(e.target.value) || 0)}
                         disabled={disabled}
                       />
                     </div>

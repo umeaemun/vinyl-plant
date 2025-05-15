@@ -217,11 +217,11 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
 
       if (colorOptions.length === 0) {
         const defaultColor: ColorOption[] = [
-          { name: "solid-colour", additionalCost: 1.5, status: 'new' },
-          { name: "translucent-colour", additionalCost: 2, status: 'new' },
-          { name: "marbled", additionalCost: 2.5, status: 'new' },
-          { name: "splatter", additionalCost: 3, status: 'new' },
-          { name: "picture-disc", additionalCost: 5, status: 'new' }
+          { id: "1", name: "solid-colour", additionalCost: 1.5, status: 'new' },
+          { id: "2", name: "translucent-colour", additionalCost: 2, status: 'new' },
+          { id: "3", name: "marbled", additionalCost: 2.5, status: 'new' },
+          { id: "4", name: "splatter", additionalCost: 3, status: 'new' },
+          { id: "5", name: "picture-disc", additionalCost: 5, status: 'new' }
         ];
         setColorOptions(defaultColor);
 
@@ -247,7 +247,7 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
 
       if (weightOptions.length === 0) {
         const defaultWeight: WeightOption[] = [
-          { name: "180gm", additionalCost: 1, status: 'new' }
+          {id:"1", name: "180gm", additionalCost: 1, status: 'new' }
         ];
         setWeightOptions(defaultWeight);
 
@@ -373,8 +373,8 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
           .from('vinyl_color_options')
           .insert({
             plant_id: plant.id,
-            name: option.name,
-            additionalCost: option.additionalCost
+            color: option.name,
+            additional_cost: option.additionalCost
           })
           .select();
         if (newColorOptionsError) {
@@ -389,8 +389,8 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
         const { data: updatedColorOptionsData, error: updatedColorOptionsError } = await supabase
           .from('vinyl_color_options')
           .update({
-            name: option.name,
-            additionalCost: option.additionalCost
+            color: option.name,
+            additional_cost: option.additionalCost
           })
           .eq('id', option.id)
           .eq('plant_id', plant.id)
@@ -425,8 +425,8 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
           .from('vinyl_weight_options')
           .insert({
             plant_id: plant.id,
-            name: option.name,
-            additionalCost: option.additionalCost
+            weight: option.name,
+            additional_cost: option.additionalCost
           })
           .select();
         if (newWeightOptionsError) {
@@ -441,8 +441,8 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
         const { data: updatedWeightOptionsData, error: updatedWeightOptionsError } = await supabase
           .from('vinyl_weight_options')
           .update({
-            name: option.name,
-            additionalCost: option.additionalCost
+            weight: option.name,
+            additional_cost: option.additionalCost
           })
           .eq('id', option.id)
           .eq('plant_id', plant.id)
@@ -453,6 +453,7 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
         }
       });
 
+      loadFromSupabase();
 
       toast({
         title: "Success",

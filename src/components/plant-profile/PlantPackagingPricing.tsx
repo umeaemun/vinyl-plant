@@ -264,6 +264,8 @@ const PlantPackagingPricing: React.FC<PlantPackagingPricingProps> = ({
       
    
       await Promise.all(pricingUpdates);
+
+      loadFromSupabase();
       
       toast({
         title: "Success",
@@ -280,7 +282,6 @@ const PlantPackagingPricing: React.FC<PlantPackagingPricingProps> = ({
       setIsSaving(false);
     }
   };
-
 
 
   const getTypeName = (type: 'innerSleeve' | 'jacket' | 'inserts' | 'shrinkWrap') => {

@@ -756,7 +756,8 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
               variant="outline"
               className="w-full mt-2"
               onClick={handleAddWeightOption}
-              disabled={disabled || (weightOptions?.length || 0) >= 1}
+              // disabled={disabled || (weightOptions?.length || 0) >= 1}
+              disabled={disabled}
             >
               <Plus className="h-4 w-4 mr-2" />
               Add Weight Option

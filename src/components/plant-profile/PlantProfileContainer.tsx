@@ -20,8 +20,8 @@ const PlantProfileContainer = ({ plant, setPlant }: { plant: Plant , setPlant: R
 
 
   // State for plant data
-  // const [isEditing, setIsEditing] = useState(false);
-  const [isEditing, setIsEditing] = useState(true);
+  const [isEditing, setIsEditing] = useState(false);
+  // const [isEditing, setIsEditing] = useState(true);
 
   useEffect(() => {
 

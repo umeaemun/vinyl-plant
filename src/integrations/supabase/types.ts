@@ -66,7 +66,6 @@ export type Database = {
           rating: number;
           review_count: number;
           features: string[];
-          specialties: string[];
           image_url: string;
           website: string;
           created_at: string;
@@ -83,7 +82,6 @@ export type Database = {
           rating: number;
           review_count: number;
           features: string[];
-          specialties: string[];
           image_url: string;
           website: string;
           created_at?: string;
@@ -100,7 +98,6 @@ export type Database = {
           rating?: number;
           review_count?: number;
           features?: string[];
-          specialties?: string[];
           image_url?: string;
           website?: string;
           created_at?: string;

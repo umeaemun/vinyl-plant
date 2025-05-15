@@ -7,7 +7,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Factory, Plus, Trash2, Save } from 'lucide-react';
-
 import PlantVinylPricing from './PlantVinylPricing';
 import PlantPackagingPricing from './PlantPackagingPricing';
 import PlantProfileFeatures from './PlantProfileFeatures';
@@ -166,7 +165,8 @@ const PlantProfileTabs: React.FC<PlantProfileTabsProps> = ({
 
   return (
     <div className="md:col-span-2">
-      <Tabs defaultValue="details" className="w-full">
+      {/* <Tabs defaultValue="details" className="w-full"> */}
+      <Tabs defaultValue="features" className="w-full">
         <TabsList className="mb-6 grid grid-cols-5 gap-2">
           <TabsTrigger value="details">Details</TabsTrigger>
           <TabsTrigger value="pricing">Pricing</TabsTrigger>

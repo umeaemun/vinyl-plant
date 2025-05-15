@@ -470,6 +470,7 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
     }
   };
 
+
   if (vinylPricing && colorOptions && weightOptions) {
     return (
       <div className="space-y-6">
@@ -758,6 +759,16 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
             </Button>
           </CardContent>
         </Card>
+      </div>
+    );
+  }else{
+    return (
+      <div className="flex items-center justify-center h-[300px]">
+      <svg className="h-8 w-8 text-blue-500 animate-spin" viewBox="0 0 24 24" fill="none">
+        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+        <path className="opacity-75" fill="currentColor" d="M12 2a10 10 0 0 1 10 10h-4a6 6 0 0 0-6-6V2z"/>
+      </svg>
+
       </div>
     );
   }

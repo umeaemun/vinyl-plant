@@ -16,6 +16,7 @@ export interface PackagingPrice {
     quantity: number;
     price: number;
   }>;
+  status?: string;
 }
 
 export interface ColorOption {
@@ -40,6 +41,7 @@ export interface plantEquipments {
   name: string;
   model: string;
   description: string;
+  status?: string;
   created_at?: string;
 
 }
@@ -49,6 +51,7 @@ export interface PlantReviews {
   name: string;
   type: string;
   notable_work: string;
+  status?: string;
   created_at?: string;
 }
 

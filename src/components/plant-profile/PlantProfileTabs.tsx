@@ -12,7 +12,6 @@ import PlantPackagingPricing from './PlantPackagingPricing';
 import PlantProfileFeatures from './PlantProfileFeatures';
 import PlantEquipments from './PlantEquipments';
 import PlantReviews from './PlantReviews';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -35,52 +34,6 @@ const PlantProfileTabs: React.FC<PlantProfileTabsProps> = ({
       setPlant({...plant, [field]: value});
     }
   };
-
-  const [equipment, setEquipment] = React.useState([
-    {
-      name: "Record Press",
-      model: "Neumann VMS-70",
-      description: "Vintage pressing machine for precise vinyl cutting"
-    },
-    {
-      name: "Plating System",
-      model: "Custom Electroplating Unit",
-      description: "In-house developed system for highest quality metal plates"
-    },
-    {
-      name: "Steam Boiler",
-      model: "Industrial Grade ST-2000",
-      description: "Energy-efficient steam generation for consistent pressing"
-    },
-    {
-      name: "Hydraulic Press",
-      model: "HydraTech 5000",
-      description: "Modern pressing technology for consistent results"
-    }
-  ]);
-
-  const [clients, setClients] = React.useState([
-    {
-      name: "Indie Records",
-      type: "Label",
-      notable: "Various indie artists"
-    },
-    {
-      name: "Classic Vinyl Co.",
-      type: "Distributor",
-      notable: "Reissues of classic albums"
-    },
-    {
-      name: "The Soundwaves",
-      type: "Artist",
-      notable: "Debut album 'Ocean Currents'"
-    },
-    {
-      name: "Harmony Productions",
-      type: "Label",
-      notable: "Jazz and classical recordings"
-    }
-  ]);
 
   const savePlantDescription = async () => {
     if (!plant.id) {
@@ -133,35 +86,6 @@ const PlantProfileTabs: React.FC<PlantProfileTabsProps> = ({
     }
   };
   
-  const addEquipment = () => {
-    setEquipment([...equipment, { name: "", model: "", description: "" }]);
-  };
-
-  const updateEquipment = (index: number, field: string, value: string) => {
-    const updatedEquipment = [...equipment];
-    updatedEquipment[index] = { ...updatedEquipment[index], [field]: value };
-    setEquipment(updatedEquipment);
-  };
-
-  const removeEquipment = (index: number) => {
-    setEquipment(equipment.filter((_, i) => i !== index));
-  };
-
-  const addClient = () => {
-    setClients([...clients, { name: "", type: "", notable: "" }]);
-  };
-
-  const updateClient = (index: number, field: string, value: string) => {
-    const updatedClients = [...clients];
-    updatedClients[index] = { ...updatedClients[index], [field]: value };
-    setClients(updatedClients);
-  };
-
-  const removeClient = (index: number) => {
-    setClients(clients.filter((_, i) => i !== index));
-  };
-
- 
 
   return (
     <div className="md:col-span-2">
@@ -373,69 +297,15 @@ const PlantProfileTabs: React.FC<PlantProfileTabsProps> = ({
         </TabsContent>
 
         <TabsContent value="equipment">
-          <Card>
-            <CardHeader>
-              <CardTitle>Manufacturing Equipment</CardTitle>
-              <CardDescription>Manage the equipment used in your vinyl manufacturing process</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-6">
-                {equipment.map((item, index) => (
-                  <div key={index} className="p-4 border rounded-md bg-card">
-                    <div className="flex items-center mb-4">
-                      <Factory className="h-5 w-5 mr-2 text-primary" />
-                      <h3 className="font-semibold text-lg">Equipment #{index + 1}</h3>
-                      {!disabled && (
-                        <Button 
-                          variant="destructive" 
-                          size="sm" 
-                          onClick={() => removeEquipment(index)}
-                          className="ml-auto"
-                        >
-                          Remove
-                        </Button>
-                      )}
-                    </div>
-                    <div className="grid gap-4 sm:grid-cols-2">
-                      <div className="space-y-2">
-                        <Label>Equipment Name</Label>
-                        <Input 
-                          value={item.name} 
-                          onChange={(e) => updateEquipment(index, 'name', e.target.value)}
-                          disabled={disabled}
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label>Model</Label>
-                        <Input 
-                          value={item.model} 
-                          onChange={(e) => updateEquipment(index, 'model', e.target.value)}
-                          disabled={disabled}
-                        />
-                      </div>
-                      <div className="space-y-2 sm:col-span-2">
-                        <Label>Description</Label>
-                        <Textarea 
-                          value={item.description} 
-                          onChange={(e) => updateEquipment(index, 'description', e.target.value)}
-                          disabled={disabled}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                ))}
-                {!disabled && (
-                  <Button onClick={addEquipment} className="mt-4">
-                    Add Equipment
-                  </Button>
-                )}
-              </div>
-            </CardContent>
-          </Card>
+          <PlantEquipments 
+            plant={plant} 
+            setPlant={setPlant} 
+            disabled={disabled}
+          />
         </TabsContent>
 
         <TabsContent value="clients">
-          <Card>
+          {/* <Card>
             <CardHeader>
               <CardTitle>Notable Clients & Projects</CardTitle>
               <CardDescription>Manage the clients and projects your plant has worked with</CardDescription>
@@ -497,7 +367,12 @@ const PlantProfileTabs: React.FC<PlantProfileTabsProps> = ({
                 </Button>
               )}
             </CardContent>
-          </Card>
+          </Card> */}
+          <PlantReviews 
+            plant={plant} 
+            setPlant={setPlant} 
+            disabled={disabled}
+            />
         </TabsContent>
       </Tabs>
     </div>

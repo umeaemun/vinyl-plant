@@ -48,11 +48,17 @@ const PlantReviews: React.FC<PlantVinylPricingProps> = ({
         .eq('plant_id', plant.id);
 
       if (error) {
-        throw new Error(`Error loading equipment data: ${error.message}`);
+        throw new Error(`Error loading reviews data: ${error.message}`);
       }
 
       if (data && data.length > 0) {
-        setClients(data);
+
+        const formattedData = data.map((item: any) => ({
+          ...item,
+          status: 'same',
+        }));
+        setClients(formattedData);
+
       } else {
         setClients([
           {
@@ -87,65 +93,79 @@ const PlantReviews: React.FC<PlantVinylPricingProps> = ({
       }
 
     } catch (error) {
-      console.error('Error loading equipment data:', error);
+      console.error('Error loading reviews data:', error);
       toast({
         title: "Error",
-        description: error instanceof Error ? error.message : "An error occurred while loading equipment data",
+        description: error instanceof Error ? error.message : "An error occurred while loading reviews data",
         variant: "destructive"
       });
 
     }
   }
 
-    React.useEffect(() => {
-  
-      if (plant && plant.id && !clients) {
-        // console.log("Loading vinyl pricing from Supabase");
-        loadFromSupabase();
-      }
-  
-    }, [plant]);
+  React.useEffect(() => {
 
-    const saveToSupabase = async () => {
-      if (!plant.id) {
-        toast({
-          title: "Error",
-          description: "Plant ID is missing",
-          variant: "destructive"
-        });
-        return;
-      }
-  
-      setIsSaving(true);
-  
-      try {
-  
-       console.log("Saving equipment data to Supabase", clients);
-  
-        loadFromSupabase();
-  
-        toast({
-          title: "Success",
-          description: "Pricing data saved successfully"
-        });
-      } catch (error) {
-        console.error('Error saving pricing data:', error);
-        toast({
-          title: "Error",
-          description: error instanceof Error ? error.message : "An error occurred while saving pricing data",
-          variant: "destructive"
-        });
-      } finally {
-        setIsSaving(false);
-      }
-    };
+    if (plant && plant.id && !clients) {
+      // console.log("Loading vinyl pricing from Supabase");
+      loadFromSupabase();
+    }
+
+  }, [plant]);
+
+  const saveToSupabase = async () => {
+    if (!plant.id) {
+      toast({
+        title: "Error",
+        description: "Plant ID is missing",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsSaving(true);
+
+    try {
+
+      console.log("Saving reviews data to Supabase", clients);
+
+      loadFromSupabase();
+
+      toast({
+        title: "Success",
+        description: "Pricing data saved successfully"
+      });
+    } catch (error) {
+      console.error('Error saving pricing data:', error);
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "An error occurred while saving pricing data",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
 
   return (
     <Card>
       <CardHeader>
         <CardTitle>Notable Clients & Projects</CardTitle>
-        <CardDescription>Manage the clients and projects your plant has worked with</CardDescription>
+        <div className="flex items-center justify-between">
+          <CardDescription>Manage the clients and projects your plant has worked with</CardDescription>
+          {!disabled && (
+            <div className="flex justify-end mb-4">
+              <Button
+                onClick={saveToSupabase}
+                disabled={isSaving}
+                className="flex items-center gap-2"
+              >
+                {isSaving ? "Saving..." : "Save Details"}
+                {!isSaving && <Save className="h-4 w-4" />}
+              </Button>
+            </div>
+          )}
+        </div>
       </CardHeader>
       <CardContent>
         <div className="overflow-x-auto">

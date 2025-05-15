@@ -53,7 +53,11 @@ const PlantEquipments: React.FC<PlantVinylPricingProps> = ({
       }
 
       if (data && data.length > 0) {
-        setEquipments(data);
+        const formattedData = data.map((item: any) => ({
+          ...item,
+          status: 'same',
+        }));
+        setEquipments(formattedData);
       } else {
         setEquipments([
           {
@@ -87,7 +91,7 @@ const PlantEquipments: React.FC<PlantVinylPricingProps> = ({
           }
         ]);
       }
-      
+
     } catch (error) {
       console.error('Error loading equipment data:', error);
       toast({
@@ -95,7 +99,7 @@ const PlantEquipments: React.FC<PlantVinylPricingProps> = ({
         description: error instanceof Error ? error.message : "An error occurred while loading equipment data",
         variant: "destructive"
       });
-      
+
     }
   }
 
@@ -122,7 +126,7 @@ const PlantEquipments: React.FC<PlantVinylPricingProps> = ({
 
     try {
 
-     console.log("Saving equipment data to Supabase", equipments);
+      console.log("Saving equipment data to Supabase", equipments);
 
       loadFromSupabase();
 
@@ -141,12 +145,26 @@ const PlantEquipments: React.FC<PlantVinylPricingProps> = ({
       setIsSaving(false);
     }
   };
-  
+
   return (
     <Card>
       <CardHeader>
         <CardTitle>Manufacturing Equipment</CardTitle>
-        <CardDescription>Manage the equipments used in your vinyl manufacturing process</CardDescription>
+        <div className="flex items-center justify-between">
+          <CardDescription>Manage the equipments used in your vinyl manufacturing process</CardDescription>
+          {!disabled && (
+            <div className="flex justify-end mb-4">
+              <Button
+                onClick={saveToSupabase}
+                disabled={isSaving}
+                className="flex items-center gap-2"
+              >
+                {isSaving ? "Saving..." : "Save Details"}
+                {!isSaving && <Save className="h-4 w-4" />}
+              </Button>
+            </div>
+          )}
+        </div>
       </CardHeader>
       <CardContent>
         <div className="space-y-6">

@@ -151,6 +151,53 @@ const PlantEquipments: React.FC<PlantVinylPricingProps> = ({
 
       console.log("Saving equipment data to Supabase", equipments);
 
+      // Filter out items with status 'deleted'
+      const deletedEquipments = equipments.filter((item) => item.status == 'deleted');
+      deletedEquipments.forEach(async (item) => {
+        const { error } = await supabase
+          .from('plant_equipments')
+          .delete()
+          .eq('id', item.id)
+          .eq('plant_id', plant.id);
+        if (error) {
+          throw new Error(`Error deleting equipment data: ${error.message}`);
+        }
+      }); 
+
+      // Filter out items with status 'new' 
+      const newEquipments = equipments.filter((item) => item.status == 'new');
+      newEquipments.forEach(async (item) => {
+        const { error } = await supabase
+          .from('plant_equipments')
+          .insert({
+            plant_id: plant.id,
+            name: item.name,
+            model: item.model,
+            description: item.description,
+          });
+        if (error) {
+          throw new Error(`Error inserting equipment data: ${error.message}`);
+        }
+      });
+
+      // Filter out items with status 'updated'
+      const updatedEquipments = equipments.filter((item) => item.status == 'updated');
+      updatedEquipments.forEach(async (item) => {
+        const { error } = await supabase
+          .from('plant_equipments')
+          .update({
+            name: item.name,
+            model: item.model,
+            description: item.description,
+          })
+          .eq('id', item.id)
+          .eq('plant_id', plant.id);
+        if (error) {
+          throw new Error(`Error updating equipment data: ${error.message}`);
+        }
+      });
+
+
       loadFromSupabase();
 
       toast({

@@ -151,6 +151,52 @@ const PlantReviews: React.FC<PlantVinylPricingProps> = ({
 
       console.log("Saving reviews data to Supabase", reviews);
 
+      // Filter out items with status 'deleted'
+      const deletedReviews = reviews.filter((item) => item.status == 'deleted');
+      deletedReviews.forEach(async (item) => {
+        const { error } = await supabase
+          .from('plant_reviews')
+          .delete()
+          .eq('id', item.id)
+          .eq('plant_id', plant.id);
+        if (error) {
+          throw new Error(`Error deleting reviews data: ${error.message}`);
+        }
+      });
+
+      // Filter out items with status 'new'
+      const newReviews = reviews.filter((item) => item.status == 'new');
+      newReviews.forEach(async (item) => {
+        const { error } = await supabase
+          .from('plant_reviews')
+          .insert({
+            plant_id: plant.id,
+            name: item.name,
+            type: item.type,
+            notable_work: item.notable,
+          });
+        if (error) {
+          throw new Error(`Error inserting reviews data: ${error.message}`);
+        }
+      });
+
+      // Filter out items with status 'updated'
+      const updatedReviews = reviews.filter((item) => item.status == 'updated');
+      updatedReviews.forEach(async (item) => {
+        const { error } = await supabase
+          .from('plant_reviews')
+          .update({
+            name: item.name,
+            type: item.type,
+            notable_work: item.notable,
+          })
+          .eq('id', item.id)
+          .eq('plant_id', plant.id);
+        if (error) {
+          throw new Error(`Error updating reviews data: ${error.message}`);
+        }
+      });
+
       loadFromSupabase();
 
       toast({

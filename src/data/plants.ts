@@ -7,6 +7,17 @@ export interface PriceTier {
   status? : string;
 }
 
+
+export interface PackagingPrice {
+  id?: string;
+  type: 'innerSleeve' | 'jacket' | 'inserts' | 'shrinkWrap';
+  option: string;
+  prices: Array<{
+    quantity: number;
+    price: number;
+  }>;
+}
+
 export interface ColorOption {
   id?: string;
   color: string;
@@ -23,15 +34,24 @@ export interface WeightOption {
 
 }
 
-export interface PackagingPrice {
+export interface plantEquipments {
   id?: string;
-  type: 'innerSleeve' | 'jacket' | 'inserts' | 'shrinkWrap';
-  option: string;
-  prices: Array<{
-    quantity: number;
-    price: number;
-  }>;
+  plant_id?: string;
+  name: string;
+  model: string;
+  description: string;
+  created_at?: string;
+
 }
+
+export interface PlantReviews {
+  id?: string;
+  name: string;
+  type: string;
+  notable_work: string;
+  created_at?: string;
+}
+
 
 export interface PlantFeature {
   id: string;

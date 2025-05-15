@@ -166,7 +166,7 @@ const PlantProfileTabs: React.FC<PlantProfileTabsProps> = ({
   return (
     <div className="md:col-span-2">
       {/* <Tabs defaultValue="details" className="w-full"> */}
-      <Tabs defaultValue="pricing" className="w-full">
+      <Tabs defaultValue="equipment" className="w-full">
         <TabsList className="mb-6 grid grid-cols-5 gap-2">
           <TabsTrigger value="details">Details</TabsTrigger>
           <TabsTrigger value="pricing">Pricing</TabsTrigger>

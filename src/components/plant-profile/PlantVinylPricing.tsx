@@ -453,7 +453,7 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
         }
       });
 
-      // loadFromSupabase();
+      loadFromSupabase();
 
       toast({
         title: "Success",

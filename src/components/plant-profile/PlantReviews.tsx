@@ -248,42 +248,48 @@ const PlantReviews: React.FC<PlantVinylPricingProps> = ({
               </TableRow>
             </TableHeader>
             <TableBody>
-              {reviews.map((review, index) => (
-                <TableRow key={index}>
-                  <TableCell>
-                    <Input
-                      value={review.name}
-                      onChange={(e) => updateReview(review.id, 'name', e.target.value)}
-                      disabled={disabled}
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <Input
-                      value={review.type}
-                      onChange={(e) => updateReview(review.id, 'type', e.target.value)}
-                      disabled={disabled}
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <Input
-                      value={review.notable}
-                      onChange={(e) => updateReview(review.id, 'notable', e.target.value)}
-                      disabled={disabled}
-                    />
-                  </TableCell>
-                  {!disabled && (
+              {reviews.map((review, index) => {
+                if (review.status === 'deleted' || review.status === 'removeNow') {
+                  return null;
+                }
+                return (
+                  <TableRow key={index}>
                     <TableCell>
-                      <Button
-                        variant="destructive"
-                        size="sm"
-                        onClick={() => removeReview(review.id)}
-                      >
-                        Remove
-                      </Button>
+                      <Input
+                        value={review.name}
+                        onChange={(e) => updateReview(review.id, 'name', e.target.value)}
+                        disabled={disabled}
+                      />
                     </TableCell>
-                  )}
-                </TableRow>
-              ))}
+                    <TableCell>
+                      <Input
+                        value={review.type}
+                        onChange={(e) => updateReview(review.id, 'type', e.target.value)}
+                        disabled={disabled}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <Input
+                        value={review.notable}
+                        onChange={(e) => updateReview(review.id, 'notable', e.target.value)}
+                        disabled={disabled}
+                      />
+                    </TableCell>
+                    {!disabled && (
+                      <TableCell>
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          onClick={() => removeReview(review.id)}
+                        >
+                          Remove
+                        </Button>
+                      </TableCell>
+                    )}
+                  </TableRow>
+                )
+              }
+              )}
             </TableBody>
           </Table>
         </div>

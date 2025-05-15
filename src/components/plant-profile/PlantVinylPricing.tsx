@@ -698,7 +698,7 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
           </CardHeader>
           <CardContent>
             {weightOptions?.map((option, index) => {
-              if (option?.status == 'deleted') {
+              if (option?.status == 'deleted' || option?.status == 'removeNow') {
                 return null;
               }
               return (

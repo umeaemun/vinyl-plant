@@ -46,17 +46,20 @@ const PlantEquipments: React.FC<PlantVinylPricingProps> = ({
   };
 
   const removeEquipment = (id: string) => {
+    console.log("Removing equipment with ID:", id);
     const updatedEquipments = equipments.map((item) => {
       if (item.id === id) {
         if (item.status !== 'new') {
           return { ...item, status: 'deleted' };
-        }else {
+        } else {
           return { ...item, status: 'removeNow' };
         }
 
       }
       return item;
     });
+
+    console.log("Updated equipments after removal:", updatedEquipments);
 
     const filteredEquipments = updatedEquipments.filter((item) => item.status !== 'removeNow');
     setEquipments(filteredEquipments);
@@ -162,7 +165,7 @@ const PlantEquipments: React.FC<PlantVinylPricingProps> = ({
         if (error) {
           throw new Error(`Error deleting equipment data: ${error.message}`);
         }
-      }); 
+      });
 
       // Filter out items with status 'new' 
       const newEquipments = equipments.filter((item) => item.status == 'new');
@@ -238,50 +241,57 @@ const PlantEquipments: React.FC<PlantVinylPricingProps> = ({
       </CardHeader>
       <CardContent>
         <div className="space-y-6">
-          {equipments?.map((item, index) => (
-            <div key={index} className="p-4 border rounded-md bg-card">
-              <div className="flex items-center mb-4">
-                <Factory className="h-5 w-5 mr-2 text-primary" />
-                <h3 className="font-semibold text-lg">Equipment #{index + 1}</h3>
-                {!disabled && (
-                  <Button
-                    variant="destructive"
-                    size="sm"
-                    onClick={() => removeEquipment(item.id)}
-                    className="ml-auto"
-                  >
-                    Remove
-                  </Button>
-                )}
+          {equipments?.map((item, index) => {
+            if (item.status === 'deleted' || item.status === 'removeNow') {
+              return null;
+            }
+            return (
+              <div key={index} className="p-4 border rounded-md bg-card">
+                <div className="flex items-center mb-4">
+                  <Factory className="h-5 w-5 mr-2 text-primary" />
+                  <h3 className="font-semibold text-lg">Equipment #{index + 1}</h3>
+                  {!disabled && (
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => removeEquipment(item.id)}
+                      className="ml-auto"
+                    >
+                      Remove
+                    </Button>
+                  )}
+                </div>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label>Equipment Name</Label>
+                    <Input
+                      value={item.name}
+                      onChange={(e) => updateEquipment(item.id, 'name', e.target.value)}
+                      disabled={disabled}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Model</Label>
+                    <Input
+                      value={item.model}
+                      onChange={(e) => updateEquipment(item.id, 'model', e.target.value)}
+                      disabled={disabled}
+                    />
+                  </div>
+                  <div className="space-y-2 sm:col-span-2">
+                    <Label>Description</Label>
+                    <Textarea
+                      value={item.description}
+                      onChange={(e) => updateEquipment(item.id, 'description', e.target.value)}
+                      disabled={disabled}
+                    />
+                  </div>
+                </div>
               </div>
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-2">
-                  <Label>Equipment Name</Label>
-                  <Input
-                    value={item.name}
-                    onChange={(e) => updateEquipment(item.id, 'name', e.target.value)}
-                    disabled={disabled}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>Model</Label>
-                  <Input
-                    value={item.model}
-                    onChange={(e) => updateEquipment(item.id, 'model', e.target.value)}
-                    disabled={disabled}
-                  />
-                </div>
-                <div className="space-y-2 sm:col-span-2">
-                  <Label>Description</Label>
-                  <Textarea
-                    value={item.description}
-                    onChange={(e) => updateEquipment(item.id, 'description', e.target.value)}
-                    disabled={disabled}
-                  />
-                </div>
-              </div>
-            </div>
-          ))}
+            )
+          }
+
+          )}
           {!disabled && (
             <Button onClick={addEquipment} className="mt-4">
               Add Equipment

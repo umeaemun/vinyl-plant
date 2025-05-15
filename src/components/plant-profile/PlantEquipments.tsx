@@ -41,13 +41,26 @@ const PlantEquipments: React.FC<PlantVinylPricingProps> = ({
       }
       return item;
     });
-    
+
     setEquipments(updatedEquipments);
   };
 
   const removeEquipment = (id: string) => {
-    const updatedEquipments = equipments.filter((item) => item.id !== id);
-    setEquipments(updatedEquipments);};
+    const updatedEquipments = equipments.map((item) => {
+      if (item.id === id) {
+        if (item.status !== 'new') {
+          return { ...item, status: 'deleted' };
+        }else {
+          return { ...item, status: 'removeNow' };
+        }
+
+      }
+      return item;
+    });
+
+    const filteredEquipments = updatedEquipments.filter((item) => item.status !== 'removeNow');
+    setEquipments(filteredEquipments);
+  }
 
   const loadFromSupabase = async () => {
 

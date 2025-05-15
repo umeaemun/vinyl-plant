@@ -25,10 +25,10 @@ const PlantReviews: React.FC<PlantVinylPricingProps> = ({
   const [reviews, setReviews] = React.useState<any[]>(null);
 
   const addReview = () => {
-    setReviews([...reviews, {id: Date.now(), name: "", type: "", notable: "", status: 'new' }]);
+    setReviews([...reviews, { id: Date.now(), name: "", type: "", notable: "", status: 'new' }]);
   };
 
-  const updateReview = (id: string, field: any , value: any) => {
+  const updateReview = (id: string, field: any, value: any) => {
 
     const updatedReviews = reviews.map((item) => {
       if (item.id === id) {
@@ -44,8 +44,21 @@ const PlantReviews: React.FC<PlantVinylPricingProps> = ({
 
   };
 
-  const removeReview = (index: number) => {
-    setReviews(reviews.filter((_, i) => i !== index));
+  const removeReview = (id: string) => {
+
+    const updatedReviews = reviews.map((item) => {
+      if (item.id === id) {
+        if (item.status !== 'new') {
+          return { ...item, status: 'deleted' };
+        } else {
+          return { ...item, status: 'removeNow' };
+        }
+      }
+      return item;
+    });
+
+    const filteredReviews = updatedReviews.filter((item) => item.status !== 'removeNow');
+    setReviews(filteredReviews);
   };
 
   const loadFromSupabase = async () => {

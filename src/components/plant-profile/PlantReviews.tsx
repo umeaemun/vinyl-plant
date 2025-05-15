@@ -25,7 +25,7 @@ const PlantReviews: React.FC<PlantVinylPricingProps> = ({
   const [reviews, setReviews] = React.useState<any[]>(null);
 
   const addReview = () => {
-    setReviews([...reviews, { id: Date.now(), name: "", type: "", notable: "", status: 'new' }]);
+    setReviews([...reviews, { id: Date.now(), name: "", type: "", notable_work: "", status: 'new' }]);
   };
 
   const updateReview = (id: string, field: any, value: any) => {
@@ -88,28 +88,28 @@ const PlantReviews: React.FC<PlantVinylPricingProps> = ({
             id: 1,
             name: "Indie Records",
             type: "Label",
-            notable: "Various indie artists",
+            notable_work: "Various indie artists",
             status: "new"
           },
           {
             id: 2,
             name: "Classic Vinyl Co.",
             type: "Distributor",
-            notable: "Reissues of classic albums",
+            notable_work: "Reissues of classic albums",
             status: "new"
           },
           {
             id: 3,
             name: "The Soundwaves",
             type: "Artist",
-            notable: "Debut album 'Ocean Currents'",
+            notable_work: "Debut album 'Ocean Currents'",
             status: "new"
           },
           {
             id: 4,
             name: "Harmony Productions",
             type: "Label",
-            notable: "Jazz and classical recordings",
+            notable_work: "Jazz and classical recordings",
             status: "new"
           }
         ]);
@@ -153,7 +153,7 @@ const PlantReviews: React.FC<PlantVinylPricingProps> = ({
 
       // Filter out items with status 'deleted'
       const deletedReviews = reviews.filter((item) => item.status == 'deleted');
-      deletedReviews.forEach(async (item) => {
+      const a = deletedReviews.map(async (item) => {
         const { error } = await supabase
           .from('plant_reviews')
           .delete()
@@ -166,14 +166,14 @@ const PlantReviews: React.FC<PlantVinylPricingProps> = ({
 
       // Filter out items with status 'new'
       const newReviews = reviews.filter((item) => item.status == 'new');
-      newReviews.forEach(async (item) => {
+      const b = newReviews.map(async (item) => {
         const { error } = await supabase
           .from('plant_reviews')
           .insert({
             plant_id: plant.id,
             name: item.name,
             type: item.type,
-            notable_work: item.notable,
+            notable_work: item.notable_work,
           });
         if (error) {
           throw new Error(`Error inserting reviews data: ${error.message}`);
@@ -182,13 +182,13 @@ const PlantReviews: React.FC<PlantVinylPricingProps> = ({
 
       // Filter out items with status 'updated'
       const updatedReviews = reviews.filter((item) => item.status == 'updated');
-      updatedReviews.forEach(async (item) => {
+      const c = updatedReviews.map(async (item) => {
         const { error } = await supabase
           .from('plant_reviews')
           .update({
             name: item.name,
             type: item.type,
-            notable_work: item.notable,
+            notable_work: item.notable_work,
           })
           .eq('id', item.id)
           .eq('plant_id', plant.id);
@@ -196,6 +196,8 @@ const PlantReviews: React.FC<PlantVinylPricingProps> = ({
           throw new Error(`Error updating reviews data: ${error.message}`);
         }
       });
+
+      await Promise.all([...a, ...b, ...c]);
 
       loadFromSupabase();
 
@@ -248,7 +250,7 @@ const PlantReviews: React.FC<PlantVinylPricingProps> = ({
               </TableRow>
             </TableHeader>
             <TableBody>
-              {reviews.map((review, index) => {
+              {reviews?.map((review, index) => {
                 if (review?.status === 'deleted' || review?.status === 'removeNow') {
                   return null;
                 }
@@ -270,8 +272,8 @@ const PlantReviews: React.FC<PlantVinylPricingProps> = ({
                     </TableCell>
                     <TableCell>
                       <Input
-                        value={review.notable}
-                        onChange={(e) => updateReview(review.id, 'notable', e.target.value)}
+                        value={review.notable_work}
+                        onChange={(e) => updateReview(review.id, 'notable_work', e.target.value)}
                         disabled={disabled}
                       />
                     </TableCell>

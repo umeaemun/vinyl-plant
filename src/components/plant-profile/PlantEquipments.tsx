@@ -46,7 +46,7 @@ const PlantEquipments: React.FC<PlantVinylPricingProps> = ({
   };
 
   const removeEquipment = (id: string) => {
-    
+
     const updatedEquipments = equipments.map((item) => {
       if (item.id === id) {
         if (item.status !== 'new') {
@@ -150,11 +150,10 @@ const PlantEquipments: React.FC<PlantVinylPricingProps> = ({
 
     try {
 
-      console.log("Saving equipment data to Supabase", equipments);
 
       // Filter out items with status 'deleted'
       const deletedEquipments = equipments.filter((item) => item.status == 'deleted');
-      deletedEquipments.forEach(async (item) => {
+      const a = deletedEquipments.map(async (item) => {
         const { error } = await supabase
           .from('plant_equipments')
           .delete()
@@ -167,7 +166,7 @@ const PlantEquipments: React.FC<PlantVinylPricingProps> = ({
 
       // Filter out items with status 'new' 
       const newEquipments = equipments.filter((item) => item.status == 'new');
-      newEquipments.forEach(async (item) => {
+      const b = newEquipments.map(async (item) => {
         const { error } = await supabase
           .from('plant_equipments')
           .insert({
@@ -183,7 +182,7 @@ const PlantEquipments: React.FC<PlantVinylPricingProps> = ({
 
       // Filter out items with status 'updated'
       const updatedEquipments = equipments.filter((item) => item.status == 'updated');
-      updatedEquipments.forEach(async (item) => {
+      const c = updatedEquipments.map(async (item) => {
         const { error } = await supabase
           .from('plant_equipments')
           .update({
@@ -198,6 +197,7 @@ const PlantEquipments: React.FC<PlantVinylPricingProps> = ({
         }
       });
 
+      await Promise.all([...a, ...b, ...c]);
 
       loadFromSupabase();
 
@@ -205,6 +205,7 @@ const PlantEquipments: React.FC<PlantVinylPricingProps> = ({
         title: "Success",
         description: "Pricing data saved successfully"
       });
+
     } catch (error) {
       console.error('Error saving pricing data:', error);
       toast({

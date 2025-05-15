@@ -295,7 +295,7 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
 
       // filter out deleted tiers
       const deletedVinylPricing = vinylPricing.filter(tier => tier.status == 'deleted');
-      deletedVinylPricing.forEach(async tier => {
+      const a = deletedVinylPricing.map(async tier => {
         const { data: deletedVinylPricingData, error: deletedVinylPricingError } = await supabase
           .from('vinyl_pricing')
           .delete()
@@ -310,7 +310,7 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
 
       // filter out new tiers
       const newVinylPricing = vinylPricing.filter(tier => tier.status == 'new');
-      const newVinylPricingData = newVinylPricing.forEach(async tier => {
+      const b = newVinylPricing.map(async tier => {
         const { data: newVinylPricingData, error: newVinylPricingError } = await supabase
           .from('vinyl_pricing')
           .insert({
@@ -331,7 +331,7 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
 
       // filter out updated tiers
       const updatedVinylPricing = vinylPricing.filter(tier => tier.status == 'updated');
-      const updatedVinylPricingData = updatedVinylPricing.forEach(async tier => {
+      const c = updatedVinylPricing.map(async tier => {
         const { data: updatedVinylPricingData, error: updatedVinylPricingError } = await supabase
           .from('vinyl_pricing')
           .update({
@@ -354,7 +354,7 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
 
       // filter out deleted color options
       const deletedColorOptions = colorOptions.filter(option => option.status == 'deleted');
-      deletedColorOptions.forEach(async option => {
+      const d = deletedColorOptions.map(async option => {
         const { data: deletedColorOptionsData, error: deletedColorOptionsError } = await supabase
           .from('vinyl_color_options')
           .delete()
@@ -368,7 +368,7 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
 
       // filter out new color options
       const newColorOptions = colorOptions.filter(option => option.status == 'new');
-      const newColorOptionsData = newColorOptions.forEach(async option => {
+      const e = newColorOptions.map(async option => {
         const { data: newColorOptionsData, error: newColorOptionsError } = await supabase
           .from('vinyl_color_options')
           .insert({
@@ -385,7 +385,7 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
 
       // filter out updated color options
       const updatedColorOptions = colorOptions.filter(option => option.status == 'updated');
-      const updatedColorOptionsData = updatedColorOptions.forEach(async option => {
+      const f = updatedColorOptions.map(async option => {
         const { data: updatedColorOptionsData, error: updatedColorOptionsError } = await supabase
           .from('vinyl_color_options')
           .update({
@@ -406,7 +406,7 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
 
       // filter out deleted weight options
       const deletedWeightOptions = weightOptions.filter(option => option.status == 'deleted');
-      deletedWeightOptions.forEach(async option => {
+      const g = deletedWeightOptions.map(async option => {
         const { data: deletedWeightOptionsData, error: deletedWeightOptionsError } = await supabase
           .from('vinyl_weight_options')
           .delete()
@@ -420,7 +420,7 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
 
       // filter out new weight options
       const newWeightOptions = weightOptions.filter(option => option.status == 'new');
-      const newWeightOptionsData = newWeightOptions.forEach(async option => {
+      const h = newWeightOptions.map(async option => {
         const { data: newWeightOptionsData, error: newWeightOptionsError } = await supabase
           .from('vinyl_weight_options')
           .insert({
@@ -437,7 +437,7 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
 
       // filter out updated weight options
       const updatedWeightOptions = weightOptions.filter(option => option.status == 'updated');
-      const updatedWeightOptionsData = updatedWeightOptions.forEach(async option => {
+      const i = updatedWeightOptions.map(async option => {
         const { data: updatedWeightOptionsData, error: updatedWeightOptionsError } = await supabase
           .from('vinyl_weight_options')
           .update({
@@ -452,6 +452,8 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
           throw new Error(`Error saving weight options: ${updatedWeightOptionsError.message}`);
         }
       });
+
+      await Promise.all([...a, ...b, ...c, ...d, ...e, ...f, ...g, ...h, ...i]);
 
       loadFromSupabase();
 

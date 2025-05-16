@@ -13,6 +13,7 @@ import PackagingSection from './record-form/PackagingSection';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { X } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface RecordProjectFormProps {
   hideSubmitButton?: boolean;
@@ -36,12 +37,15 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
   const [selectedPlant, setSelectedPlant] = useState<string | null>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const {user} = useAuth();
+
+  const [plants, setPlants] = useState<any[]>([]);
   
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      email: "",
+      email: user?.email || "",
       catalogueNumber: "",
       quantity: "1500",
       size: "12",
@@ -54,6 +58,35 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
       shrinkWrap: "yes"
     }
   });
+
+  useEffect(() => {
+    const fetchPlants = async () => {
+      try {
+        const { data: plantsData, error } = await supabase
+          .from('plants')
+          .select('*')
+          .order('name', { ascending: true });
+        
+        if (error) {
+          throw new Error(`Error fetching plants: ${error.message}`);
+        }
+        
+        setPlants(plantsData || []);
+      } catch (error) {
+        console.error('Error fetching plants:', error);
+      }
+    };
+
+    fetchPlants();
+
+  } , []);
+
+  useEffect(() => { 
+    if (user) {
+      form.setValue("email", user.email);
+      // form.setValue("name", user.username || "");
+    }
+  }, [user, form]);
 
   useEffect(() => {
     const plantId = localStorage.getItem('selectedPlantId');
@@ -89,27 +122,27 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
       // Fetch packaging pricing
       const { data: packagingPricingData, error: packagingError } = await supabase
         .from('packaging_pricing')
-        .select('plant_id, type, option, id');
+        .select('plant_id, type, option, id, prices');
       
       if (packagingError) {
         console.error('Error fetching packaging pricing:', packagingError);
         throw new Error('Failed to fetch packaging pricing data');
       }
 
-      // Fetch packaging price tiers
-      const { data: packagingTierData, error: packagingTierError } = await supabase
-        .from('packaging_price_tiers')
-        .select('packaging_id, price, quantity');
+      // // Fetch packaging price tiers
+      // const { data: packagingTierData, error: packagingTierError } = await supabase
+      //   .from('packaging_price_tiers')
+      //   .select('packaging_id, price, quantity');
       
-      if (packagingTierError) {
-        console.error('Error fetching packaging price tiers:', packagingTierError);
-        throw new Error('Failed to fetch packaging price tiers');
-      }
+      // if (packagingTierError) {
+      //   console.error('Error fetching packaging price tiers:', packagingTierError);
+      //   throw new Error('Failed to fetch packaging price tiers');
+      // }
 
       // Get color/weight additional costs
       const { data: colorOptionsData, error: colorError } = await supabase
         .from('vinyl_color_options')
-        .select('plant_id, name, additional_cost');
+        .select('plant_id, color, additional_cost');
       
       if (colorError) {
         console.error('Error fetching color options:', colorError);
@@ -118,7 +151,7 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
 
       const { data: weightOptionsData, error: weightError } = await supabase
         .from('vinyl_weight_options')
-        .select('plant_id, name, additional_cost');
+        .select('plant_id, weight, additional_cost');
       
       if (weightError) {
         console.error('Error fetching weight options:', weightError);
@@ -152,13 +185,13 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
         
         // Calculate additional costs for color
         const colorOption = colorOptionsData.find(
-          co => co.plant_id === plantId && co.name.toLowerCase() === values.colour.toLowerCase()
+          co => co.plant_id === plantId && co.color.toLowerCase() === values.colour.toLowerCase()
         );
         const colorAdditionalCost = colorOption?.additional_cost || 0;
         
         // Calculate additional costs for weight
         const weightOption = weightOptionsData.find(
-          wo => wo.plant_id === plantId && wo.name === values.weight
+          wo => wo.plant_id === plantId && wo.weight === values.weight
         );
         const weightAdditionalCost = weightOption?.additional_cost || 0;
         
@@ -172,13 +205,13 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
             pp => pp.plant_id === plantId && pp.type === type && pp.option === option
           );
           
-          if (packagingItem) {
-            // Find matching price tier for this packaging item
-            const priceTiers = packagingTierData.filter(pt => pt.packaging_id === packagingItem.id);
-            priceTiers.sort((a, b) => b.quantity - a.quantity);
-            const packagePrice = priceTiers.find(pt => pt.quantity <= numericQuantity)?.price || 0;
-            packagingPrice += packagePrice;
-          }
+          // if (packagingItem) {
+          //   // Find matching price tier for this packaging item
+          //   const priceTiers = packagingTierData.filter(pt => pt.packaging_id === packagingItem.id);
+          //   priceTiers.sort((a, b) => b.quantity - a.quantity);
+          //   const packagePrice = priceTiers.find(pt => pt.quantity <= numericQuantity)?.price || 0;
+          //   packagingPrice += packagePrice;
+          // }
         });
         
         // Calculate per unit price
@@ -308,7 +341,8 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
           {!hideSubmitButton && (
             <div className="flex justify-center">
               <Button 
-                type="submit" 
+                type="submit"
+                onClick={()=>{handleSubmit(form.getValues())}} 
                 size="lg" 
                 className="bg-wwwax-green text-black hover:bg-wwwax-green/80 text-center w-full max-w-md"
                 disabled={isSubmitting}

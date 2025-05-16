@@ -123,7 +123,7 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({ plants, formData, pri
     localStorage.setItem('selectedPlantId', plantId);
   };
 
-  console.log("plants", plants);
+  // console.log("plants", plants);
 
   return (
     <div className="w-full overflow-x-auto">

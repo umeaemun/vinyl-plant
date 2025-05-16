@@ -82,7 +82,7 @@ const Compare = () => {
 
   // Filter plants based on filters
   const filteredPlants = plants?.filter((plant) => {
-    console.log("Filtering plants with the following criteria:", plant);
+    // console.log("Filtering plants with the following criteria:", plant);
     const matchesSearch = plant.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       plant.location?.toLowerCase().includes(searchTerm.toLowerCase());
 

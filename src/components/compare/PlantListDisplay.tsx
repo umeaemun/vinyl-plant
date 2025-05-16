@@ -14,8 +14,8 @@ interface PlantListDisplayProps {
   formData?: FormValues | null;
 }
 
-const PlantListDisplay: React.FC<PlantListDisplayProps> = ({ 
-  viewMode, 
+const PlantListDisplay: React.FC<PlantListDisplayProps> = ({
+  viewMode,
   filteredPlants,
   clearFilters,
   formData
@@ -23,33 +23,34 @@ const PlantListDisplay: React.FC<PlantListDisplayProps> = ({
   // Get pricing data from localStorage
   const getPricingData = () => {
     const savedPricing = localStorage.getItem('calculatedPlantPricing');
-    if (!savedPricing) return null;
-    
-    try {
-      return JSON.parse(savedPricing);
-    } catch (e) {
-      console.error("Error parsing pricing data:", e);
-      return null;
+    if (savedPricing && savedPricing !== 'undefined') {
+      console.log("Saved pricing data:", savedPricing);
+      try {
+        return JSON.parse(savedPricing);
+      } catch (e) {
+        console.error("Error parsing pricing data:", e);
+        return null;
+      }
     }
   };
-  
+
   const pricingData = getPricingData();
-  
+
   // Filter out plants that don't have valid pricing data if we have form data
   const plantsToDisplay = formData && pricingData
     ? filteredPlants.filter(plant => {
-        const plantWithPricing = pricingData.find((p: any) => p.id === plant.id);
-        return plantWithPricing && 
-               plantWithPricing.calculatedPricing && 
-               plantWithPricing.calculatedPricing.valid;
-      })
+      const plantWithPricing = pricingData.find((p: any) => p.id === plant.id);
+      return plantWithPricing &&
+        plantWithPricing.calculatedPricing &&
+        plantWithPricing.calculatedPricing.valid;
+    })
     : filteredPlants;
 
   return (
     <>
       <div className="mb-4 flex justify-between items-center">
         <p className="text-muted-foreground">
-          {plantsToDisplay.length} 
+          {plantsToDisplay.length}
           {plantsToDisplay.length === 1 ? ' plant' : ' plants'} found
         </p>
         {formData && (
@@ -58,7 +59,7 @@ const PlantListDisplay: React.FC<PlantListDisplayProps> = ({
           </p>
         )}
       </div>
-      
+
       <div className="bg-card rounded-lg border border-border overflow-hidden shadow-sm">
         <Tabs value={viewMode} className="w-full">
           <TabsContent value="grid" className="m-0 p-6">
@@ -68,7 +69,7 @@ const PlantListDisplay: React.FC<PlantListDisplayProps> = ({
               ))}
             </div>
           </TabsContent>
-          
+
           <TabsContent value="table" className="m-0">
             {plantsToDisplay.length > 0 ? (
               <ComparisonTable plants={plantsToDisplay} formData={formData} pricingData={pricingData} />
@@ -80,12 +81,12 @@ const PlantListDisplay: React.FC<PlantListDisplayProps> = ({
           </TabsContent>
         </Tabs>
       </div>
-      
+
       {plantsToDisplay.length === 0 && (
         <div className="text-center py-12 border border-border rounded-lg mt-6">
           <h3 className="text-lg font-semibold mb-2">No matching plants found</h3>
           <p className="text-muted-foreground mb-4">
-            {formData 
+            {formData
               ? "No plants have pricing data that matches your specifications. Try different specifications or contact plants directly."
               : "Try adjusting your search or filter criteria"
             }

@@ -60,6 +60,7 @@ const PlantProfileTabs: React.FC<PlantProfileTabsProps> = ({
           description: plant.description,
           minimum_order: plant.minimum_order,
           turnaround_time: plant.turnaround_time,
+          image_url: plant.image_url,
         })
         .eq('id', plant.id)
         .select()

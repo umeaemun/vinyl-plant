@@ -10,7 +10,6 @@ import { Save } from 'lucide-react';
 import PlantProfileEditor from './PlantProfileEditor';
 import PlantProfileTabs from './PlantProfileTabs';
 import { useAuth } from '@/contexts/AuthContext';
-import { supabase } from '@/integrations/supabase/client';
 
 const PlantProfileContainer = ({ plant, setPlant }: { plant: Plant , setPlant: React.Dispatch<any> }) => {
   const { id } = useParams<{ id: string }>();

@@ -219,14 +219,14 @@ const PlantPackagingPricing: React.FC<PlantPackagingPricingProps> = ({
           .select('*')
           .eq('plant_id', plant.id)
           .eq('type', type)
-          .eq('option', option)
-          .single();
+          .eq('option', option);
+          
         if (existingError) {
           console.error('Error fetching existing packaging pricing:', existingError);
           return;
         }
 
-        if (existingData) {
+        if (existingData && existingData.length > 0) {
           // Update existing row
 
             const { data, error } = await supabase

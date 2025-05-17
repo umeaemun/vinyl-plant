@@ -119,6 +119,8 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
         throw new Error('Failed to fetch vinyl pricing data');
       }
 
+      console.log("1:", vinylPricingData);
+
       // Fetch packaging pricing
       const { data: packagingPricingData, error: packagingError } = await supabase
         .from('packaging_pricing')
@@ -129,15 +131,7 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
         throw new Error('Failed to fetch packaging pricing data');
       }
 
-      // // Fetch packaging price tiers
-      // const { data: packagingTierData, error: packagingTierError } = await supabase
-      //   .from('packaging_price_tiers')
-      //   .select('packaging_id, price, quantity');
-      
-      // if (packagingTierError) {
-      //   console.error('Error fetching packaging price tiers:', packagingTierError);
-      //   throw new Error('Failed to fetch packaging price tiers');
-      // }
+      console.log("2:", packagingPricingData);
 
       // Get color/weight additional costs
       const { data: colorOptionsData, error: colorError } = await supabase
@@ -149,6 +143,8 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
         throw new Error('Failed to fetch color options');
       }
 
+      console.log("3:", colorOptionsData);
+
       const { data: weightOptionsData, error: weightError } = await supabase
         .from('vinyl_weight_options')
         .select('plant_id, weight, additional_cost');
@@ -158,15 +154,21 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
         throw new Error('Failed to fetch weight options');
       }
 
+      console.log("4:", weightOptionsData);
+
       // Map to plant data
       const pricingResults: PricingData[] = [];
       const numericQuantity = parseInt(values.quantity);
+
+      console.log("5 user req:", numericQuantity);
       
       // Group pricing data by plant
       const plantIds = new Set([
         ...vinylPricingData.map(item => item.plant_id),
         ...packagingPricingData.map(item => item.plant_id)
       ]);
+
+      console.log("6 plantIds:", plantIds);
       
       plantIds.forEach(plantId => {
         const plant = plants.find(p => p.id === plantId);
@@ -275,13 +277,13 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
         console.log("Selected plant saved:", selectedPlant);
       }
       
-      toast({
-        title: "Form submitted successfully",
-        description: "Redirecting to comparison page...",
-      });
+      // toast({
+      //   title: "Form submitted successfully",
+      //   description: "Redirecting to comparison page...",
+      // });
       
       // Navigate to the compare page
-      navigate('/compare');
+      // navigate('/compare');
     } catch (error) {
       console.error("Form submission error:", error);
       toast({

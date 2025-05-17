@@ -34,7 +34,7 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
     const newVinylPricing = [...vinylPricing, {
       id: Date.now().toString(),
       quantity: 50,
-      size: '12"',
+      size: '12',
       type: '1LP',
       price: 0,
       status: 'new'
@@ -189,7 +189,7 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
 
       if (vinylPricing.length === 0) {
         const defaultVinylPricing: PriceTier[] = [
-          { id: Date.now().toString(), quantity: 50, size: '12"', type: '1LP', price: 0, status: 'new' }
+          { id: Date.now().toString(), quantity: 50, size: '12', type: '1LP', price: 0, status: 'new' }
         ];
         setVinylPricing(defaultVinylPricing);
 
@@ -549,9 +549,9 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
                           <SelectValue placeholder="Select size" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value={`12"`}>12"</SelectItem>
-                          <SelectItem disabled value={`10"`}>10" (Coming soon)</SelectItem>
-                          <SelectItem disabled value={`7"`}>7" (Coming soon)</SelectItem>
+                          <SelectItem value="12">12"</SelectItem>
+                          <SelectItem value="10">10" (Coming soon)</SelectItem>
+                          <SelectItem value="7">7" (Coming soon)</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>

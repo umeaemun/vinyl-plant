@@ -180,21 +180,34 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
           return vp.plant_id === plantId && vp.size === values.size && vp.type === values.type
         });
 
+        console.log("0 vinylPricingData:", vinylPricingData);
+        console.log("1 matchingVinylPrices:", matchingVinylPrices);
+
         // Sort by quantity (descending) and find the most appropriate tier
         matchingVinylPrices.sort((a, b) => b.quantity - a.quantity);
         const vinylPrice = matchingVinylPrices.find(vp => vp.quantity <= numericQuantity)?.price || 0;
+
+        console.log("2 BestvinylPrice:", vinylPrice);
 
         // Calculate additional costs for color
         const colorOption = colorOptionsData.find(
           co => co.plant_id === plantId && co.color.toLowerCase().trim() === values.colour.toLowerCase().trim()
         );
+
+        console.log("3 colorOption:", colorOption);
         const colorAdditionalCost = colorOption?.additional_cost || 0;
+
+        console.log("4 colorAdditionalCost:", colorAdditionalCost);
 
         // Calculate additional costs for weight
         const weightOption = weightOptionsData.find(
           wo => wo.plant_id === plantId && wo.weight == values.weight
         );
+
+        console.log("5 weightOption:", weightOption);
         const weightAdditionalCost = weightOption?.additional_cost || 0;
+
+        console.log("6 weightAdditionalCost:", weightAdditionalCost);
 
         // Calculate packaging costs
         let packagingPrice = 0;
@@ -209,7 +222,10 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
           if (packagingItem) {
             const priceTiers = packagingItem.prices ?? [];
             priceTiers.sort((a, b) => b.quantity - a.quantity);
+
+            console.log("7 priceTiers:", priceTiers);
             const packagePrice = priceTiers.find(pt => pt.quantity <= numericQuantity)?.price || 0;
+            console.log("8 packagePrice:", packagePrice);
             packagingPrice += packagePrice;
           }
         });
@@ -281,7 +297,7 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
       });
 
       // Navigate to the compare page
-      navigate('/compare');
+      // navigate('/compare');
     } catch (error) {
       console.error("Form submission error:", error);
       toast({

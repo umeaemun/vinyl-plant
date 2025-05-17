@@ -28,6 +28,7 @@ interface PlantProfileProps {
 
 // just a part of a static screen to show any plants info for buyer
 const PlantProfile: React.FC<PlantProfileProps> = ({ plant }) => {
+
   const navigate = useNavigate();
   const initials = plant.name
     .split(' ')?.map(part => part[0])
@@ -35,21 +36,22 @@ const PlantProfile: React.FC<PlantProfileProps> = ({ plant }) => {
     .toUpperCase()
     .slice(0, 2);
 
-  const [reviews, setReviews] = React.useState<PlantReview[]>([]);
+  const [vinylPricing, setVinylPricing] = React.useState<VinylSpecs[]>([{
+    size: "12",
+    type: "1LP",
+    weight: "140gm",
+    colour: "Standard Black"
+  }]);
   const [prices, setPrices] = React.useState<any[]>([]);
-    
+  const [equipments, setEquipments] = React.useState<any[]>([]);
+  const [clients, setClients] = React.useState<any[]>([]);
+  const [reviews, setReviews] = React.useState<PlantReview[]>([]);
+
   const handleRequestQuote = () => {
     localStorage.setItem('selectedPlantId', plant.id);
     navigate('/');
   };
 
-  const specs: VinylSpecs = {
-    size: "12",
-    type: "1LP",
-    weight: "140gm",
-    colour: "Standard Black"
-  };
-  
   const packaging: PackagingOptions = {
     innerSleeve: "white-paper",
     jacket: "single-pocket-3mm",
@@ -57,51 +59,51 @@ const PlantProfile: React.FC<PlantProfileProps> = ({ plant }) => {
     shrinkWrap: "yes"
   };
 
-  const clients = [
-    {
-      name: "Indie Records",
-      type: "Label",
-      notable: "Various indie artists"
-    },
-    {
-      name: "Classic Vinyl Co.",
-      type: "Distributor",
-      notable: "Reissues of classic albums"
-    },
-    {
-      name: "The Soundwaves",
-      type: "Artist",
-      notable: "Debut album 'Ocean Currents'"
-    },
-    {
-      name: "Harmony Productions",
-      type: "Label",
-      notable: "Jazz and classical recordings"
-    }
-  ];
+  // const clients = [
+  //   {
+  //     name: "Indie Records",
+  //     type: "Label",
+  //     notable_work: "Various indie artists"
+  //   },
+  //   {
+  //     name: "Classic Vinyl Co.",
+  //     type: "Distributor",
+  //     notable_work: "Reissues of classic albums"
+  //   },
+  //   {
+  //     name: "The Soundwaves",
+  //     type: "Artist",
+  //     notable_work: "Debut album 'Ocean Currents'"
+  //   },
+  //   {
+  //     name: "Harmony Productions",
+  //     type: "Label",
+  //     notable_work: "Jazz and classical recordings"
+  //   }
+  // ];
 
-  const equipment = [
-    {
-      name: "Record Press",
-      model: "Neumann VMS-70",
-      description: "Vintage pressing machine for precise vinyl cutting"
-    },
-    {
-      name: "Plating System",
-      model: "Custom Electroplating Unit",
-      description: "In-house developed system for highest quality metal plates"
-    },
-    {
-      name: "Steam Boiler",
-      model: "Industrial Grade ST-2000",
-      description: "Energy-efficient steam generation for consistent pressing"
-    },
-    {
-      name: "Hydraulic Press",
-      model: "HydraTech 5000",
-      description: "Modern pressing technology for consistent results"
-    }
-  ];
+  // const equipment = [
+  //   {
+  //     name: "Record Press",
+  //     model: "Neumann VMS-70",
+  //     description: "Vintage pressing machine for precise vinyl cutting"
+  //   },
+  //   {
+  //     name: "Plating System",
+  //     model: "Custom Electroplating Unit",
+  //     description: "In-house developed system for highest quality metal plates"
+  //   },
+  //   {
+  //     name: "Steam Boiler",
+  //     model: "Industrial Grade ST-2000",
+  //     description: "Energy-efficient steam generation for consistent pressing"
+  //   },
+  //   {
+  //     name: "Hydraulic Press",
+  //     model: "HydraTech 5000",
+  //     description: "Modern pressing technology for consistent results"
+  //   }
+  // ];
 
   return (
     <div className="container mx-auto py-6 px-4">
@@ -112,43 +114,43 @@ const PlantProfile: React.FC<PlantProfileProps> = ({ plant }) => {
               <AvatarImage src={plant.image_url} alt={plant.name} />
               <AvatarFallback className="text-xl">{initials}</AvatarFallback>
             </Avatar>
-            
+
             <div>
               <div className="flex items-center space-x-2 mb-1 text-muted-foreground">
                 <MapPin className="h-4 w-4" />
                 <span>{plant.location}, {plant.country}</span>
               </div>
-              
+
               <h1 className="font-display text-3xl sm:text-4xl font-bold">{plant.name}</h1>
             </div>
           </div>
-          
+
           <div className="flex items-center space-x-3 mb-6">
             <div className="flex items-center">
               <Star className="h-5 w-5 text-yellow-500 fill-yellow-500" />
               <span className="ml-1 font-medium">{plant.rating}</span>
               <span className="text-sm text-muted-foreground ml-1">({plant.review_count} reviews)</span>
             </div>
-            
+
             <Separator orientation="vertical" className="h-5" />
-            
+
             <div className="flex items-center text-sm">
               <span className="font-medium">Min. Order:</span>
               <span className="ml-1">{plant.minimum_order} units</span>
             </div>
-            
+
             <Separator orientation="vertical" className="h-5" />
-            
+
             <div className="flex items-center text-sm">
               <span className="font-medium">Turnaround:</span>
               <span className="ml-1">{plant.turnaround_time}</span>
             </div>
           </div>
-          
+
           <p className="text-muted-foreground mb-6">
             {plant.description}
           </p>
-          
+
           <h2 className="font-display text-xl font-semibold mb-3">Specialties</h2>
           <div className="flex flex-wrap gap-2 mb-8">
             {plant.features?.map(feature => (
@@ -158,21 +160,21 @@ const PlantProfile: React.FC<PlantProfileProps> = ({ plant }) => {
             ))}
           </div>
         </div>
-        
+
         <div className="md:col-span-1">
           <div className="rounded-lg overflow-hidden border border-border bg-card p-5">
             <h3 className="font-display text-lg font-semibold mb-4">Contact Information</h3>
-            
-            <a 
-              href={plant.website} 
-              target="_blank" 
+
+            <a
+              href={plant.website}
+              target="_blank"
               rel="noopener noreferrer"
               className="flex items-center mb-4 text-primary hover:underline"
             >
               <Globe className="h-5 w-5 mr-2" />
               Visit Website
             </a>
-            
+
             <Button className="w-full mb-3" onClick={handleRequestQuote}>
               <FileText className="h-4 w-4 mr-2" />
               Request a Quote
@@ -181,7 +183,7 @@ const PlantProfile: React.FC<PlantProfileProps> = ({ plant }) => {
           </div>
         </div>
       </div>
-      
+
       <Tabs defaultValue="pricing" className="mt-10">
         <TabsList className="w-full grid grid-cols-5 max-w-md mb-8">
           <TabsTrigger value="pricing">Pricing</TabsTrigger>
@@ -190,35 +192,39 @@ const PlantProfile: React.FC<PlantProfileProps> = ({ plant }) => {
           <TabsTrigger value="clients">Clients</TabsTrigger>
           <TabsTrigger value="reviews">Reviews</TabsTrigger>
         </TabsList>
-        
+
         <TabsContent value="pricing">
           <h2 className="font-display text-2xl font-semibold mb-4">Pricing Information</h2>
-          
+
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div>
               <h3 className="text-lg font-medium mb-3">Vinyl Specifications</h3>
-              <div className="bg-card rounded-lg border border-border p-5 space-y-4">
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <p className="text-sm font-medium text-muted-foreground">Size</p>
-                    <p>{specs.size}"</p>
+              {vinylPricing?.map((specs, index) => (
+                  <div className="bg-card rounded-lg border border-border p-5 space-y-4">
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <p className="text-sm font-medium text-muted-foreground">Size</p>
+                        <p>{specs.size}"</p>
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-muted-foreground">Type</p>
+                        <p>{specs.type}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-muted-foreground">Weight</p>
+                        <p>{specs.weight}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-muted-foreground">Color</p>
+                        <p>{specs.colour}</p>
+                      </div>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-sm font-medium text-muted-foreground">Type</p>
-                    <p>{specs.type}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-muted-foreground">Weight</p>
-                    <p>{specs.weight}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-muted-foreground">Color</p>
-                    <p>{specs.colour}</p>
-                  </div>
-                </div>
-              </div>
+                ))
+              }
+
             </div>
-            
+
             <div>
               <h3 className="text-lg font-medium mb-3">Packaging Options</h3>
               <div className="bg-card rounded-lg border border-border p-5 space-y-4">
@@ -229,9 +235,9 @@ const PlantProfile: React.FC<PlantProfileProps> = ({ plant }) => {
                   </div>
                   <div>
                     <p className="text-sm font-medium text-muted-foreground">Jacket</p>
-                    <p>{packaging.jacket === 'gatefold' ? 'Gatefold' : 
-                       packaging.jacket === 'single-pocket-3mm' ? 'Single Pocket (3mm)' : 
-                       'Single Pocket (5mm)'}</p>
+                    <p>{packaging.jacket === 'gatefold' ? 'Gatefold' :
+                      packaging.jacket === 'single-pocket-3mm' ? 'Single Pocket (3mm)' :
+                        'Single Pocket (5mm)'}</p>
                   </div>
                   <div>
                     <p className="text-sm font-medium text-muted-foreground">Inserts</p>
@@ -245,7 +251,7 @@ const PlantProfile: React.FC<PlantProfileProps> = ({ plant }) => {
               </div>
             </div>
           </div>
-          
+
           <div className="mt-8">
             <h3 className="text-lg font-medium mb-3">Price Estimates</h3>
             <div className="overflow-x-auto">
@@ -273,7 +279,7 @@ const PlantProfile: React.FC<PlantProfileProps> = ({ plant }) => {
             </p>
           </div>
         </TabsContent>
-        
+
         <TabsContent value="features">
           <h2 className="font-display text-2xl font-semibold mb-4">Specialties & Capabilities</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -285,11 +291,11 @@ const PlantProfile: React.FC<PlantProfileProps> = ({ plant }) => {
             ))}
           </div>
         </TabsContent>
-        
+
         <TabsContent value="equipment">
           <h2 className="font-display text-2xl font-semibold mb-4">Manufacturing Equipment</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {equipment?.map((item, index) => (
+            {equipments?.map((item, index) => (
               <div key={index} className="bg-card p-5 rounded-lg border border-border">
                 <div className="flex items-center mb-2">
                   <Factory className="h-5 w-5 mr-2 text-primary" />
@@ -304,7 +310,7 @@ const PlantProfile: React.FC<PlantProfileProps> = ({ plant }) => {
             * Equipment specifications are subject to change as the plant upgrades its manufacturing capabilities.
           </p>
         </TabsContent>
-        
+
         <TabsContent value="clients">
           <h2 className="font-display text-2xl font-semibold mb-4">Notable Clients & Projects</h2>
           <div className="overflow-x-auto">
@@ -321,7 +327,7 @@ const PlantProfile: React.FC<PlantProfileProps> = ({ plant }) => {
                   <tr key={index} className={index % 2 === 0 ? 'bg-card' : 'bg-muted/20'}>
                     <td className="p-4 border-t font-medium">{client.name}</td>
                     <td className="p-4 border-t">{client.type}</td>
-                    <td className="p-4 border-t">{client.notable}</td>
+                    <td className="p-4 border-t">{client.notable_work}</td>
                   </tr>
                 ))}
               </tbody>
@@ -331,7 +337,7 @@ const PlantProfile: React.FC<PlantProfileProps> = ({ plant }) => {
             * This is a partial list of clients. Confidential projects may not be listed.
           </p>
         </TabsContent>
-        
+
         <TabsContent value="reviews">
           <h2 className="font-display text-2xl font-semibold mb-4">Customer Reviews</h2>
           <div className="space-y-6">
@@ -345,9 +351,8 @@ const PlantProfile: React.FC<PlantProfileProps> = ({ plant }) => {
                         {[...Array(5)].map((_, i) => (
                           <Star
                             key={i}
-                            className={`h-4 w-4 ${
-                              i < review.rating ? 'text-yellow-500 fill-yellow-500' : 'text-muted-foreground'
-                            }`}
+                            className={`h-4 w-4 ${i < review.rating ? 'text-yellow-500 fill-yellow-500' : 'text-muted-foreground'
+                              }`}
                           />
                         ))}
                       </div>

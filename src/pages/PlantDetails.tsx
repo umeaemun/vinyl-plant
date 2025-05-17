@@ -45,8 +45,6 @@ const PlantDetails = () => {
 
     fetchPlantsIds();
 
-
-
   }, [user, id]);
 
   if (!plant) {

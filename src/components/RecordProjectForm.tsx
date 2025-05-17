@@ -180,6 +180,8 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
           return vp.plant_id === plantId && vp.size === values.size && vp.type === values.type
         });
 
+        // console.log(index,"AllVinylPrice:", vinylPricingData);
+
         // console.log(index,"1 matchingVinylPrices:", matchingVinylPrices);
 
         // Sort by quantity (descending) and find the most appropriate tier
@@ -192,40 +194,50 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
         const colorOption = colorOptionsData.find(
           co => co.plant_id === plantId && co.color.toLowerCase().trim() === values.colour.toLowerCase().trim()
         );
-        console.log(index,"AllColorOption:", colorOptionsData);
+        // console.log(index,"AllColorOption:", colorOptionsData);
 
-        console.log(index,"3 colorOption:", colorOption);
+        // console.log(index,"3 colorOption:", colorOption);
         const colorAdditionalCost = colorOption?.additional_cost || 0;
 
-        console.log(index,"4 colorAdditionalCost:", colorAdditionalCost);
+        // console.log(index,"4 colorAdditionalCost:", colorAdditionalCost);
 
         // Calculate additional costs for weight
         const weightOption = weightOptionsData.find(
           wo => wo.plant_id === plantId && wo.weight == values.weight
         );
 
-        console.log(index,"5 weightOption:", weightOption);
+        // console.log(index,"AllWeightOption:", weightOptionsData);
+
+        // console.log(index,"5 weightOption:", weightOption);
         const weightAdditionalCost = weightOption?.additional_cost || 0;
 
-        console.log(index,"6 weightAdditionalCost:", weightAdditionalCost);
+        // console.log(index,"6 weightAdditionalCost:", weightAdditionalCost);
 
         // Calculate packaging costs
         let packagingPrice = 0;
 
+
+        console.log(index,"AllpackagingPricingData:", packagingPricingData);
+        
         // Process each packaging component (inner sleeve, jacket, inserts, shrink wrap)
         ['innerSleeve', 'jacket', 'inserts', 'shrinkWrap'].forEach((type) => {
+
+          console.log(index,"7 packaging type:", type, "users choice", values[type as keyof FormValues]);
           const option = values[type as keyof FormValues] as string;      // buyer's choice
+
           const packagingItem = packagingPricingData.find(
             pp => pp.plant_id === plantId && pp.type === type && pp.option === option
           );
+
+          console.log(index,"8 packagingItem:", packagingItem);
 
           if (packagingItem) {
             const priceTiers = packagingItem.prices ?? [];
             priceTiers.sort((a, b) => b.quantity - a.quantity);
 
-            console.log(index,"7 priceTiers:", priceTiers);
+            console.log(index,"9 priceTiers:", priceTiers);
             const packagePrice = priceTiers.find(pt => pt.quantity <= numericQuantity)?.price || 0;
-            console.log(index,"8 packagePrice:", packagePrice);
+            console.log(index,"10 packagePrice:", packagePrice);
             packagingPrice += packagePrice;
           }
         });

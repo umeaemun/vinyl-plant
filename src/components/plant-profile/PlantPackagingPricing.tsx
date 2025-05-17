@@ -1,15 +1,12 @@
 import React from 'react';
-import { Plant, PriceTier, ColorOption, WeightOption } from '@/data/plants';
+import { Plant } from '@/data/plants';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Plus, Minus, Save } from 'lucide-react';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { useAuth } from '@/contexts/AuthContext';
 
 interface PlantPackagingPricingProps {
   plant: Plant;
@@ -115,62 +112,74 @@ const PlantPackagingPricing: React.FC<PlantPackagingPricingProps> = ({
         setPackagingPricing([
           {
             type: 'innerSleeve',
-            option: 'White Paper',
+            // option: 'White Paper',
+            option: 'white-paper',
             prices: [{ quantity: 100, price: 0.5 }]
           },
           {
             type: 'innerSleeve',
-            option: 'White Poly-lined',
+            // option: 'White Poly-lined',
+            option: 'white-poly-lined',
             prices: [{ quantity: 100, price: 0.75 }]
           },
           {
             type: 'innerSleeve',
-            option: 'Black Paper',
+            // option: 'Black Paper',
+            option: 'black-paper',
             prices: [{ quantity: 100, price: 0.6 }]
           },
           {
             type: 'innerSleeve',
-            option: 'Black Poly-lined',
+            // option: 'Black Poly-lined',
+            option: 'black-poly-lined',
             prices: [{ quantity: 100, price: 0.85 }]
           },
           {
             type: 'innerSleeve',
-            option: 'Printed',
+            // option: 'Printed',
+            option: 'printed',
             prices: [{ quantity: 100, price: 1.25 }]
           },
           {
             type: 'jacket',
-            option: 'Single Pocket (3mm Spine)',
+            // option: 'Single Pocket (3mm Spine)',
+            option: 'single-pocket-3mm',
             prices: [{ quantity: 100, price: 2.0 }]
           },
           {
             type: 'jacket',
-            option: 'Single Pocket (5mm Spine)',
+            // option: 'Single Pocket (5mm Spine)',
+            option: 'single-pocket-5mm',
             prices: [{ quantity: 100, price: 2.5 }]
           },
           {
             type: 'jacket',
-            option: 'Gatefold Jacket',
+            // option: 'Gatefold Jacket',
+            option: 'gatefold',
             prices: [{ quantity: 100, price: 4.0 }]
           },
           {
             type: 'inserts',
-            option: 'No Insert',
+            // option: 'No Insert',
+            option: 'no-insert',
             prices: [{ quantity: 100, price: 0 }]
           },
           {
             type: 'inserts',
-            option: 'Single Insert',
+            // option: 'Single Insert',
+            option: 'single-insert',
             prices: [{ quantity: 100, price: 0.75 }]
           },
           {
             type: 'shrinkWrap',
-            option: 'Yes',
+            // option: 'Yes',
+            option: 'yes',
             prices: [{ quantity: 100, price: 0.25 }]
           },
           {
             type: 'shrinkWrap',
-            option: 'No',
+            // option: 'No',
+            option: 'no',
             prices: [{ quantity: 100, price: 0 }]
           },
         ]

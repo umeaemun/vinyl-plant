@@ -217,8 +217,8 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
         let packagingPrice = 0;
 
 
-        console.log(index,"AllpackagingPricingData:", packagingPricingData);
-        
+        // console.log(index,"AllpackagingPricingData:", packagingPricingData);
+
         // Process each packaging component (inner sleeve, jacket, inserts, shrink wrap)
         ['innerSleeve', 'jacket', 'inserts', 'shrinkWrap'].forEach((type) => {
 
@@ -237,14 +237,17 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
 
             console.log(index,"9 priceTiers:", priceTiers);
             const packagePrice = priceTiers.find(pt => pt.quantity <= numericQuantity)?.price || 0;
-            console.log(index,"10 packagePrice:", packagePrice);
+            console.log(index,"10 Best price:", packagePrice);
             packagingPrice += packagePrice;
           }
         });
 
         // Calculate per unit price
         const totalVinylPrice = vinylPrice + colorAdditionalCost + weightAdditionalCost;
+        console.log(index,"11 totalVinylPrice:", totalVinylPrice);
+        console.log(index,"12 packagingPrice:", packagingPrice);
         const perUnit = totalVinylPrice + packagingPrice;
+        console.log(index,"13 perUnit:", perUnit);
 
         // Add to results
         pricingResults.push({

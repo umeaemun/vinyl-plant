@@ -37,10 +37,10 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
   const [selectedPlant, setSelectedPlant] = useState<string | null>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
-  const {user} = useAuth();
+  const { user } = useAuth();
 
   const [plants, setPlants] = useState<any[]>([]);
-  
+
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -66,11 +66,11 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
           .from('plants')
           .select('*')
           .order('name', { ascending: true });
-        
+
         if (error) {
           throw new Error(`Error fetching plants: ${error.message}`);
         }
-        
+
         setPlants(plantsData || []);
       } catch (error) {
         console.error('Error fetching plants:', error);
@@ -79,9 +79,9 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
 
     fetchPlants();
 
-  } , []);
+  }, []);
 
-  useEffect(() => { 
+  useEffect(() => {
     if (user) {
       form.setValue("email", user.email);
       // form.setValue("name", user.username || "");
@@ -96,6 +96,7 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
   }, [form]);
 
   useEffect(() => {
+    // if coming from plant details page. it means user is requesting a quote from a specific plant
     if (selectedPlant && !hideSubmitButton) {
       const plant = plants.find(p => p.id === selectedPlant);
       if (plant) {
@@ -113,113 +114,110 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
       const { data: vinylPricingData, error: vinylError } = await supabase
         .from('vinyl_pricing')
         .select('plant_id, price, quantity, size, type');
-      
+
       if (vinylError) {
         console.error('Error fetching vinyl pricing:', vinylError);
         throw new Error('Failed to fetch vinyl pricing data');
       }
 
-      console.log("1:", vinylPricingData);
+      // console.log("1:", vinylPricingData);
 
       // Fetch packaging pricing
       const { data: packagingPricingData, error: packagingError } = await supabase
         .from('packaging_pricing')
         .select('plant_id, type, option, id, prices');
-      
+
       if (packagingError) {
         console.error('Error fetching packaging pricing:', packagingError);
         throw new Error('Failed to fetch packaging pricing data');
       }
 
-      console.log("2:", packagingPricingData);
+      // console.log("2:", packagingPricingData);
 
       // Get color/weight additional costs
       const { data: colorOptionsData, error: colorError } = await supabase
         .from('vinyl_color_options')
         .select('plant_id, color, additional_cost');
-      
+
       if (colorError) {
         console.error('Error fetching color options:', colorError);
         throw new Error('Failed to fetch color options');
       }
 
-      console.log("3:", colorOptionsData);
+      // console.log("3:", colorOptionsData);
 
       const { data: weightOptionsData, error: weightError } = await supabase
         .from('vinyl_weight_options')
         .select('plant_id, weight, additional_cost');
-      
+
       if (weightError) {
         console.error('Error fetching weight options:', weightError);
         throw new Error('Failed to fetch weight options');
       }
 
-      console.log("4:", weightOptionsData);
+      // console.log("4:", weightOptionsData);
 
       // Map to plant data
       const pricingResults: PricingData[] = [];
       const numericQuantity = parseInt(values.quantity);
 
-      console.log("5 user req:", numericQuantity);
-      
+      // console.log("5 user req:", numericQuantity);
+
       // Group pricing data by plant
       const plantIds = new Set([
         ...vinylPricingData.map(item => item.plant_id),
         ...packagingPricingData.map(item => item.plant_id)
       ]);
 
-      console.log("6 plantIds:", plantIds);
-      
+      // console.log("6 plantIds:", plantIds);
+
       plantIds.forEach(plantId => {
         const plant = plants.find(p => p.id === plantId);
         if (!plant) return;
-        
+
         // Find best matching vinyl price
-        const matchingVinylPrices = vinylPricingData.filter(
-          vp => vp.plant_id === plantId && 
-               vp.size === values.size && 
-               vp.type === values.type
-        );
-        
+        const matchingVinylPrices = vinylPricingData.filter((vp) => {
+          return vp.plant_id === plantId && vp.size === values.size && vp.type === values.type
+        });
+
         // Sort by quantity (descending) and find the most appropriate tier
         matchingVinylPrices.sort((a, b) => b.quantity - a.quantity);
         const vinylPrice = matchingVinylPrices.find(vp => vp.quantity <= numericQuantity)?.price || 0;
-        
+
         // Calculate additional costs for color
         const colorOption = colorOptionsData.find(
-          co => co.plant_id === plantId && co.color.toLowerCase() === values.colour.toLowerCase()
+          co => co.plant_id === plantId && co.color.toLowerCase().trim() === values.colour.toLowerCase().trim()
         );
         const colorAdditionalCost = colorOption?.additional_cost || 0;
-        
+
         // Calculate additional costs for weight
         const weightOption = weightOptionsData.find(
-          wo => wo.plant_id === plantId && wo.weight === values.weight
+          wo => wo.plant_id === plantId && wo.weight == values.weight
         );
         const weightAdditionalCost = weightOption?.additional_cost || 0;
-        
+
         // Calculate packaging costs
         let packagingPrice = 0;
-        
+
         // Process each packaging component (inner sleeve, jacket, inserts, shrink wrap)
         ['innerSleeve', 'jacket', 'inserts', 'shrinkWrap'].forEach((type) => {
-          const option = values[type as keyof FormValues] as string;
+          const option = values[type as keyof FormValues] as string;      // buyer's choice
           const packagingItem = packagingPricingData.find(
             pp => pp.plant_id === plantId && pp.type === type && pp.option === option
           );
-          
-          // if (packagingItem) {
-          //   // Find matching price tier for this packaging item
-          //   const priceTiers = packagingTierData.filter(pt => pt.packaging_id === packagingItem.id);
-          //   priceTiers.sort((a, b) => b.quantity - a.quantity);
-          //   const packagePrice = priceTiers.find(pt => pt.quantity <= numericQuantity)?.price || 0;
-          //   packagingPrice += packagePrice;
-          // }
+
+          if (packagingItem) {
+            const priceTiers = packagingItem.prices ?? [];
+            priceTiers.sort((a, b) => b.quantity - a.quantity);
+            const packagePrice = priceTiers.find(pt => pt.quantity <= numericQuantity)?.price || 0;
+            packagingPrice += packagePrice;
+          }
         });
-        
+
         // Calculate per unit price
         const totalVinylPrice = vinylPrice + colorAdditionalCost + weightAdditionalCost;
         const perUnit = totalVinylPrice + packagingPrice;
-        
+
         // Add to results
         pricingResults.push({
           id: plantId,
@@ -234,7 +232,7 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
           }
         });
       });
-      
+
       return pricingResults;
     } catch (error) {
       console.error('Error calculating pricing:', error);
@@ -244,46 +242,46 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
 
   const handleSubmit = async (values: FormValues) => {
     console.log("Form submit triggered with values:", values);
-    
+
     if (isSubmitting) {
       console.log("Already submitting, preventing duplicate submission");
       return;
     }
-    
+
     setIsSubmitting(true);
-    
+
     try {
       const numericQuantity = parseInt(values.quantity);
       if (isNaN(numericQuantity)) {
         throw new Error("Invalid quantity value");
       }
-      
+
       console.log("Starting pricing calculation with quantity:", numericQuantity);
-      
+
       // Save form data to localStorage
       localStorage.setItem('vinylFormData', JSON.stringify(values));
       console.log("Form data saved to localStorage");
-      
+
       // Calculate pricing using Supabase data
       const plantPricingData = await calculatePricingFromSupabase(values);
       console.log("Calculated pricing data from Supabase:", plantPricingData);
-      
+
       // Save pricing data to localStorage
       localStorage.setItem('calculatedPlantPricing', JSON.stringify(plantPricingData));
       console.log("Pricing data saved for all plants");
-      
+
       if (selectedPlant) {
         localStorage.setItem('selectedPlantForQuote', selectedPlant);
         console.log("Selected plant saved:", selectedPlant);
       }
-      
-      // toast({
-      //   title: "Form submitted successfully",
-      //   description: "Redirecting to comparison page...",
-      // });
-      
+
+      toast({
+        title: "Form submitted successfully",
+        description: "Redirecting to comparison page...",
+      });
+
       // Navigate to the compare page
-      // navigate('/compare');
+      navigate('/compare');
     } catch (error) {
       console.error("Form submission error:", error);
       toast({
@@ -301,7 +299,7 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
   const handleResetPlant = () => {
     localStorage.removeItem('selectedPlantId');
     setSelectedPlant(null);
-    
+
     toast({
       title: "Selection cleared",
       description: "You're now comparing all pressing plants. Fill in your project details.",
@@ -317,10 +315,10 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
               <p className="font-medium">
                 You're requesting a quote from a specific pressing plant.
               </p>
-              <Button 
-                type="button" 
-                variant="outline" 
-                size="sm" 
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
                 onClick={handleResetPlant}
                 className="flex items-center gap-1"
               >
@@ -328,24 +326,24 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
               </Button>
             </div>
           )}
-          
+
           <div className="w-full">
             <ProjectDetailsSection control={form.control} />
           </div>
-          
+
           <Separator className="my-6" />
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <VinylDetailsSection control={form.control} />
             <PackagingSection control={form.control} />
           </div>
-          
+
           {!hideSubmitButton && (
             <div className="flex justify-center">
-              <Button 
+              <Button
                 type="submit"
-                onClick={()=>{handleSubmit(form.getValues())}} 
-                size="lg" 
+                onClick={() => { handleSubmit(form.getValues()) }}
+                size="lg"
                 className="bg-wwwax-green text-black hover:bg-wwwax-green/80 text-center w-full max-w-md"
                 disabled={isSubmitting}
               >

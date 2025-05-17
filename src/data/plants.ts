@@ -65,9 +65,10 @@ export interface PlantFeature {
 export interface PlantReview {
   id: string;
   username: string;
+  user_id: string;
   rating: number;
   comment: string;
-  date: string;
+  created_at: string;
 }
 
 export interface Plant {

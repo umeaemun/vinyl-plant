@@ -283,6 +283,36 @@ export type Database = {
         };
         Relationships: [];
       };
+      plant_reviews:{
+        Row: {
+          id: string;
+          plant_id: string;
+          username: string;
+          user_id: string;
+          rating: string;
+          comment: string;
+          created_at: string;
+        };
+        Insert: {
+          id: string;
+          plant_id: string;
+          username: string;
+          user_id: string;
+          rating: string;
+          comment: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          plant_id?: string;    
+          username?: string;
+          user_id?: string;
+          rating?: string;
+          comment?: string;
+          created_at?: string;
+        };
+        Relationships: [];
+      }
       orders: {
         Row: {
           buyer_id: string;

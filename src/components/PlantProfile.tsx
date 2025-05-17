@@ -357,7 +357,7 @@ const PlantProfile: React.FC<PlantProfileProps> = ({ plant }) => {
                         ))}
                       </div>
                     </div>
-                    <span className="text-sm text-muted-foreground">{review.date}</span>
+                    <span className="text-sm text-muted-foreground">{review.created_at}</span>
                   </div>
                   <p className="text-muted-foreground">{review.comment}</p>
                 </div>

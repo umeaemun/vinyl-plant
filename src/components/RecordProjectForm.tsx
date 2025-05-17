@@ -169,9 +169,9 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
         ...packagingPricingData.map(item => item.plant_id)
       ]);
 
-      // console.log("6 plantIds:", plantIds);
+      console.log("* plantIds:", plantIds);
 
-      plantIds.forEach(plantId => {
+      plantIds.forEach((plantId, index) => {
         const plant = plants.find(p => p.id === plantId);
         if (!plant) return;
 
@@ -180,34 +180,34 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
           return vp.plant_id === plantId && vp.size === values.size && vp.type === values.type
         });
 
-        console.log("0 vinylPricingData:", vinylPricingData);
-        console.log("1 matchingVinylPrices:", matchingVinylPrices);
+        // console.log(index,"1 matchingVinylPrices:", matchingVinylPrices);
 
         // Sort by quantity (descending) and find the most appropriate tier
         matchingVinylPrices.sort((a, b) => b.quantity - a.quantity);
         const vinylPrice = matchingVinylPrices.find(vp => vp.quantity <= numericQuantity)?.price || 0;
 
-        console.log("2 BestvinylPrice:", vinylPrice);
+        // console.log(index,"2 BestvinylPrice:", vinylPrice);
 
         // Calculate additional costs for color
         const colorOption = colorOptionsData.find(
           co => co.plant_id === plantId && co.color.toLowerCase().trim() === values.colour.toLowerCase().trim()
         );
+        console.log(index,"AllColorOption:", colorOptionsData);
 
-        console.log("3 colorOption:", colorOption);
+        console.log(index,"3 colorOption:", colorOption);
         const colorAdditionalCost = colorOption?.additional_cost || 0;
 
-        console.log("4 colorAdditionalCost:", colorAdditionalCost);
+        console.log(index,"4 colorAdditionalCost:", colorAdditionalCost);
 
         // Calculate additional costs for weight
         const weightOption = weightOptionsData.find(
           wo => wo.plant_id === plantId && wo.weight == values.weight
         );
 
-        console.log("5 weightOption:", weightOption);
+        console.log(index,"5 weightOption:", weightOption);
         const weightAdditionalCost = weightOption?.additional_cost || 0;
 
-        console.log("6 weightAdditionalCost:", weightAdditionalCost);
+        console.log(index,"6 weightAdditionalCost:", weightAdditionalCost);
 
         // Calculate packaging costs
         let packagingPrice = 0;
@@ -223,9 +223,9 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
             const priceTiers = packagingItem.prices ?? [];
             priceTiers.sort((a, b) => b.quantity - a.quantity);
 
-            console.log("7 priceTiers:", priceTiers);
+            console.log(index,"7 priceTiers:", priceTiers);
             const packagePrice = priceTiers.find(pt => pt.quantity <= numericQuantity)?.price || 0;
-            console.log("8 packagePrice:", packagePrice);
+            console.log(index,"8 packagePrice:", packagePrice);
             packagingPrice += packagePrice;
           }
         });

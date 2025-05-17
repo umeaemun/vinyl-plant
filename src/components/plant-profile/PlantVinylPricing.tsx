@@ -550,8 +550,8 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="12">12"</SelectItem>
-                          <SelectItem value="10">10" (Coming soon)</SelectItem>
-                          <SelectItem value="7">7" (Coming soon)</SelectItem>
+                          <SelectItem disabled value="10">10" (Coming soon)</SelectItem>
+                          <SelectItem disabled value="7">7" (Coming soon)</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>

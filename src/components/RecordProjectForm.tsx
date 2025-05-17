@@ -222,32 +222,32 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
         // Process each packaging component (inner sleeve, jacket, inserts, shrink wrap)
         ['innerSleeve', 'jacket', 'inserts', 'shrinkWrap'].forEach((type) => {
 
-          console.log(index,"7 packaging type:", type, "users choice", values[type as keyof FormValues]);
+          // console.log(index,"7 packaging type:", type, "users choice", values[type as keyof FormValues]);
           const option = values[type as keyof FormValues] as string;      // buyer's choice
 
           const packagingItem = packagingPricingData.find(
             pp => pp.plant_id === plantId && pp.type === type && pp.option === option
           );
 
-          console.log(index,"8 packagingItem:", packagingItem);
+          // console.log(index,"8 packagingItem:", packagingItem);
 
           if (packagingItem) {
             const priceTiers = packagingItem.prices ?? [];
             priceTiers.sort((a, b) => b.quantity - a.quantity);
 
-            console.log(index,"9 priceTiers:", priceTiers);
+            // console.log(index,"9 priceTiers:", priceTiers);
             const packagePrice = priceTiers.find(pt => pt.quantity <= numericQuantity)?.price || 0;
-            console.log(index,"10 Best price:", packagePrice);
+            // console.log(index,"10 Best price:", packagePrice);
             packagingPrice += packagePrice;
           }
         });
 
         // Calculate per unit price
         const totalVinylPrice = vinylPrice + colorAdditionalCost + weightAdditionalCost;
-        console.log(index,"11 totalVinylPrice:", totalVinylPrice);
-        console.log(index,"12 packagingPrice:", packagingPrice);
+        // console.log(index,"11 totalVinylPrice:", totalVinylPrice);
+        // console.log(index,"12 packagingPrice:", packagingPrice);
         const perUnit = totalVinylPrice + packagingPrice;
-        console.log(index,"13 perUnit:", perUnit);
+        // console.log(index,"13 perUnit:", perUnit);
 
         // Add to results
         pricingResults.push({
@@ -287,11 +287,11 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
         throw new Error("Invalid quantity value");
       }
 
-      console.log("Starting pricing calculation with quantity:", numericQuantity);
+      // console.log("Starting pricing calculation with quantity:", numericQuantity);
 
       // Save form data to localStorage
       localStorage.setItem('vinylFormData', JSON.stringify(values));
-      console.log("Form data saved to localStorage");
+      // console.log("Form data saved to localStorage");
 
       // Calculate pricing using Supabase data
       const plantPricingData = await calculatePricingFromSupabase(values);
@@ -312,7 +312,7 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
       });
 
       // Navigate to the compare page
-      // navigate('/compare');
+      navigate('/compare');
     } catch (error) {
       console.error("Form submission error:", error);
       toast({

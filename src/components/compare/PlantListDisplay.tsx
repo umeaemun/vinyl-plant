@@ -24,7 +24,6 @@ const PlantListDisplay: React.FC<PlantListDisplayProps> = ({
   const getPricingData = () => {
     const savedPricing = localStorage.getItem('calculatedPlantPricing');
     if (savedPricing && savedPricing !== 'undefined') {
-      console.log("Saved pricing data:", savedPricing);
       try {
         return JSON.parse(savedPricing);
       } catch (e) {

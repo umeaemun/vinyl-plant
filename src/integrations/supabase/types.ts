@@ -256,7 +256,7 @@ export type Database = {
         };
         Relationships: [];
       }
-      plant_reviews: {
+      plant_clients: {
         Row: {
           id: string;
           plant_id: string;

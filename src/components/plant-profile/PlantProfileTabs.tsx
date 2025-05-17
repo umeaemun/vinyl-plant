@@ -11,7 +11,7 @@ import PlantVinylPricing from './PlantVinylPricing';
 import PlantPackagingPricing from './PlantPackagingPricing';
 import PlantProfileFeatures from './PlantProfileFeatures';
 import PlantEquipments from './PlantEquipments';
-import PlantReviews from './PlantReviews';
+import PlantClients from './PlantClients';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -305,7 +305,7 @@ const PlantProfileTabs: React.FC<PlantProfileTabsProps> = ({
         </TabsContent>
 
         <TabsContent value="clients">
-          <PlantReviews 
+          <PlantClients 
             plant={plant} 
             setPlant={setPlant} 
             disabled={disabled}

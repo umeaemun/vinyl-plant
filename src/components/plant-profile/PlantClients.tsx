@@ -15,22 +15,22 @@ interface PlantVinylPricingProps {
   disabled: boolean;
 }
 
-const PlantReviews: React.FC<PlantVinylPricingProps> = ({
+const PlantClients: React.FC<PlantVinylPricingProps> = ({
   plant,
   setPlant,
   disabled
 }) => {
   const { toast } = useToast();
   const [isSaving, setIsSaving] = React.useState(false);
-  const [reviews, setReviews] = React.useState<any[]>(null);
+  const [clients, setClients] = React.useState<any[]>(null);
 
-  const addReview = () => {
-    setReviews([...reviews, { id: Date.now(), name: "", type: "", notable_work: "", status: 'new' }]);
+  const addClient = () => {
+    setClients([...clients, { id: Date.now(), name: "", type: "", notable_work: "", status: 'new' }]);
   };
 
-  const updateReview = (id: string, field: any, value: any) => {
+  const updateClient = (id: string, field: any, value: any) => {
 
-    const updatedReviews = reviews.map((item) => {
+    const updatedClients = clients.map((item) => {
       if (item.id === id) {
         if (item.status === 'new') {
           return { ...item, [field]: value };
@@ -40,13 +40,13 @@ const PlantReviews: React.FC<PlantVinylPricingProps> = ({
       }
       return item;
     });
-    setReviews(updatedReviews);
+    setClients(updatedClients);
 
   };
 
-  const removeReview = (id: string) => {
+  const removeClient = (id: string) => {
 
-    const updatedReviews = reviews.map((item) => {
+    const updatedClients = clients.map((item) => {
       if (item.id === id) {
         if (item.status !== 'new') {
           return { ...item, status: 'deleted' };
@@ -57,8 +57,8 @@ const PlantReviews: React.FC<PlantVinylPricingProps> = ({
       return item;
     });
 
-    const filteredReviews = updatedReviews.filter((item) => item.status !== 'removeNow');
-    setReviews(filteredReviews);
+    const filteredClients = updatedClients.filter((item) => item.status !== 'removeNow');
+    setClients(filteredClients);
   };
 
   const loadFromSupabase = async () => {
@@ -66,12 +66,12 @@ const PlantReviews: React.FC<PlantVinylPricingProps> = ({
     try {
 
       const { data, error } = await supabase
-        .from('plant_reviews')
+        .from('plant_clients')
         .select('*')
         .eq('plant_id', plant.id);
 
       if (error) {
-        throw new Error(`Error loading reviews data: ${error.message}`);
+        throw new Error(`Error loading clients data: ${error.message}`);
       }
 
       if (data && data.length > 0) {
@@ -80,10 +80,10 @@ const PlantReviews: React.FC<PlantVinylPricingProps> = ({
           ...item,
           status: 'same',
         }));
-        setReviews(formattedData);
+        setClients(formattedData);
 
       } else {
-        setReviews([
+        setClients([
           {
             id: 1,
             name: "Indie Records",
@@ -116,10 +116,10 @@ const PlantReviews: React.FC<PlantVinylPricingProps> = ({
       }
 
     } catch (error) {
-      console.error('Error loading reviews data:', error);
+      console.error('Error loading clients data:', error);
       toast({
         title: "Error",
-        description: error instanceof Error ? error.message : "An error occurred while loading reviews data",
+        description: error instanceof Error ? error.message : "An error occurred while loading clients data",
         variant: "destructive"
       });
 
@@ -128,7 +128,7 @@ const PlantReviews: React.FC<PlantVinylPricingProps> = ({
 
   React.useEffect(() => {
 
-    if (plant && plant.id && !reviews) {
+    if (plant && plant.id && !clients) {
       // console.log("Loading vinyl pricing from Supabase");
       loadFromSupabase();
     }
@@ -149,26 +149,26 @@ const PlantReviews: React.FC<PlantVinylPricingProps> = ({
 
     try {
 
-      console.log("Saving reviews data to Supabase", reviews);
+      console.log("Saving clients data to Supabase", clients);
 
       // Filter out items with status 'deleted'
-      const deletedReviews = reviews.filter((item) => item.status == 'deleted');
-      const a = deletedReviews.map(async (item) => {
+      const deletedClients = clients.filter((item) => item.status == 'deleted');
+      const a = deletedClients.map(async (item) => {
         const { error } = await supabase
-          .from('plant_reviews')
+          .from('plant_clients')
           .delete()
           .eq('id', item.id)
           .eq('plant_id', plant.id);
         if (error) {
-          throw new Error(`Error deleting reviews data: ${error.message}`);
+          throw new Error(`Error deleting clients data: ${error.message}`);
         }
       });
 
       // Filter out items with status 'new'
-      const newReviews = reviews.filter((item) => item.status == 'new');
-      const b = newReviews.map(async (item) => {
+      const newClients = clients.filter((item) => item.status == 'new');
+      const b = newClients.map(async (item) => {
         const { error } = await supabase
-          .from('plant_reviews')
+          .from('plant_clients')
           .insert({
             plant_id: plant.id,
             name: item.name,
@@ -176,15 +176,15 @@ const PlantReviews: React.FC<PlantVinylPricingProps> = ({
             notable_work: item.notable_work,
           });
         if (error) {
-          throw new Error(`Error inserting reviews data: ${error.message}`);
+          throw new Error(`Error inserting clients data: ${error.message}`);
         }
       });
 
       // Filter out items with status 'updated'
-      const updatedReviews = reviews.filter((item) => item.status == 'updated');
-      const c = updatedReviews.map(async (item) => {
+      const updatedClients = clients.filter((item) => item.status == 'updated');
+      const c = updatedClients.map(async (item) => {
         const { error } = await supabase
-          .from('plant_reviews')
+          .from('plant_clients')
           .update({
             name: item.name,
             type: item.type,
@@ -193,7 +193,7 @@ const PlantReviews: React.FC<PlantVinylPricingProps> = ({
           .eq('id', item.id)
           .eq('plant_id', plant.id);
         if (error) {
-          throw new Error(`Error updating reviews data: ${error.message}`);
+          throw new Error(`Error updating clients data: ${error.message}`);
         }
       });
 
@@ -250,30 +250,30 @@ const PlantReviews: React.FC<PlantVinylPricingProps> = ({
               </TableRow>
             </TableHeader>
             <TableBody>
-              {reviews?.map((review, index) => {
-                if (review?.status === 'deleted' || review?.status === 'removeNow') {
+              {clients?.map((client, index) => {
+                if (client?.status === 'deleted' || client?.status === 'removeNow') {
                   return null;
                 }
                 return (
                   <TableRow key={index}>
                     <TableCell>
                       <Input
-                        value={review.name}
-                        onChange={(e) => updateReview(review.id, 'name', e.target.value)}
+                        value={client.name}
+                        onChange={(e) => updateClient(client.id, 'name', e.target.value)}
                         disabled={disabled}
                       />
                     </TableCell>
                     <TableCell>
                       <Input
-                        value={review.type}
-                        onChange={(e) => updateReview(review.id, 'type', e.target.value)}
+                        value={client.type}
+                        onChange={(e) => updateClient(client.id, 'type', e.target.value)}
                         disabled={disabled}
                       />
                     </TableCell>
                     <TableCell>
                       <Input
-                        value={review.notable_work}
-                        onChange={(e) => updateReview(review.id, 'notable_work', e.target.value)}
+                        value={client.notable_work}
+                        onChange={(e) => updateClient(client.id, 'notable_work', e.target.value)}
                         disabled={disabled}
                       />
                     </TableCell>
@@ -282,7 +282,7 @@ const PlantReviews: React.FC<PlantVinylPricingProps> = ({
                         <Button
                           variant="destructive"
                           size="sm"
-                          onClick={() => removeReview(review.id)}
+                          onClick={() => removeClient(client.id)}
                         >
                           Remove
                         </Button>
@@ -296,7 +296,7 @@ const PlantReviews: React.FC<PlantVinylPricingProps> = ({
           </Table>
         </div>
         {!disabled && (
-          <Button onClick={addReview} className="mt-4">
+          <Button onClick={addClient} className="mt-4">
             Add Client
           </Button>
         )}
@@ -305,4 +305,4 @@ const PlantReviews: React.FC<PlantVinylPricingProps> = ({
   );
 }
 
-export default PlantReviews;
+export default PlantClients;

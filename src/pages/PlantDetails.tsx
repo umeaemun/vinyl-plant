@@ -15,6 +15,7 @@ const PlantDetails = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [plant, setPlant] = useState<Plant | null>(null);
+  const [plantFound, setPlantFound] = useState(null);
   const { user } = useAuth();
   // const isOwner = user && id === user.id;
   const [isOwner, setIsOwner] = useState(null);
@@ -29,14 +30,21 @@ const PlantDetails = () => {
           .from('plants')
           .select('*')
           .eq('id', id)
-          .single();
 
         if (error) {
           throw new Error(`Error fetching plants: ${error.message}`);
         }
 
-        setPlant(plantData || null);
-        setIsOwner(user && plantData && plantData.owner === user.id);
+        // Check if the plant exists
+        if( plantData && plantData.length > 0){
+          setPlant(plantData[0]);
+          setPlantFound(true);
+          setIsOwner(user && plantData[0].owner === user.id);
+        }else{
+          setPlant(null);
+          setPlantFound(false);
+          setIsOwner(false);
+        }
 
       } catch (error) {
         console.error('Error fetching plants:', error);
@@ -47,56 +55,74 @@ const PlantDetails = () => {
 
   }, [user, id]);
 
-  if (!plant) {
+
+  if (plantFound == null) {
+    // still fetching so show loading screen
     return (
       <div className="flex flex-col min-h-screen">
         <Navbar />
-        <main className="flex-grow pt-20 container mx-auto px-4 py-12 text-center">
-          <h1 className="font-display text-3xl font-bold mb-4">Plant Not Found</h1>
-          <p className="text-muted-foreground mb-8">
-            The pressing plant you're looking for doesn't exist or has been removed.
-          </p>
-          <Button onClick={() => navigate('/compare')}>
-            Browse All Plants
-          </Button>
+        <main className="flex-grow pt-20">
+          <div className="container mx-auto px-4 py-8 text-center content-center min-h-screen">
+            <h1 className="font-display text-3xl font-bold mb-4">Loading...</h1>
+          </div>
         </main>
         <Footer />
       </div>
     );
-  }
-
-  return (
-    <div className="flex flex-col min-h-screen">
-      <Navbar />
-
-      <main className="flex-grow pt-20">
-        <div className="container mx-auto px-4 py-8">
-          <div className="flex justify-between items-center mb-6">
-            <Button
-              variant="ghost"
-              className="pl-2"
-              onClick={() => navigate(-1)}
-            >
-              <ChevronLeft className="h-4 w-4 mr-1" /> Back to results
+    
+  } else {
+    // fetching complete
+    if (plantFound === false) {
+      return (
+        <div className="flex flex-col min-h-screen">
+          <Navbar />
+          <main className="flex-grow pt-20 container mx-auto px-4 py-12 text-center content-center min-h-screen">
+            <h1 className="font-display text-3xl font-bold mb-4">Plant Not Found</h1>
+            <p className="text-muted-foreground mb-8">
+              The pressing plant you're looking for doesn't exist or has been removed.
+            </p>
+            <Button onClick={() => navigate('/compare')}>
+              Browse All Plants
             </Button>
-
-            {isOwner && (
-              <Link to={`/plant-profile/${id}`}>
-                <Button variant="outline" size="sm">
-                  <Settings className="h-4 w-4 mr-2" />
-                  Manage Plant Profile
-                </Button>
-              </Link>
-            )}
-          </div>
-
-          <PlantProfile plant={plant} />
+          </main>
+          <Footer />
         </div>
-      </main>
+      )
+    } else if (plant) {
+      return (
+        <div className="flex flex-col min-h-screen">
+          <Navbar />
 
-      <Footer />
-    </div>
-  );
+          <main className="flex-grow pt-20">
+            <div className="container mx-auto px-4 py-8">
+              <div className="flex justify-between items-center mb-6">
+                <Button
+                  variant="ghost"
+                  className="pl-2"
+                  onClick={() => navigate(-1)}
+                >
+                  <ChevronLeft className="h-4 w-4 mr-1" /> Back to results
+                </Button>
+
+                {isOwner && (
+                  <Link to={`/plant-profile/${id}`}>
+                    <Button variant="outline" size="sm">
+                      <Settings className="h-4 w-4 mr-2" />
+                      Manage Plant Profile
+                    </Button>
+                  </Link>
+                )}
+              </div>
+
+              <PlantProfile plant={plant} />
+            </div>
+          </main>
+
+          <Footer />
+        </div>
+      );
+    }
+  }
 };
 
 export default PlantDetails;

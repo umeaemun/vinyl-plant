@@ -28,6 +28,7 @@ interface OrderSummary {
 
 const Order = () => {
   const [selectedPlant, setSelectedPlant] = useState<Plant | null>(null);
+  const [foundPlant, setFoundPlant] = useState<boolean | null>(null);
   const [orderSummary, setOrderSummary] = useState<OrderSummary | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
@@ -38,7 +39,6 @@ const Order = () => {
   useEffect(() => {
     // Get plant information
     const plantId = localStorage.getItem('selectedPlantId');
-    let foundPlant = null;
 
     if (plantId) {
       const fetchPlantDetails = async () => {
@@ -51,11 +51,15 @@ const Order = () => {
           console.error('Error fetching plant:', error);
         }
         if (plant) {
-          foundPlant = plant;
+          setFoundPlant(true);
           setSelectedPlant(plant);
+        }else {
+          setFoundPlant(false);
         }
       }
       fetchPlantDetails();
+    }else{
+      setFoundPlant(false);
     }
 
     // Get vinyl specifications and pricing
@@ -67,8 +71,6 @@ const Order = () => {
         const specs = JSON.parse(vinylData);      // form data ( user's requirements )
         const pricing = JSON.parse(pricingData);  // pricing data ( price / unit )
         const plantPricing = pricing.find((p: any) => p.id == plantId);  // find the pricing for the selected plant
-
-        console.log('pricing:', pricing);
 
         if (specs && plantPricing) {
           setOrderSummary({
@@ -84,7 +86,7 @@ const Order = () => {
     setIsLoading(false);
 
     // Only show warning if there's no plant selected at all
-    if (!foundPlant) {
+    if (foundPlant === false) {
       toast({
         title: "Missing plant selection",
         description: "Please select a manufacturer and complete your quote form first.",
@@ -94,7 +96,7 @@ const Order = () => {
   }, [toast]);
 
   // Don't redirect automatically, let user interact with the page
-  if (isLoading) {
+  if (isLoading || foundPlant === null) {
     return (
       <div className="flex flex-col min-h-screen">
         <Navbar />

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Plant, getFeatureName, getFeatureDescription, PlantReview } from '@/data/plants';
 import { MapPin, Globe, Factory, Info, Star, FileText } from 'lucide-react';
@@ -7,6 +7,7 @@ import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { supabase } from '@/integrations/supabase/client';
 
 interface VinylSpecs {
   size: string;
@@ -43,9 +44,86 @@ const PlantProfile: React.FC<PlantProfileProps> = ({ plant }) => {
     colour: "Standard Black"
   }]);
   const [prices, setPrices] = React.useState<any[]>([]);
-  const [equipments, setEquipments] = React.useState<any[]>([]);
-  const [clients, setClients] = React.useState<any[]>([]);
-  const [reviews, setReviews] = React.useState<PlantReview[]>([]);
+
+  const [equipments, setEquipments] = React.useState<any[]>(null);
+  const [clients, setClients] = React.useState<any[]>(null);
+  const [reviews, setReviews] = React.useState<PlantReview[]>(null);
+
+  useEffect(() => {
+    if (!plant) return;
+    const fetchVinylPricing = async () => {
+      try {
+        const { data: pricingData, error } = await supabase
+          .from('vinyl_pricing')
+          .select('*')
+          .eq('plant_id', plant.id);
+
+        if (error) {
+          throw new Error(`Error fetching vinyl pricing: ${error.message}`);
+        }
+
+        setVinylPricing(pricingData || []);
+      } catch (error) {
+        console.error('Error fetching vinyl pricing:', error);
+      }
+    }
+
+    const fetchEquipments = async () => {
+      try {
+        const { data: equipmentData, error } = await supabase
+          .from('plant_equipments')
+          .select('*')
+          .eq('plant_id', plant.id);
+
+        if (error) {
+          throw new Error(`Error fetching equipment: ${error.message}`);
+        }
+
+        setEquipments(equipmentData || []);
+      } catch (error) {
+        console.error('Error fetching equipment:', error);
+      }
+    }
+    const fetchClients = async () => {
+      try {
+        const { data: clientData, error } = await supabase
+          .from('plant_clients')
+          .select('*')
+          .eq('plant_id', plant.id);
+
+        if (error) {
+          throw new Error(`Error fetching clients: ${error.message}`);
+        }
+
+        setClients(clientData || []);
+      } catch (error) {
+        console.error('Error fetching clients:', error);
+      }
+    }
+
+    const fetchReviews = async () => {
+      try {
+        const { data: reviewData, error } = await supabase
+          .from('plant_reviews')
+          .select('*')
+          .eq('plant_id', plant.id);
+
+        if (error) {
+          throw new Error(`Error fetching reviews: ${error.message}`);
+        }
+
+        setReviews(reviewData || []);
+      } catch (error) {
+        console.error('Error fetching reviews:', error);
+      }
+    }
+
+    // fetchVinylPricing();
+    fetchEquipments();
+    fetchClients();
+    fetchReviews();
+    
+  }, [plant]);
 
   const handleRequestQuote = () => {
     localStorage.setItem('selectedPlantId', plant.id);
@@ -58,52 +136,6 @@ const PlantProfile: React.FC<PlantProfileProps> = ({ plant }) => {
     inserts: "single-insert",
     shrinkWrap: "yes"
   };
-
-  // const clients = [
-  //   {
-  //     name: "Indie Records",
-  //     type: "Label",
-  //     notable_work: "Various indie artists"
-  //   },
-  //   {
-  //     name: "Classic Vinyl Co.",
-  //     type: "Distributor",
-  //     notable_work: "Reissues of classic albums"
-  //   },
-  //   {
-  //     name: "The Soundwaves",
-  //     type: "Artist",
-  //     notable_work: "Debut album 'Ocean Currents'"
-  //   },
-  //   {
-  //     name: "Harmony Productions",
-  //     type: "Label",
-  //     notable_work: "Jazz and classical recordings"
-  //   }
-  // ];
-
-  // const equipment = [
-  //   {
-  //     name: "Record Press",
-  //     model: "Neumann VMS-70",
-  //     description: "Vintage pressing machine for precise vinyl cutting"
-  //   },
-  //   {
-  //     name: "Plating System",
-  //     model: "Custom Electroplating Unit",
-  //     description: "In-house developed system for highest quality metal plates"
-  //   },
-  //   {
-  //     name: "Steam Boiler",
-  //     model: "Industrial Grade ST-2000",
-  //     description: "Energy-efficient steam generation for consistent pressing"
-  //   },
-  //   {
-  //     name: "Hydraulic Press",
-  //     model: "HydraTech 5000",
-  //     description: "Modern pressing technology for consistent results"
-  //   }
-  // ];
 
   return (
     <div className="container mx-auto py-6 px-4">
@@ -153,11 +185,13 @@ const PlantProfile: React.FC<PlantProfileProps> = ({ plant }) => {
 
           <h2 className="font-display text-xl font-semibold mb-3">Specialties</h2>
           <div className="flex flex-wrap gap-2 mb-8">
-            {plant.features?.map(feature => (
-              <Badge key={feature} variant="outline" className="bg-secondary">
-                {getFeatureName(feature)}
-              </Badge>
-            ))}
+            {plant?.features && plant.features.length > 0 ?
+              plant.features?.map(feature => (
+                <Badge key={feature} variant="outline" className="bg-secondary">
+                  {getFeatureName(feature)}
+                </Badge>
+              )) : <p className="text-muted-foreground">No specialties listed.</p>
+            }
           </div>
         </div>
 
@@ -200,27 +234,27 @@ const PlantProfile: React.FC<PlantProfileProps> = ({ plant }) => {
             <div>
               <h3 className="text-lg font-medium mb-3">Vinyl Specifications</h3>
               {vinylPricing?.map((specs, index) => (
-                  <div className="bg-card rounded-lg border border-border p-5 space-y-4">
-                    <div className="grid grid-cols-2 gap-3">
-                      <div>
-                        <p className="text-sm font-medium text-muted-foreground">Size</p>
-                        <p>{specs.size}"</p>
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium text-muted-foreground">Type</p>
-                        <p>{specs.type}</p>
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium text-muted-foreground">Weight</p>
-                        <p>{specs.weight}</p>
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium text-muted-foreground">Color</p>
-                        <p>{specs.colour}</p>
-                      </div>
+                <div className="bg-card rounded-lg border border-border p-5 space-y-4">
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground">Size</p>
+                      <p>{specs.size}"</p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground">Type</p>
+                      <p>{specs.type}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground">Weight</p>
+                      <p>{specs?.weight || 'N/A'}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground">Color</p>
+                      <p>{specs?.colour || 'N/A'}</p>
                     </div>
                   </div>
-                ))
+                </div>
+              ))
               }
 
             </div>
@@ -283,59 +317,71 @@ const PlantProfile: React.FC<PlantProfileProps> = ({ plant }) => {
         <TabsContent value="features">
           <h2 className="font-display text-2xl font-semibold mb-4">Specialties & Capabilities</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {plant.features?.map(featureId => (
-              <div key={featureId} className="bg-card p-5 rounded-lg border border-border">
-                <h3 className="font-semibold text-lg mb-2">{getFeatureName(featureId)}</h3>
-                <p className="text-muted-foreground">{getFeatureDescription(featureId)}</p>
-              </div>
-            ))}
+            {plant?.features && plant.features.length > 0 ?
+              plant.features?.map(featureId => (
+                <div key={featureId} className="bg-card p-5 rounded-lg border border-border">
+                  <h3 className="font-semibold text-lg mb-2">{getFeatureName(featureId)}</h3>
+                  <p className="text-muted-foreground">{getFeatureDescription(featureId)}</p>
+                </div>
+              ))
+              : <p className="text-muted-foreground">No specialties listed.</p>
+            }
           </div>
         </TabsContent>
 
         <TabsContent value="equipment">
           <h2 className="font-display text-2xl font-semibold mb-4">Manufacturing Equipment</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {equipments?.map((item, index) => (
-              <div key={index} className="bg-card p-5 rounded-lg border border-border">
-                <div className="flex items-center mb-2">
-                  <Factory className="h-5 w-5 mr-2 text-primary" />
-                  <h3 className="font-semibold text-lg">{item.name}</h3>
+            {equipments && equipments.length > 0 ?
+              equipments?.map((item, index) => (
+                <div key={index} className="bg-card p-5 rounded-lg border border-border">
+                  <div className="flex items-center mb-2">
+                    <Factory className="h-5 w-5 mr-2 text-primary" />
+                    <h3 className="font-semibold text-lg">{item.name}</h3>
+                  </div>
+                  <p className="text-sm font-medium text-muted-foreground mb-1">Model: {item.model}</p>
+                  <p className="text-muted-foreground">{item.description}</p>
                 </div>
-                <p className="text-sm font-medium text-muted-foreground mb-1">Model: {item.model}</p>
-                <p className="text-muted-foreground">{item.description}</p>
-              </div>
-            ))}
+              ))
+              : <p className="text-muted-foreground">No equipment information available.</p>
+            }
           </div>
-          <p className="text-sm text-muted-foreground mt-6">
-            * Equipment specifications are subject to change as the plant upgrades its manufacturing capabilities.
-          </p>
+          {equipments && equipments.length > 0 &&
+            <p className="text-sm text-muted-foreground mt-6">
+              * Equipment specifications are subject to change as the plant upgrades its manufacturing capabilities.
+            </p>}
         </TabsContent>
 
         <TabsContent value="clients">
           <h2 className="font-display text-2xl font-semibold mb-4">Notable Clients & Projects</h2>
           <div className="overflow-x-auto">
-            <table className="w-full border-collapse">
-              <thead>
-                <tr className="bg-secondary">
-                  <th className="p-4 text-left">Name</th>
-                  <th className="p-4 text-left">Type</th>
-                  <th className="p-4 text-left">Notable Work</th>
-                </tr>
-              </thead>
-              <tbody>
-                {clients?.map((client, index) => (
-                  <tr key={index} className={index % 2 === 0 ? 'bg-card' : 'bg-muted/20'}>
-                    <td className="p-4 border-t font-medium">{client.name}</td>
-                    <td className="p-4 border-t">{client.type}</td>
-                    <td className="p-4 border-t">{client.notable_work}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            {
+              clients && clients.length > 0 ?
+                <table className="w-full border-collapse">
+                  <thead>
+                    <tr className="bg-secondary">
+                      <th className="p-4 text-left">Name</th>
+                      <th className="p-4 text-left">Type</th>
+                      <th className="p-4 text-left">Notable Work</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {clients?.map((client, index) => (
+                      <tr key={index} className={index % 2 === 0 ? 'bg-card' : 'bg-muted/20'}>
+                        <td className="p-4 border-t font-medium">{client.name}</td>
+                        <td className="p-4 border-t">{client.type}</td>
+                        <td className="p-4 border-t">{client.notable_work}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                : <p className="text-muted-foreground">No client information available.</p>
+            }
           </div>
-          <p className="text-sm text-muted-foreground mt-6">
+          {clients && clients.length > 0 &&
+            <p className="text-sm text-muted-foreground mt-6">
             * This is a partial list of clients. Confidential projects may not be listed.
-          </p>
+          </p>}
         </TabsContent>
 
         <TabsContent value="reviews">

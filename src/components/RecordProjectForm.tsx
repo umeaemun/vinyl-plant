@@ -98,7 +98,7 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
   useEffect(() => {
     // if coming from plant details page. it means user is requesting a quote from a specific plant
     if (selectedPlant && !hideSubmitButton) {
-      const plant = plants.find(p => p.id === selectedPlant);
+      const plant = plants.find(p => p.id == selectedPlant);
       if (plant) {
         toast({
           title: "Plant Selected",
@@ -172,12 +172,12 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
       console.log("* plantIds:", plantIds);
 
       plantIds.forEach((plantId, index) => {
-        const plant = plants.find(p => p.id === plantId);
+        const plant = plants.find(p => p.id == plantId);
         if (!plant) return;
 
         // Find best matching vinyl price
         const matchingVinylPrices = vinylPricingData.filter((vp) => {
-          return vp.plant_id === plantId && vp.size === values.size && vp.type === values.type
+          return vp.plant_id == plantId && vp.size == values.size && vp.type == values.type
         });
 
         // console.log(index,"AllVinylPrice:", vinylPricingData);
@@ -192,7 +192,7 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
 
         // Calculate additional costs for color
         const colorOption = colorOptionsData.find(
-          co => co.plant_id === plantId && co.color.toLowerCase().trim() === values.colour.toLowerCase().trim()
+          co => co.plant_id == plantId && co.color.toLowerCase().trim() === values.colour.toLowerCase().trim()
         );
         // console.log(index,"AllColorOption:", colorOptionsData);
 
@@ -203,7 +203,7 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
 
         // Calculate additional costs for weight
         const weightOption = weightOptionsData.find(
-          wo => wo.plant_id === plantId && wo.weight == values.weight
+          wo => wo.plant_id == plantId && wo.weight == values.weight
         );
 
         // console.log(index,"AllWeightOption:", weightOptionsData);
@@ -226,7 +226,7 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
           const option = values[type as keyof FormValues] as string;      // buyer's choice
 
           const packagingItem = packagingPricingData.find(
-            pp => pp.plant_id === plantId && pp.type === type && pp.option === option
+            pp => pp.plant_id == plantId && pp.type === type && pp.option === option
           );
 
           // console.log(index,"8 packagingItem:", packagingItem);

@@ -70,7 +70,7 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({ plants, formData, pri
   const getPlantPricing = (plantId: string): PricingData['calculatedPricing'] | null => {
     if (!pricingData) return null;
     
-    const plantWithPricing = pricingData.find((p: any) => p.id === plantId);
+    const plantWithPricing = pricingData.find((p: any) => p.id == plantId);
     if (!plantWithPricing || !plantWithPricing.calculatedPricing) return null;
     
     return plantWithPricing.calculatedPricing;

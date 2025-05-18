@@ -66,7 +66,9 @@ const Order = () => {
       try {
         const specs = JSON.parse(vinylData);      // form data ( user's requirements )
         const pricing = JSON.parse(pricingData);  // pricing data ( price / unit )
-        const plantPricing = pricing.find((p: any) => p.id === plantId);  // find the pricing for the selected plant
+        const plantPricing = pricing.find((p: any) => p.id == plantId);  // find the pricing for the selected plant
+
+        console.log('pricing:', pricing);
 
         if (specs && plantPricing) {
           setOrderSummary({
@@ -109,6 +111,9 @@ const Order = () => {
   const handleBackToQuote = () => {
     navigate('/');
   };
+
+  console.log('Selected Plant:', selectedPlant);
+  console.log('Order Summary:', orderSummary);
 
   return (
     <div className="flex flex-col min-h-screen">

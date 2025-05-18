@@ -38,7 +38,7 @@ const PlantListDisplay: React.FC<PlantListDisplayProps> = ({
   // Filter out plants that don't have valid pricing data if we have form data
   const plantsToDisplay = formData && pricingData
     ? filteredPlants.filter(plant => {
-      const plantWithPricing = pricingData.find((p: any) => p.id === plant.id);
+      const plantWithPricing = pricingData.find((p: any) => p.id == plant.id);
       return plantWithPricing &&
         plantWithPricing.calculatedPricing &&
         plantWithPricing.calculatedPricing.valid;

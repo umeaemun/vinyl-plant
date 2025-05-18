@@ -23,7 +23,7 @@ const PlantCard: React.FC<PlantCardProps> = ({ plant, formData, pricingData }) =
   const getPlantPricing = () => {
     if (!pricingData) return null;
     
-    const plantWithPricing = pricingData.find((p: any) => p.id === plant.id);
+    const plantWithPricing = pricingData.find((p: any) => p.id == plant.id);
     if (!plantWithPricing || !plantWithPricing.calculatedPricing) return null;
     
     return plantWithPricing.calculatedPricing;

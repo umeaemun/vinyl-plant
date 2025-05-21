@@ -63,17 +63,17 @@ const PlantProfile = () => {
           const plant = plantData[0];
           setPlant({
             id: plant.id,
-            name: plant.name || 'My Pressing Plant',
-            location: plant.location || 'Unknown Location',
-            country: plant.country || 'Unknown Country',
+            name: plant.name || '',
+            location: plant.location || '',
+            country: plant.country || '',
             owner: plant.owner || '',
-            description: plant.description || 'N/A',
+            description: plant.description || '',
             features: plant.features || [],
             rating: plant.rating || 0,
             review_count: plant.review_count || 0,
-            minimum_order: plant.minimum_order || 100,
+            minimum_order: plant.minimum_order || 0,
             turnaround_time: plant.turnaround_time || '8-12',
-            website: plant.website || '#',
+            website: plant.website || '',
             image_url: plant.image_url || '',
           });
 
@@ -108,17 +108,17 @@ const PlantProfile = () => {
         } else if (plantData && plantData.length === 0) {
           setPlant({
             id: id,
-            name: 'My Pressing Plant',
-            location: 'Unknown Location',
-            country: 'Unknown Country',
+            name: '',
+            location: '',
+            country: '',
             owner: '',
-            description: 'Your personal pressing plant profile',
+            description: '',
             features: [],
             rating: 0,
             review_count: 0,
-            minimum_order: 100,
+            minimum_order: 0,
             turnaround_time: '8-12',
-            website: '#',
+            website: '',
             image_url: '',
             specialties: [],
             reviews: []

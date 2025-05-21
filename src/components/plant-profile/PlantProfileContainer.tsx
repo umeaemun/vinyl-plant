@@ -25,7 +25,7 @@ const PlantProfileContainer = ({ plant, setPlant }: { plant: Plant , setPlant: R
   useEffect(() => {
 
       // New users should be in edit mode by default
-      if (plant && (!plant.description || plant.description === "N/A")) {
+      if (plant && (!plant.description || plant.description === "")) {
         setIsEditing(true);
 
     };

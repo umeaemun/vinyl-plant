@@ -214,14 +214,32 @@ const BuyerProfile = () => {
     }));
   };
 
-  if (profileLoading) return <div>Loading profile...</div>;
-  if (profileError) return <div>Error loading profile</div>;
-
-  if (plantsLoading) return <div>Loading plants...</div>;
-  if (plantsError) return <div>Error loading plants</div>;
-
-  if (ordersLoading) return <div>Loading orders...</div>;
-  if (ordersError) return <div>Error loading orders</div>;
+  if (profileLoading || plantsLoading || ordersLoading) {
+    return (
+      <div className="flex flex-col min-h-screen">
+        <Navbar />
+        <main className="flex-grow pt-20">
+          <div className="container mx-auto px-4 py-8 text-center content-center min-h-screen">
+            <h1 className="font-display text-3xl font-bold mb-4">Loading...</h1>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+    
+  }else if (profileError || plantsError || ordersError){
+    return (
+      <div className="flex flex-col min-h-screen">
+        <Navbar />
+        <main className="flex-grow pt-20">
+          <div className="container mx-auto px-4 py-8 text-center content-center min-h-screen">
+            <h1 className="font-display text-3xl font-bold mb-4">Error loading</h1>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
 
   return (

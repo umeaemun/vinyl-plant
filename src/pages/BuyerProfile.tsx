@@ -24,7 +24,7 @@ type ProfileData = {
 }
 
 const BuyerProfile = () => {
-  const { user, userProfile } = useAuth();
+  const { user, userProfile, setUserProfile } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -127,10 +127,12 @@ const BuyerProfile = () => {
         updateData.avatar_url = publicUrl;
       }
 
-      const { error: profileError } = await supabase
+      const { data: updatedProfile, error: profileError } = await supabase
         .from('profiles')
         .update(updateData)
-        .eq('id', user.id);
+        .eq('id', user.id)
+        .select()
+        .single();
 
       if (profileError) {
         toast({
@@ -141,7 +143,8 @@ const BuyerProfile = () => {
         return;
       }
 
-      queryClient.invalidateQueries({ queryKey: ['userProfile', user.id] });
+      setUserProfile(updatedProfile)
+
       setEditMode(false);
       toast({
         title: 'Profile Updated',

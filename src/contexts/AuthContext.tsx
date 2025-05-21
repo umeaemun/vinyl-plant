@@ -7,6 +7,7 @@ type AuthContextType = {
   session: Session | null;
   user: User | null;
   userProfile: any;
+  setUserProfile: React.Dispatch<React.SetStateAction<any>>;
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (formData: any) => Promise<void>;
   signOut: () => Promise<void>;
@@ -190,6 +191,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     session,
     user,
     userProfile,
+    setUserProfile,
     signIn,
     signUp,
     signOut,

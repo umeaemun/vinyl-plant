@@ -4,8 +4,6 @@ import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { Control } from 'react-hook-form';
-import FormTooltip from './FormTooltip';
-import * as z from "zod";
 
 type ProjectDetailsSectionProps = {
   control: Control<any>;
@@ -19,7 +17,7 @@ const ProjectDetailsSection = ({
       <Separator className="mb-4" />
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <FormField control={control} name="name" render={({
+        <FormField control={control} name="username" render={({
         field
       }) => <FormItem>
               <FormLabel>Name</FormLabel>

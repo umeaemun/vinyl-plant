@@ -37,14 +37,15 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
   const [selectedPlant, setSelectedPlant] = useState<string | null>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { user } = useAuth();
+  const { user, userProfile } = useAuth();
+
 
   const [plants, setPlants] = useState<any[]>([]);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
+      username: userProfile?.username || "",
       email: user?.email || "",
       catalogueNumber: "",
       quantity: "1500",
@@ -82,11 +83,11 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
   }, []);
 
   useEffect(() => {
-    if (user) {
+    if (user && userProfile) {
       form.setValue("email", user.email);
-      // form.setValue("name", user.username || "");
+      form.setValue("username", userProfile.username || "");
     }
-  }, [user, form]);
+  }, [user, userProfile, form]);
 
   useEffect(() => {
     const plantId = localStorage.getItem('selectedPlantId');

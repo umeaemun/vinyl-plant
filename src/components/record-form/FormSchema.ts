@@ -2,7 +2,7 @@
 import * as z from "zod";
 
 export const formSchema = z.object({
-  name: z.string().optional(),
+  username: z.string().optional(),
   email: z.string().email().optional(),
   catalogueNumber: z.string().optional(),
   quantity: z.string(),

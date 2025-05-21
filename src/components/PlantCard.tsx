@@ -65,7 +65,7 @@ const PlantCard: React.FC<PlantCardProps> = ({ plant, formData, pricingData }) =
     return <div className="flex">{stars}</div>;
   };
 
-  console.log('Plant Card:', plant);
+  // console.log('Plant Card:', plant);
   
   return (
     <Card className="overflow-hidden h-full flex flex-col">

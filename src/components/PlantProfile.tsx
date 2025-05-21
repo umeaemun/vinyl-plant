@@ -37,36 +37,12 @@ const PlantProfile: React.FC<PlantProfileProps> = ({ plant }) => {
     .toUpperCase()
     .slice(0, 2);
 
-  const [vinylPricing, setVinylPricing] = React.useState<VinylSpecs[]>([{
-    size: "12",
-    type: "1LP",
-    weight: "140gm",
-    colour: "Standard Black"
-  }]);
-  const [prices, setPrices] = React.useState<any[]>([]);
-
   const [equipments, setEquipments] = React.useState<any[]>(null);
   const [clients, setClients] = React.useState<any[]>(null);
   const [reviews, setReviews] = React.useState<PlantReview[]>(null);
 
   useEffect(() => {
     if (!plant) return;
-    const fetchVinylPricing = async () => {
-      try {
-        const { data: pricingData, error } = await supabase
-          .from('vinyl_pricing')
-          .select('*')
-          .eq('plant_id', plant.id);
-
-        if (error) {
-          throw new Error(`Error fetching vinyl pricing: ${error.message}`);
-        }
-
-        setVinylPricing(pricingData || []);
-      } catch (error) {
-        console.error('Error fetching vinyl pricing:', error);
-      }
-    }
 
     const fetchEquipments = async () => {
       try {
@@ -118,7 +94,6 @@ const PlantProfile: React.FC<PlantProfileProps> = ({ plant }) => {
       }
     }
 
-    // fetchVinylPricing();
     fetchEquipments();
     fetchClients();
     fetchReviews();
@@ -218,16 +193,16 @@ const PlantProfile: React.FC<PlantProfileProps> = ({ plant }) => {
         </div>
       </div>
 
-      <Tabs defaultValue="pricing" className="mt-10">
-        <TabsList className="w-full grid grid-cols-5 max-w-md mb-8">
-          <TabsTrigger value="pricing">Pricing</TabsTrigger>
+      <Tabs defaultValue="features" className="mt-10">
+        <TabsList className="w-full grid grid-cols-4 max-w-md mb-8">
+          {/* <TabsTrigger value="pricing">Pricing</TabsTrigger> */}
           <TabsTrigger value="features">Specialties</TabsTrigger>
           <TabsTrigger value="equipment">Equipment</TabsTrigger>
           <TabsTrigger value="clients">Clients</TabsTrigger>
           <TabsTrigger value="reviews">Reviews</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="pricing">
+        {/* <TabsContent value="pricing">
           <h2 className="font-display text-2xl font-semibold mb-4">Pricing Information</h2>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -312,7 +287,7 @@ const PlantProfile: React.FC<PlantProfileProps> = ({ plant }) => {
               * Prices are estimates based on standard options. Contact the plant for an exact quote with your custom specifications.
             </p>
           </div>
-        </TabsContent>
+        </TabsContent> */}
 
         <TabsContent value="features">
           <h2 className="font-display text-2xl font-semibold mb-4">Specialties & Capabilities</h2>

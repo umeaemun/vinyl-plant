@@ -31,13 +31,13 @@ const App = () => (
           <Sonner />
           <BrowserRouter>
             <Routes>
-              <Route path="/" element={<Index />} />
+              <Route path="/" element={<Index />} />                                    {/*  save reqs in db in new table */}   
 
               {/* Auth */}
               <Route path="/auth" element={<Auth />} />                                 {/*  DONE */}
 
               {/* Buyer */}
-              <Route path="/buyer-profile" element={<BuyerProfile />} />
+              <Route path="/buyer-profile" element={<BuyerProfile />} />               {/*  avatar and order status remaining */} 
               <Route path="/order" element={<Order />} />
               <Route path="/compare" element={<Compare />} />                          {/*  Form wala remaining */}
               <Route path="/plant/:id" element={<PlantDetails />} />                   {/*  working, this screen comes after clicking a plant from compare screen */}

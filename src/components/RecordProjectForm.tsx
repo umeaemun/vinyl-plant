@@ -171,6 +171,8 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
 
       console.log("* plantIds:", plantIds);
 
+      const invalidPlantIds = [];
+
       plantIds.forEach((plantId, index) => {
         const plant = plants.find(p => p.id == plantId);
         if (!plant) return;
@@ -186,20 +188,40 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
 
         // Sort by quantity (descending) and find the most appropriate tier
         matchingVinylPrices.sort((a, b) => b.quantity - a.quantity);
-        const vinylPrice = matchingVinylPrices.find(vp => vp.quantity <= numericQuantity)?.price || 0;
+        const vinylPrice = matchingVinylPrices.find(vp => vp.quantity <= numericQuantity)?.price;
 
-        // console.log(index,"2 BestvinylPrice:", vinylPrice);
+        if (!vinylPrice) {
+          console.error(`No vinyl price found for plant ID ${plantId} with size ${values.size} and type ${values.type}`);
+          invalidPlantIds.push(plantId);
+          return;
+        }
+
+        console.log(index,"2 BestvinylPrice:", vinylPrice);
+
 
         // Calculate additional costs for color
+
+        // console.log(index,"AllColorOption:", colorOptionsData);
+
         const colorOption = colorOptionsData.find(
           co => co.plant_id == plantId && co.color.toLowerCase().trim() === values.colour.toLowerCase().trim()
         );
-        // console.log(index,"AllColorOption:", colorOptionsData);
 
         // console.log(index,"3 colorOption:", colorOption);
-        const colorAdditionalCost = colorOption?.additional_cost || 0;
+        let colorAdditionalCost = colorOption?.additional_cost || 0;
 
-        // console.log(index,"4 colorAdditionalCost:", colorAdditionalCost);
+
+        if (!colorOption && values.colour.toLowerCase().trim() !== "black") {
+          console.error(`No color option found for plant ID ${plantId} with color ${values.colour}`);
+          invalidPlantIds.push(plantId);
+          return;
+        }else if (!colorOption && values.colour.toLowerCase().trim() === "black") {
+          colorAdditionalCost = 0;
+        }
+
+        console.log(index,"4 finalColorAdditionalCost:", colorAdditionalCost);
+
+
 
         // Calculate additional costs for weight
         const weightOption = weightOptionsData.find(
@@ -208,14 +230,19 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
 
         // console.log(index,"AllWeightOption:", weightOptionsData);
 
+        if (!weightOption) {
+          console.error(`No weight option found for plant ID ${plantId} with weight ${values.weight}`);
+          invalidPlantIds.push(plantId);
+          return;
+        }
+
         // console.log(index,"5 weightOption:", weightOption);
         const weightAdditionalCost = weightOption?.additional_cost || 0;
 
-        // console.log(index,"6 weightAdditionalCost:", weightAdditionalCost);
+        console.log(index,"6 finalWeightAdditionalCost:", weightAdditionalCost);
 
         // Calculate packaging costs
         let packagingPrice = 0;
-
 
         // console.log(index,"AllpackagingPricingData:", packagingPricingData);
 
@@ -312,7 +339,7 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
       });
 
       // Navigate to the compare page
-      navigate('/compare');
+      // navigate('/compare');
     } catch (error) {
       console.error("Form submission error:", error);
       toast({

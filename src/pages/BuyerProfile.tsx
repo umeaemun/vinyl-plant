@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -13,6 +13,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Phone, Building, MapPin } from 'lucide-react';
 
 type ProfileData = {
+  username: string;
   phone: string;
   company: string;
   addressStreet: string;
@@ -23,86 +24,15 @@ type ProfileData = {
 }
 
 const BuyerProfile = () => {
-  const { user } = useAuth();
+  const { user, userProfile } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
+  // console.log('userProfile', userProfile);
+
   const [editMode, setEditMode] = useState(false);
-  
-  const [profileData, setProfileData] = useState<ProfileData>({
-    phone: '',
-    company: '',
-    addressStreet: '',
-    addressCity: '',
-    addressState: '',
-    addressPostalCode: '',
-    avatarUrl: ''
-  });
-  
+  const [profileData, setProfileData] = useState<ProfileData | null>(null);
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
-
-  const { data: profile, isLoading: profileLoading, error: profileError } = useQuery({
-    queryKey: ['userProfile', user?.id],
-    queryFn: async () => {
-      if (!user) {
-        throw new Error('No authenticated user');
-      }
-      
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', user.id)
-        .single();
-      
-      if (error) {
-        toast({
-          title: 'Profile Fetch Error',
-          description: error.message || 'Failed to fetch profile',
-          variant: 'destructive',
-        });
-        throw error;
-      }
-      
-      setProfileData({
-        phone: data.phone || '',
-        company: data.company || '',
-        addressStreet: data.address_street || '',
-        addressCity: data.address_city || '',
-        addressState: data.address_state || '',
-        addressPostalCode: data.address_postal_code || '',
-        avatarUrl: data.avatar_url || ''
-      });
-      
-      return data;
-    },
-    enabled: !!user,
-  });
-
-  const { data: plants, isLoading: plantsLoading, error: plantsError } = useQuery({
-    queryKey: ['plants', user?.id],
-    queryFn: async () => {
-      if (!user) {
-        throw new Error('No authenticated user');
-      }
-      
-      const { data, error } = await supabase
-        .from('plants')
-        .select('*')
-        .eq('owner', user.id);
-      
-      if (error) {
-        toast({
-          title: 'Plants Fetch Error',
-          description: error.message || 'Failed to fetch plants',
-          variant: 'destructive',
-        });
-        throw error;
-      }
-      
-      return data;
-    },
-    enabled: !!user,
-  });
-  
 
   const { data: orders, isLoading: ordersLoading, error: ordersError } = useQuery({
     queryKey: ['orders', user?.id],
@@ -131,13 +61,31 @@ const BuyerProfile = () => {
     enabled: !!user,
   });
 
+  useEffect(() => {
+    if(userProfile){
+      setProfileData({
+        username: userProfile.username || '',
+        phone: userProfile.phone || '',
+        company: userProfile.company || '',
+        addressStreet: userProfile.address_street || '',
+        addressCity: userProfile.address_city || '',
+        addressState: userProfile.address_state || '',
+        addressPostalCode: userProfile.address_postal_code || '',
+        avatarUrl: userProfile.avatar_url || ''
+      });
+    }
+  }, [userProfile]);
+
   const updateProfileMutation = useMutation({
     mutationFn: async () => {
       if (!user) {
         throw new Error('No authenticated user');
       }
 
+      console.log('profileData', profileData);
+
       const updateData: {
+        username?: string,
         phone?: string,
         company?: string,
         address_street?: string,
@@ -146,6 +94,7 @@ const BuyerProfile = () => {
         address_postal_code?: string,
         avatar_url?: string
       } = {
+        username: profileData.username,
         phone: profileData.phone,
         company: profileData.company,
         address_street: profileData.addressStreet,
@@ -214,7 +163,7 @@ const BuyerProfile = () => {
     }));
   };
 
-  if (profileLoading || plantsLoading || ordersLoading) {
+  if (ordersLoading || !profileData) {
     return (
       <div className="flex flex-col min-h-screen">
         <Navbar />
@@ -226,8 +175,8 @@ const BuyerProfile = () => {
         <Footer />
       </div>
     );
-    
-  }else if (profileError || plantsError || ordersError){
+
+  }else if (ordersError){
     return (
       <div className="flex flex-col min-h-screen">
         <Navbar />
@@ -299,10 +248,9 @@ const BuyerProfile = () => {
                       <div className="space-y-4">
                         <div className="grid grid-cols-2 gap-4">
                           <Input 
-                            placeholder="Plant Name" 
-                            value={plants && plants.length > 0 ? plants[0]?.name : ''}
-                            // onChange={(e) => handleInputChange('plantName', e.target.value)}
-                            onChange={(e) => {}}
+                            placeholder="Username" 
+                            value={profileData.username}
+                            onChange={(e) => handleInputChange('username', e.target.value)}
                           />
                           <div className="relative">
                             <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" size={16} />
@@ -373,13 +321,14 @@ const BuyerProfile = () => {
                             onClick={() => {
                               setEditMode(false);
                               setProfileData({
-                                phone: profile?.phone || '',
-                                company: profile?.company || '',
-                                addressStreet: profile?.address_street || '',
-                                addressCity: profile?.address_city || '',
-                                addressState: profile?.address_state || '',
-                                addressPostalCode: profile?.address_postal_code || '',
-                                avatarUrl: profile?.avatar_url || ''
+                                username: userProfile?.username || '',
+                                phone: userProfile?.phone || '',
+                                company: userProfile?.company || '',
+                                addressStreet: userProfile?.address_street || '',
+                                addressCity: userProfile?.address_city || '',
+                                addressState: userProfile?.address_state || '',
+                                addressPostalCode: userProfile?.address_postal_code || '',
+                                avatarUrl: userProfile?.avatar_url || ''
                               });
                               setAvatarFile(null);
                             }}
@@ -392,7 +341,7 @@ const BuyerProfile = () => {
                       <div className="space-y-2">
                         <p>
                           <span className="font-medium">Name:</span>{' '}
-                          {plants && plants.length > 0 ? plants[0].name : 'Not set'}
+                          {profileData?.username || ''}
                         </p>
                         {profileData.phone && (
                           <p>

@@ -6,6 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 type AuthContextType = {
   session: Session | null;
   user: User | null;
+  userProfile: any;
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (formData: any) => Promise<void>;
   signOut: () => Promise<void>;
@@ -19,6 +20,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
+  const [userProfile, setUserProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
@@ -56,7 +58,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
       const userProfile = await supabase
         .from("profiles")
-        .select("email")
+        .select("*")
         .eq("id", user.id)
         .single();
 
@@ -65,7 +67,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         console.error("Error fetching user profile:", userProfile.error);
         return;
       }
+      
 
+      setUserProfile(userProfile.data);
       // console.log("userProfile:", userProfile.data);
 
       if (userProfile.data.email === null || userProfile.data.email === "") {
@@ -185,6 +189,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const value = {
     session,
     user,
+    userProfile,
     signIn,
     signUp,
     signOut,

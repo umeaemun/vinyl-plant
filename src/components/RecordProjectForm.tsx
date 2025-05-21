@@ -196,7 +196,7 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
           return;
         }
 
-        console.log(index,"2 BestvinylPrice:", vinylPrice);
+        console.log(index, "2 BestvinylPrice:", vinylPrice);
 
 
         // Calculate additional costs for color
@@ -215,11 +215,11 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
           console.error(`No color option found for plant ID ${plantId} with color ${values.colour}`);
           invalidPlantIds.push(plantId);
           return;
-        }else if (!colorOption && values.colour.toLowerCase().trim() === "black") {
+        } else if (!colorOption && values.colour.toLowerCase().trim() === "black") {
           colorAdditionalCost = 0;
         }
 
-        console.log(index,"4 finalColorAdditionalCost:", colorAdditionalCost);
+        console.log(index, "4 finalColorAdditionalCost:", colorAdditionalCost);
 
 
 
@@ -239,7 +239,7 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
         // console.log(index,"5 weightOption:", weightOption);
         const weightAdditionalCost = weightOption?.additional_cost || 0;
 
-        console.log(index,"6 finalWeightAdditionalCost:", weightAdditionalCost);
+        console.log(index, "6 finalWeightAdditionalCost:", weightAdditionalCost);
 
         // Calculate packaging costs
         let packagingPrice = 0;
@@ -256,17 +256,24 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
             pp => pp.plant_id == plantId && pp.type === type && pp.option === option
           );
 
+
+          if (!packagingItem) {
+            console.error(`No packaging item found for plant ID ${plantId} with type ${type} and option ${option}`);
+            invalidPlantIds.push(plantId);
+            return;
+          }
+
           // console.log(index,"8 packagingItem:", packagingItem);
 
-          if (packagingItem) {
-            const priceTiers = packagingItem.prices ?? [];
-            priceTiers.sort((a, b) => b.quantity - a.quantity);
 
-            // console.log(index,"9 priceTiers:", priceTiers);
-            const packagePrice = priceTiers.find(pt => pt.quantity <= numericQuantity)?.price || 0;
-            // console.log(index,"10 Best price:", packagePrice);
-            packagingPrice += packagePrice;
-          }
+          const priceTiers = packagingItem.prices ?? [];
+          priceTiers.sort((a, b) => b.quantity - a.quantity);
+
+          // console.log(index,"9 priceTiers:", priceTiers);
+          const packagePrice = priceTiers.find(pt => pt.quantity <= numericQuantity)?.price || 0;
+          // console.log(index,"10 Best price:", packagePrice);
+          packagingPrice += packagePrice;
+
         });
 
         // Calculate per unit price
@@ -286,7 +293,7 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
             vinylPrice: totalVinylPrice,
             packagingPrice,
             perUnit,
-            valid: totalVinylPrice > 0
+            valid: !invalidPlantIds.includes(plantId)
           }
         });
       });
@@ -339,7 +346,7 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
       });
 
       // Navigate to the compare page
-      // navigate('/compare');
+      navigate('/compare');
     } catch (error) {
       console.error("Form submission error:", error);
       toast({

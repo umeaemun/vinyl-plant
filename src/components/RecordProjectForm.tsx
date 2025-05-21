@@ -39,7 +39,6 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
   const { toast } = useToast();
   const { user, userProfile } = useAuth();
 
-
   const [plants, setPlants] = useState<any[]>(null);
 
   const form = useForm<FormValues>({

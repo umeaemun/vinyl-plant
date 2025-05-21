@@ -20,8 +20,12 @@ const Auth = () => {
   useEffect(() => {
     if (user && !loading) {
       // User is authenticated, redirect to their plant profile page
-      console.log("Authenticated user detected, redirecting to profile:", user.id);
+      console.log("Authenticated user detected, redirecting to profile:", user);
+      if(user.user_metadata?.role === "manufacturer") {
       navigate(`/plant-profile/${user.id}`);
+      }else {
+        navigate(`/buyer-profile`);
+      }
     }
   }, [user, loading, navigate]);
   
@@ -47,11 +51,16 @@ const Auth = () => {
         plantName: formData.plantName
       });
       
-      await signUp(formData.email, formData.password, {
+      await signUp({
+        email: formData.email, 
+        password: formData.password, 
+        role: formData.role,
+        username: formData.username,
+        plantData:{
         plantName: formData.plantName,
         location: formData.location,
         country: formData.country
-      });
+      }});
       
       toast({
         title: "Registration successful",

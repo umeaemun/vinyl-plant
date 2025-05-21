@@ -7,7 +7,7 @@ type AuthContextType = {
   session: Session | null;
   user: User | null;
   signIn: (email: string, password: string) => Promise<void>;
-  signUp: (email: string, password: string, plantData: any) => Promise<void>;
+  signUp: (formData: any) => Promise<void>;
   signOut: () => Promise<void>;
   loading: boolean;
 };
@@ -76,6 +76,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           .from('profiles')
           .update({
             email: user.email,
+            role: user.user_metadata.role,
+            username: user.user_metadata.username,
           })
           .eq('id', user.id);
 
@@ -85,22 +87,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           console.log("Profile updated successfully");
         }
 
-        // insert plant data
-        const { error: plantError } = await supabase
-          .from("plants")
-          .insert({
-            name: user.user_metadata.plant_name,
-            location: user.user_metadata.location,
-            country: user.user_metadata.country,
-            owner: user.id,
-          });
-        if (plantError) {
-          console.error("Error inserting plant data:", plantError);
+        if (user.user_metadata.role === "manufacturer") {
+          // insert plant data
+          console.log("User is a manufacturer, inserting plant data...");
+          const { error: plantError } = await supabase
+            .from("plants")
+            .insert({
+              name: user.user_metadata.plant_name,
+              location: user.user_metadata.location,
+              country: user.user_metadata.country,
+              owner: user.id,
+            });
+          if (plantError) {
+            console.error("Error inserting plant data:", plantError);
+          }
+          console.log("Plant data inserted successfully");
         }
-        console.log("Plant data inserted successfully");
+
 
       }
-      
+
     } catch (error: any) {
       console.error("Error in profile update:", error);
       // Don't throw here, just log the error
@@ -125,7 +131,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
-  const signUp = async (email: string, password: string, plantData: any) => {
+  const signUp = async (formData: any) => {
+    const { email, password, role, username, plantData } = formData;
     try {
       console.log("Starting signup process with:", { email, plantData });
 
@@ -139,6 +146,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             plant_name: plantData.plantName,
             location: plantData.location,
             country: plantData.country,
+            role,
+            username,
           },
         },
       });

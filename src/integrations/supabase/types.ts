@@ -15,6 +15,8 @@ export type Database = {
         Row: {
           id: string;
           email: string | null;
+          role: string;
+          username: string | null;
           phone: string | null;
           company: string | null;
           address_street: string | null;
@@ -28,6 +30,8 @@ export type Database = {
         Insert: {
           id: string;
           email?: string | null;
+          role?: string;
+          username?: string | null;
           phone?: string | null;
           company?: string | null;
           address_street?: string | null;
@@ -41,6 +45,8 @@ export type Database = {
         Update: {
           id?: string;
           email?: string | null;
+          role?: string;
+          username?: string | null;
           phone?: string | null;
           company?: string | null;
           address_street?: string | null;

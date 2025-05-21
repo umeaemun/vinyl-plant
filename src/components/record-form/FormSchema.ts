@@ -25,17 +25,32 @@ export const loginSchema = z.object({
   password: z.string().min(6, { message: "Password must be at least 6 characters" }),
 });
 
-export const registerSchema = z.object({
+export const buyerRegisterSchema = z.object({
+  role: z.enum(["buyer"]),    
   email: z.string().email({ message: "Please enter a valid email address" }),
   password: z.string().min(6, { message: "Password must be at least 6 characters" }),
   confirmPassword: z.string().min(6, { message: "Password must be at least 6 characters" }),
+  username: z.string().min(2, "Username is required"),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords do not match",
+  path: ["confirmPassword"],
+});
+
+export const manufacturerRegisterSchema = z.object({
+  role: z.enum(["manufacturer"]),    
+  email: z.string().email({ message: "Please enter a valid email address" }),
+  password: z.string().min(6, { message: "Password must be at least 6 characters" }),
+  confirmPassword: z.string().min(6, { message: "Password must be at least 6 characters" }),
+  username: z.string().min(2, "Username is required"),
   plantName: z.string().min(2, { message: "Plant name is required" }),
   location: z.string().min(2, { message: "Location is required" }),
-  country: z.string().min(2, { message: "Country is required" })
+  country: z.string().min(2, { message: "Country is required" }),
+
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Passwords do not match",
   path: ["confirmPassword"],
 });
 
 export type LoginFormValues = z.infer<typeof loginSchema>;
-export type RegisterFormValues = z.infer<typeof registerSchema>;
+export type BuyerRegisterFormValues = z.infer<typeof buyerRegisterSchema>;
+export type ManufacturerRegisterFormValues = z.infer<typeof manufacturerRegisterSchema>;

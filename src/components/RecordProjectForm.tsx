@@ -40,7 +40,7 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
   const { user, userProfile } = useAuth();
 
 
-  const [plants, setPlants] = useState<any[]>([]);
+  const [plants, setPlants] = useState<any[]>(null);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -98,7 +98,7 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
 
   useEffect(() => {
     // if coming from plant details page. it means user is requesting a quote from a specific plant
-    if (selectedPlant && !hideSubmitButton) {
+    if (selectedPlant && !hideSubmitButton && plants) {
       const plant = plants.find(p => p.id == selectedPlant);
       if (plant) {
         toast({
@@ -107,7 +107,7 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
         });
       }
     }
-  }, [selectedPlant, toast, hideSubmitButton]);
+  }, [selectedPlant, toast, hideSubmitButton, plants]);
 
   const calculatePricingFromSupabase = async (values: FormValues) => {
     try {

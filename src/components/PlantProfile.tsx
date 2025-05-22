@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Plant, getFeatureName, getFeatureDescription, PlantReview } from '@/data/plants';
 import { MapPin, Globe, Factory, Info, Star, FileText } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
@@ -97,7 +98,7 @@ const PlantProfile: React.FC<PlantProfileProps> = ({ plant }) => {
     fetchEquipments();
     fetchClients();
     fetchReviews();
-    
+
   }, [plant]);
 
   const handleRequestQuote = () => {
@@ -110,6 +111,10 @@ const PlantProfile: React.FC<PlantProfileProps> = ({ plant }) => {
     jacket: "single-pocket-3mm",
     inserts: "single-insert",
     shrinkWrap: "yes"
+  };
+
+  const selectPlantForQuote = (plantId: string) => {
+    localStorage.setItem('selectedPlantId', plantId);
   };
 
   return (
@@ -183,6 +188,12 @@ const PlantProfile: React.FC<PlantProfileProps> = ({ plant }) => {
               <Globe className="h-5 w-5 mr-2" />
               Visit Website
             </a>
+
+            <Link to="/order" onClick={() => selectPlantForQuote(plant.id)}>
+              <Button variant="default" className="bg-wwwax-green text-black hover:bg-wwwax-green/80 text-xs px-3 py-1 h-auto mt-2">
+                Order Now
+              </Button>
+            </Link>
 
             <Button className="w-full mb-3" onClick={handleRequestQuote}>
               <FileText className="h-4 w-4 mr-2" />
@@ -355,8 +366,8 @@ const PlantProfile: React.FC<PlantProfileProps> = ({ plant }) => {
           </div>
           {clients && clients.length > 0 &&
             <p className="text-sm text-muted-foreground mt-6">
-            * This is a partial list of clients. Confidential projects may not be listed.
-          </p>}
+              * This is a partial list of clients. Confidential projects may not be listed.
+            </p>}
         </TabsContent>
 
         <TabsContent value="reviews">

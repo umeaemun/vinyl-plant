@@ -10,6 +10,7 @@ import { Search, Filter, MapPin, User } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { supabase } from '@/integrations/supabase/client';
 
 const PlantDirectory = () => {
   const [allPlants, setAllPlants] = useState<Plant[]>([]);
@@ -20,11 +21,23 @@ const PlantDirectory = () => {
 
   // Load plants from data and local storage
   useEffect(() => {
-    // Load custom plants from localStorage if any
-    const customPlants = JSON.parse(localStorage.getItem('customPlants') || '[]');
-    const combinedPlants = [...plants, ...customPlants];
-    setAllPlants(combinedPlants);
-    setFilteredPlants(combinedPlants);
+
+    const fetchPlants = async () => {
+      const { data: plantsData, error } = await supabase
+        .from('plants')
+        .select('*');
+
+      if (error) {
+        console.error('Error fetching plants:', error);
+        return;
+      }
+      setAllPlants(plantsData);
+      setFilteredPlants(plantsData);
+    };
+
+    fetchPlants();
+   
+   
   }, []);
 
   // Handle search functionality

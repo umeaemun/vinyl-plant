@@ -72,7 +72,7 @@ const PlantCard: React.FC<PlantCardProps> = ({ plant, formData, pricingData }) =
       <div className="relative h-48 overflow-hidden">
         <Link to={`/plant/${plant.id}`}>
           <img 
-            src={plant.image_url} 
+            src={plant.image_url || '/public/no-img.jpg'} 
             alt={plant.name} 
             className="w-full h-full object-cover transition-transform hover:scale-105 duration-300" 
           />
@@ -115,12 +115,12 @@ const PlantCard: React.FC<PlantCardProps> = ({ plant, formData, pricingData }) =
           )}
           
           <div className="flex flex-wrap gap-1 mt-2">
-            {plant.features.slice(0, 3).map((feature, index) => (
+            {plant.features?.slice(0, 3).map((feature, index) => (
               <Badge key={index} variant="secondary" className="text-xs">
                 {feature.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
               </Badge>
             ))}
-            {plant.features.length > 3 && (
+            {plant.features?.length > 3 && (
               <Badge variant="secondary" className="text-xs">
                 +{plant.features.length - 3} more
               </Badge>

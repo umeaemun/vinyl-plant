@@ -190,7 +190,9 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
         matchingVinylPrices.sort((a, b) => b.quantity - a.quantity);
         const vinylPrice = matchingVinylPrices.find(vp => vp.quantity <= numericQuantity)?.price;
 
-        if (!vinylPrice) {
+
+        if (vinylPrice === undefined || vinylPrice === null) {
+          console.log(index, vinylPrice);
           console.error(`No vinyl price found for plant ID ${plantId} with size ${values.size} and type ${values.type}`);
           invalidPlantIds.push(plantId);
           return;
@@ -211,11 +213,11 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
         let colorAdditionalCost = colorOption?.additional_cost || 0;
 
 
-        if (!colorOption && values.colour.toLowerCase().trim() !== "black") {
+        if ((colorOption === undefined || colorOption === null) && values.colour.toLowerCase().trim() !== "black") {
           console.error(`No color option found for plant ID ${plantId} with color ${values.colour}`);
           invalidPlantIds.push(plantId);
           return;
-        } else if (!colorOption && values.colour.toLowerCase().trim() === "black") {
+        } else if ((colorOption === undefined || colorOption === null) && values.colour.toLowerCase().trim() === "black") {
           colorAdditionalCost = 0;
         }
 
@@ -230,7 +232,7 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
 
         // console.log(index,"AllWeightOption:", weightOptionsData);
 
-        if (!weightOption) {
+        if ( weightOption === undefined || weightOption === null) {
           console.error(`No weight option found for plant ID ${plantId} with weight ${values.weight}`);
           invalidPlantIds.push(plantId);
           return;
@@ -257,7 +259,7 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
           );
 
 
-          if (!packagingItem) {
+          if (packagingItem === undefined || packagingItem === null) {
             console.error(`No packaging item found for plant ID ${plantId} with type ${type} and option ${option}`);
             invalidPlantIds.push(plantId);
             return;
@@ -293,7 +295,7 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
             vinylPrice: totalVinylPrice,
             packagingPrice,
             perUnit,
-            valid: !invalidPlantIds.includes(plantId)
+            valid: !invalidPlantIds?.includes(plantId)
           }
         });
       });

@@ -34,22 +34,62 @@ const Compare = () => {
   const allFeatures: string [] = plants ? plants.flatMap(plant => plant.features) : [];
   const availableFeatures : string[] = Array.from(new Set(allFeatures)).sort();
 
+  const getPricingData = () => {
+    const savedPricing = localStorage.getItem('calculatedPlantPricing');
+    if (savedPricing && savedPricing !== 'undefined') {
+      try {
+        return JSON.parse(savedPricing);
+      } catch (e) {
+        console.error("Error parsing pricing data:", e);
+        return null;
+      }
+    }
+  };
+
   useEffect(() => {
     const fetchPlants = async () => {
-      try {
-        const { data: plantsData, error } = await supabase
-          .from('plants')
-          .select('*')
-          .order('name', { ascending: true });
+      const pricingData = getPricingData();
 
-        if (error) {
-          throw new Error(`Error fetching plants: ${error.message}`);
+      if (pricingData && pricingData.length > 0) {
+        console.log("Pricing data found in localStorage:", pricingData);
+        // If we have pricing data, filter plants based on it
+          const pricingDataIds = pricingData.map((p: any) => p.id);
+
+          try {
+            const { data: plantsData, error } = await supabase
+              .from('plants')
+              .select('*')
+              .in('id', pricingDataIds)
+              .order('name', { ascending: true });
+    
+            if (error) {
+              throw new Error(`Error fetching plants: ${error.message}`);
+            }
+    
+            setPlants(plantsData);
+          } catch (error) {
+            console.error('Error fetching plants:', error);
+          }
+
+      }else {
+        // Fetch all plants from Supabase
+        console.log("No pricing data found in localStorage, fetching all plants");
+        try {
+          const { data: plantsData, error } = await supabase
+            .from('plants')
+            .select('*')
+            .order('name', { ascending: true });
+  
+          if (error) {
+            throw new Error(`Error fetching plants: ${error.message}`);
+          }
+  
+          setPlants(plantsData);
+        } catch (error) {
+          console.error('Error fetching plants:', error);
         }
-
-        setPlants(plantsData);
-      } catch (error) {
-        console.error('Error fetching plants:', error);
       }
+    
     };
 
     fetchPlants();
@@ -99,14 +139,14 @@ const Compare = () => {
       (minRating === 'below3' && plant.rating < 3.0);
 
     const matchesTurnaround = turnaroundTime === 'any' ||
-      (turnaroundTime === 'under8' && parseInt(plant.turnaround_time.split('-')[0]) < 8) ||
+      (turnaroundTime === 'under8' && parseInt(plant.turnaround_time?.split('-')[0]) < 8) ||
       (turnaroundTime === '8to12' &&
-        parseInt(plant.turnaround_time.split('-')[0]) >= 8 &&
-        parseInt(plant.turnaround_time.split('-')[1]) <= 12) ||
-      (turnaroundTime === 'over12' && parseInt(plant.turnaround_time.split('-')[1]) > 12);
+        parseInt(plant.turnaround_time?.split('-')[0]) >= 8 &&
+        parseInt(plant.turnaround_time?.split('-')[1]) <= 12) ||
+      (turnaroundTime === 'over12' && parseInt(plant.turnaround_time?.split('-')[1]) > 12);
 
     const matchesFeatures = selectedFeatures.length === 0 ||
-      selectedFeatures.every(feature => plant.features.includes(feature));
+      selectedFeatures.every(feature => plant.features?.includes(feature));
 
     return matchesSearch && matchesCountry && matchesOrder && matchesRating && matchesTurnaround && matchesFeatures;
   });

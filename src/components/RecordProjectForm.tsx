@@ -232,14 +232,17 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
 
         // console.log(index,"AllWeightOption:", weightOptionsData);
 
-        if ( weightOption === undefined || weightOption === null) {
+        // console.log(index,"5 weightOption:", weightOption);
+        let weightAdditionalCost = weightOption?.additional_cost || 0;
+
+
+        if (weightOption === undefined || weightOption === null && values.weight !== "140gm") {
           console.error(`No weight option found for plant ID ${plantId} with weight ${values.weight}`);
           invalidPlantIds.push(plantId);
           return;
+        } else if (weightOption === undefined || weightOption === null && values.weight === "140gm") {
+          weightAdditionalCost = 0;
         }
-
-        // console.log(index,"5 weightOption:", weightOption);
-        const weightAdditionalCost = weightOption?.additional_cost || 0;
 
         console.log(index, "6 finalWeightAdditionalCost:", weightAdditionalCost);
 

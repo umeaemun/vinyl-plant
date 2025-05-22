@@ -131,7 +131,7 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
   const handleAddWeightOption = () => {
     const newWeightOptions: WeightOption[] = [...weightOptions, {
       id: Date.now().toString(),
-      weight: "140gm",
+      weight: "180gm",
       additional_cost: 1,
       status: 'new'
     }];
@@ -247,7 +247,7 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
 
       if (weightOptions.length === 0) {
         const defaultWeight: WeightOption[] = [
-          {id:"1", weight: "140gm", additional_cost: 1, status: 'new' }
+          {id:"1", weight: "180gm", additional_cost: 1, status: 'new' }
         ];
         setWeightOptions(defaultWeight);
 
@@ -710,14 +710,14 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
                       <Label htmlFor={`weight-${index}`}>Weight</Label>
                       <Select
                         disabled={disabled}
-                        value="140gm"
+                        value="180gm"
                         onValueChange={(value) => handleWeightOptionChange(option.id, 'weight', value)}
                       >
                         <SelectTrigger>
-                          <SelectValue placeholder="140gm" />
+                          <SelectValue placeholder="180gm" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="140gm">140gm</SelectItem>
+                          {/* <SelectItem value="140gm">140gm</SelectItem> */}
                           <SelectItem value="180gm">180gm</SelectItem>
                           <SelectItem value="200gm">200gm</SelectItem>
                           <SelectItem value="220gm">220gm</SelectItem>

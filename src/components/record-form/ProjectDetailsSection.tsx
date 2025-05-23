@@ -7,10 +7,12 @@ import { Control } from 'react-hook-form';
 
 type ProjectDetailsSectionProps = {
   control: Control<any>;
+  disabled?: boolean;
 };
 
 const ProjectDetailsSection = ({
-  control
+  control,
+  disabled
 }: ProjectDetailsSectionProps) => {
   return <div className="space-y-4">
       <h3 className="font-display font-medium text-lg">Project Details</h3>
@@ -22,7 +24,7 @@ const ProjectDetailsSection = ({
       }) => <FormItem>
               <FormLabel>Name</FormLabel>
               <FormControl>
-                <Input placeholder="Your name" {...field} />
+                <Input placeholder="Your name" {...field} disabled={disabled} className="disabled-opacity-100"/>
               </FormControl>
             </FormItem>} />
         
@@ -31,7 +33,7 @@ const ProjectDetailsSection = ({
       }) => <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input type="email" placeholder="Your email address" {...field} />
+                <Input type="email" placeholder="Your email address" {...field} disabled={disabled} className="disabled-opacity-100"/>
               </FormControl>
             </FormItem>} />
       </div>

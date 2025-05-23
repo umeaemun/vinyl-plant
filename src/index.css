@@ -75,6 +75,12 @@
   }
 }
 
+@layer utilities {
+  .disabled-opacity-100:disabled {
+    opacity: 1 !important;
+  }
+}
+
 /* Make main content area fill available space for consistent layout */
 main {
   min-height: calc(100vh - 80px - 10px * 2); /* Adjust for header height and border */

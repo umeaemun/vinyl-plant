@@ -9,10 +9,12 @@ import * as z from "zod";
 
 type PackagingSectionProps = {
   control: Control<any>;
+  disabled?: boolean;
 };
 
 const PackagingSection = ({
-  control
+  control,
+  disabled
 }: PackagingSectionProps) => {
   return <div className="space-y-4">
       <h3 className="font-display font-medium text-lg">Packaging Specifications</h3>
@@ -24,9 +26,9 @@ const PackagingSection = ({
               Inner Sleeve
               <FormTooltip content="The sleeve that holds the vinyl record inside the jacket. Different materials offer varying levels of protection and aesthetic appeal." />
             </FormLabel>
-            <Select onValueChange={field.onChange} defaultValue={field.value}>
+            <Select onValueChange={field.onChange} defaultValue={field.value} disabled={disabled}>
               <FormControl>
-                <SelectTrigger>
+                <SelectTrigger className="disabled-opacity-100">
                   <SelectValue placeholder="Select inner sleeve" />
                 </SelectTrigger>
               </FormControl>
@@ -47,9 +49,9 @@ const PackagingSection = ({
               Jacket
               <FormTooltip content="The outer cover that houses your vinyl record. Different types offer various design possibilities" />
             </FormLabel>
-            <Select onValueChange={field.onChange} defaultValue={field.value}>
+            <Select onValueChange={field.onChange} defaultValue={field.value} disabled={disabled}>
               <FormControl>
-                <SelectTrigger>
+                <SelectTrigger className="disabled-opacity-100">
                   <SelectValue placeholder="Select jacket" />
                 </SelectTrigger>
               </FormControl>
@@ -74,9 +76,9 @@ const PackagingSection = ({
               Inserts
               <FormTooltip content="Additional printed materials included with your vinyl, such as lyric sheets, artwork, or promotional materials." />
             </FormLabel>
-            <Select onValueChange={field.onChange} defaultValue={field.value}>
+            <Select onValueChange={field.onChange} defaultValue={field.value} disabled={disabled}>
               <FormControl>
-                <SelectTrigger>
+                <SelectTrigger className="disabled-opacity-100">
                   <SelectValue placeholder="Select inserts" />
                 </SelectTrigger>
               </FormControl>
@@ -94,9 +96,9 @@ const PackagingSection = ({
               Shrink Wrap
               <FormTooltip content="Protective plastic wrapping around the finished product. Provides protection during shipping and gives a professional retail-ready appearance." />
             </FormLabel>
-            <Select onValueChange={field.onChange} defaultValue={field.value}>
+            <Select onValueChange={field.onChange} defaultValue={field.value} disabled={disabled}>
               <FormControl>
-                <SelectTrigger>
+                <SelectTrigger className="disabled-opacity-100">
                   <SelectValue placeholder="Select shrink wrap option" />
                 </SelectTrigger>
               </FormControl>

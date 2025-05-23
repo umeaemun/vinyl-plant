@@ -66,13 +66,23 @@ const Order = () => {
     const vinylData = localStorage.getItem('vinylFormData');
     const pricingData = localStorage.getItem('calculatedPlantPricing');
 
+    // console.log("Vinyl Data:", vinylData);
+    // console.log("Pricing Data:", pricingData);
+
     if (vinylData && pricingData) {
       try {
         const specs = JSON.parse(vinylData);      // form data ( user's requirements )
         const pricing = JSON.parse(pricingData);  // pricing data ( price / unit )
+
+        // console.log("Specs:", specs);
+        // console.log("Pricing:", pricing);
+
         const plantPricing = pricing.find((p: any) => p.id == plantId);  // find the pricing for the selected plant
 
+        // console.log("Plant Pricing:", plantPricing);
+
         if (specs && plantPricing) {
+          
           setOrderSummary({
             ...specs,
             perUnit: plantPricing.calculatedPricing.perUnit

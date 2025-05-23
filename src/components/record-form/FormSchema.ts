@@ -4,13 +4,11 @@ import * as z from "zod";
 export const formSchema = z.object({
   username: z.string().optional(),
   email: z.string().email().optional(),
-  catalogueNumber: z.string().optional(),
   quantity: z.string(),
   size: z.string(),
   type: z.string(),
   weight: z.string(),
   colour: z.string(),
-  centreLabels: z.string(),
   innerSleeve: z.string(),
   jacket: z.string(),
   inserts: z.string(),

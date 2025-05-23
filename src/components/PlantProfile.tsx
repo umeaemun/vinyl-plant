@@ -118,7 +118,7 @@ const PlantProfile: React.FC<PlantProfileProps> = ({ plant }) => {
   };
 
   return (
-    <div className="container mx-auto py-6 px-4">
+    <div className="container mx-auto py-6 px-4 mb-4">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div className="md:col-span-2">
           <div className="flex items-center mb-4">
@@ -190,12 +190,17 @@ const PlantProfile: React.FC<PlantProfileProps> = ({ plant }) => {
             </a>
 
             <Link to="/order" onClick={() => selectPlantForQuote(plant.id)}>
-              <Button variant="default" className="bg-wwwax-green text-black hover:bg-wwwax-green/80 text-xs px-3 py-1 h-auto mt-2">
+              <Button variant="default"
+                className="w-full mb-3 text-black bg-[#08fc04] hover:bg-[#2ae627]"
+                onClick={() => selectPlantForQuote(plant.id)}
+              >
                 Order Now
               </Button>
             </Link>
 
-            <Button className="w-full mb-3" onClick={handleRequestQuote}>
+            <Button
+              className="w-full mb-3 text-black bg-[#08fc04] hover:bg-[#2ae627]"
+              onClick={handleRequestQuote}>
               <FileText className="h-4 w-4 mr-2" />
               Request a Quote
             </Button>

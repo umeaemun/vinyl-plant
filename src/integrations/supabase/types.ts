@@ -321,7 +321,7 @@ export type Database = {
       }
       orders: {
         Row: {
-          buyer_id: string;
+          user_id: string;
           created_at: string;
           id: string;
           plant_id: string;
@@ -332,7 +332,7 @@ export type Database = {
           vinyl_type: string;
         };
         Insert: {
-          buyer_id: string;
+          user_id: string;
           created_at?: string;
           id?: string;
           plant_id: string;
@@ -343,7 +343,7 @@ export type Database = {
           vinyl_type: string;
         };
         Update: {
-          buyer_id?: string;
+          user_id?: string;
           created_at?: string;
           id?: string;
           plant_id?: string;
@@ -355,6 +355,54 @@ export type Database = {
         };
         Relationships: [];
       };
+      requirements_form_details:{
+        Row:{
+          id: string;
+          user_id: string;
+          quantity: number;
+          size: string;
+          type: string;
+          weight: string;
+          colour: string;
+          inner_sleeve: string;
+          jacket: string;
+          inserts: string;
+          shrink_wrap: string;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert:{
+          id: string;
+          user_id: string;
+          quantity: number;
+          size: string;
+          type: string;
+          weight: string;
+          colour: string;
+          inner_sleeve: string;
+          jacket: string;
+          inserts: string;
+          shrink_wrap: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update:{
+          id?: string;
+          user_id?: string;
+          quantity?: number;
+          size?: string;
+          type?: string;
+          weight?: string;
+          colour?: string;
+          inner_sleeve?: string;
+          jacket?: string;
+          inserts?: string;
+          shrink_wrap?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      }
 
     };
     Views: {

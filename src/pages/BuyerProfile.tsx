@@ -44,7 +44,7 @@ const BuyerProfile = () => {
       const { data, error } = await supabase
         .from('orders')
         .select('*')
-        .eq('buyer_id', user.id)
+        .eq('user_id', user.id)
         .order('created_at', { ascending: false });
       
       if (error) {

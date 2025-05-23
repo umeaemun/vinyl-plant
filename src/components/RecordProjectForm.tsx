@@ -46,7 +46,6 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
     defaultValues: {
       username: userProfile?.username || "",
       email: user?.email || "",
-      catalogueNumber: "",
       quantity: "1500",
       size: "12",
       type: "1LP",
@@ -344,6 +343,35 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
         localStorage.setItem('selectedPlantForQuote', selectedPlant);
         console.log("Selected plant saved:", selectedPlant);
       }
+
+      // save form data to Supabase
+      const { data: formData, error: formError } = await supabase
+        .from('requirements_form_details')
+        .upsert(
+          [{
+            user_id: user?.id,
+            quantity: values.quantity,
+            size: values.size,
+            type: values.type,
+            weight: values.weight,
+            colour: values.colour,
+            inner_sleeve: values.innerSleeve,
+            jacket: values.jacket,
+            inserts: values.inserts,
+            shrink_wrap: values.shrinkWrap
+          }],
+          {
+            onConflict: 'user_id',
+            ignoreDuplicates: false,
+          }
+        )
+
+
+      if (formError) {
+        console.error('Error saving form data:', formError);
+        throw new Error('Failed to save form data');
+      }
+      console.log("Form data saved to Supabase:", formData);
 
       toast({
         title: "Form submitted successfully",

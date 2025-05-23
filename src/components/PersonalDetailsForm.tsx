@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -18,6 +18,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Separator } from '@/components/ui/separator';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface PersonalDetailsFormProps {
   selectedPlant: Plant | null;
@@ -44,6 +45,7 @@ const PersonalDetailsForm = ({ selectedPlant }: PersonalDetailsFormProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { userProfile } = useAuth();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -62,6 +64,30 @@ const PersonalDetailsForm = ({ selectedPlant }: PersonalDetailsFormProps) => {
       comments: "",
     },
   });
+
+  useEffect(() => {
+    // Pre-fill the form with user profile data if available
+    if (userProfile) {
+      const firstName = userProfile.username?.split(" ")[0] || "";
+      const lastName = userProfile.username?.split(" ")[1] || "";
+      const address = `${userProfile.address_street} ${userProfile.address_city || ""}`.trim();
+
+      form.reset({
+        firstName: firstName,
+        lastName: lastName,
+        email: userProfile.email || "",
+        phone: userProfile.phone || "",
+        companyLabel: userProfile.company || "",
+        address1: address || "",
+        address2: userProfile.address2 || "",
+        city: userProfile.city || "",
+        state: userProfile.address_state || "",
+        postalCode: userProfile.address_postal_code || "",
+        country: userProfile.country || "",
+        comments: userProfile.comments || "",
+      });
+    }
+  }, [userProfile, form]);
 
   const onSubmit = async (values: FormValues) => {
     setIsSubmitting(true);

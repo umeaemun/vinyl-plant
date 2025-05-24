@@ -72,7 +72,7 @@ const PlantCard: React.FC<PlantCardProps> = ({ plant, formData, pricingData }) =
       <div className="relative h-48 overflow-hidden">
         <Link to={`/plant/${plant.id}`}>
           <img 
-            src={plant.image_url || '/public/no-img.jpg'} 
+            src={plant.image_url || '/no-img.jpg'} 
             alt={plant.name} 
             className="w-full h-full object-cover transition-transform hover:scale-105 duration-300" 
           />

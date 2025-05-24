@@ -40,23 +40,33 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
   const { user, userProfile } = useAuth();
 
   const [plants, setPlants] = useState<any[]>(null);
+  const vinylFormData = localStorage.getItem('vinylFormData');
+  const parsedData = JSON.parse(vinylFormData);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       username: userProfile?.username || "",
       email: user?.email || "",
-      quantity: "1500",
-      size: "12",
-      type: "1LP",
-      weight: "140gm",
-      colour: "black",
-      innerSleeve: "white-paper",
-      jacket: "single-pocket-3mm",
-      inserts: "single-insert",
-      shrinkWrap: "yes"
+      quantity: parsedData?.quantity || "1500",
+      size: parsedData?.size || "12",
+      type: parsedData?.type || "1LP",
+      weight: parsedData?.weight || "140gm",
+      colour: parsedData?.colour || "black",
+      innerSleeve: parsedData?.innerSleeve || "white-paper",
+      jacket: parsedData?.jacket || "single-pocket-3mm",
+      inserts: parsedData?.inserts || "single-insert",
+      shrinkWrap: parsedData?.shrinkWrap || "yes",
     }
   });
+
+
+  useEffect(() => {
+    if (user && userProfile) {
+      form.setValue("email", user.email);
+      form.setValue("username", userProfile.username || "");
+    }
+  }, [user, userProfile, form]);
 
   useEffect(() => {
     const fetchPlants = async () => {
@@ -80,12 +90,7 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
 
   }, []);
 
-  useEffect(() => {
-    if (user && userProfile) {
-      form.setValue("email", user.email);
-      form.setValue("username", userProfile.username || "");
-    }
-  }, [user, userProfile, form]);
+  
 
   useEffect(() => {
     const plantId = localStorage.getItem('selectedPlantId');
@@ -333,11 +338,11 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
 
       // Calculate pricing using Supabase data
       const plantPricingData = await calculatePricingFromSupabase(values);
-      console.log("Calculated pricing data from Supabase:", plantPricingData);
+      // console.log("Calculated pricing data from Supabase:", plantPricingData);
 
       // Save pricing data to localStorage
       localStorage.setItem('calculatedPlantPricing', JSON.stringify(plantPricingData));
-      console.log("Pricing data saved for all plants");
+      // console.log("Pricing data saved for all plants");
 
       if (selectedPlant) {
         localStorage.setItem('selectedPlantForQuote', selectedPlant);
@@ -365,13 +370,15 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
             ignoreDuplicates: false,
           }
         )
+        .select('*')
+        .single();
 
 
       if (formError) {
         console.error('Error saving form data:', formError);
         throw new Error('Failed to save form data');
       }
-      console.log("Form data saved to Supabase:", formData);
+      // console.log("Form data saved to Supabase:", formData);
 
       toast({
         title: "Form submitted successfully",

@@ -124,7 +124,7 @@ const Order = () => {
     navigate('/');
   };
 
-  console.log('Selected Plant:', selectedPlant);
+  // console.log('Selected Plant:', selectedPlant);
   console.log('Order Summary:', orderSummary);
 
   return (

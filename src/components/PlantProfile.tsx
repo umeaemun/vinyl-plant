@@ -175,7 +175,7 @@ const PlantProfile: React.FC<PlantProfileProps> = ({ plant }) => {
           </div>
         </div>
 
-        <div className="md:col-span-1">
+        {/* <div className="md:col-span-1">
           <div className="rounded-lg overflow-hidden border border-border bg-card p-5">
             <h3 className="font-display text-lg font-semibold mb-4">Contact Information</h3>
 
@@ -206,7 +206,7 @@ const PlantProfile: React.FC<PlantProfileProps> = ({ plant }) => {
             </Button>
             <Button variant="outline" className="w-full">Add to Comparison</Button>
           </div>
-        </div>
+        </div> */}
       </div>
 
       <Tabs defaultValue="features" className="mt-10">

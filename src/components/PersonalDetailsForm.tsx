@@ -93,23 +93,23 @@ const PersonalDetailsForm = ({ selectedPlant }: PersonalDetailsFormProps) => {
 
   const onSubmit = async (values: FormValues) => {
     setIsSubmitting(true);
-    
+
     try {
       console.log("personal details Form values:", values);
-      
+
       // Get the vinyl specs from localStorage
       const vinylFormData = localStorage.getItem('vinylFormData');
-      
+
       // Combine the personal details with vinyl specs
       const orderData = {
         personalDetails: values,
         vinylSpecs: vinylFormData ? JSON.parse(vinylFormData) : {},
         selectedPlantId: selectedPlant?.id || localStorage.getItem('selectedPlantId'),
       };
-      
+
       // Save the full order data to localStorage for demonstration
       // localStorage.setItem('orderData', JSON.stringify(orderData));
- 
+
       // submit the order data to supabase
       const { data, error } = await supabase
         .from('orders')
@@ -123,7 +123,7 @@ const PersonalDetailsForm = ({ selectedPlant }: PersonalDetailsFormProps) => {
         ])
         .single();
       if (error) {
-        console.error("Error submitting order:", error);  
+        console.error("Error submitting order:", error);
         toast({
           title: "Submission failed",
           description: "There was a problem submitting your order. Please try again.",
@@ -132,21 +132,21 @@ const PersonalDetailsForm = ({ selectedPlant }: PersonalDetailsFormProps) => {
         return;
       }
       console.log("Order submitted successfully:", data);
-      
+
       toast({
         title: "Order submitted successfully!",
         description: "We've received your order and will be in touch soon.",
       });
-      
+
       // Clear localStorage data that's no longer needed
       localStorage.removeItem('selectedPlantId');
       localStorage.removeItem('vinylFormData');
-      
+
       // Redirect to home or a thank you page
       setTimeout(() => {
         navigate('/');
       }, 2000);
-      
+
     } catch (error) {
       console.error("Order submission error:", error);
       toast({
@@ -159,6 +159,53 @@ const PersonalDetailsForm = ({ selectedPlant }: PersonalDetailsFormProps) => {
     }
   };
 
+  const handleSaveForLater = async () => {
+    const vinylFormData = localStorage.getItem('vinylFormData');
+
+    if (!vinylFormData) {
+      toast({
+        title: "No Vinyl Specs Found",
+        description: "Please fill out the vinyl specifications before saving.",
+        variant: "destructive",
+      });
+      return;
+    }
+    const data = JSON.parse(vinylFormData);
+    
+    // save form data to Supabase
+    const { data: formData, error: formError } = await supabase
+      .from('requirements_form_details')
+      .upsert(
+        [{
+          user_id: userProfile?.id,
+          quantity: data.quantity,
+          size: data.size,
+          type: data.type,
+          weight: data.weight,
+          colour: data.colour,
+          inner_sleeve: data.innerSleeve,
+          jacket: data.jacket,
+          inserts: data.inserts,
+          shrink_wrap: data.shrinkWrap
+        }],
+        {
+          onConflict: 'user_id',
+          ignoreDuplicates: false,
+        }
+      )
+      .select('*')
+      .single();
+
+
+    if (formError) {
+      console.error('Error saving form data:', formError);
+      throw new Error('Failed to save form data');
+    }
+    // console.log("Form data saved to Supabase:", formData);
+
+
+  }
+
   return (
     <div className="p-6 w-full">
       <Form {...form}>
@@ -167,7 +214,7 @@ const PersonalDetailsForm = ({ selectedPlant }: PersonalDetailsFormProps) => {
           <div className="space-y-4">
             <h3 className="font-medium text-lg">Contact Information</h3>
             <Separator className="mb-4" />
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormField
                 control={form.control}
@@ -182,7 +229,7 @@ const PersonalDetailsForm = ({ selectedPlant }: PersonalDetailsFormProps) => {
                   </FormItem>
                 )}
               />
-              
+
               <FormField
                 control={form.control}
                 name="lastName"
@@ -211,7 +258,7 @@ const PersonalDetailsForm = ({ selectedPlant }: PersonalDetailsFormProps) => {
                 </FormItem>
               )}
             />
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormField
                 control={form.control}
@@ -226,7 +273,7 @@ const PersonalDetailsForm = ({ selectedPlant }: PersonalDetailsFormProps) => {
                   </FormItem>
                 )}
               />
-              
+
               <FormField
                 control={form.control}
                 name="phone"
@@ -242,12 +289,12 @@ const PersonalDetailsForm = ({ selectedPlant }: PersonalDetailsFormProps) => {
               />
             </div>
           </div>
-          
+
           {/* Shipping Address */}
           <div className="space-y-4">
             <h3 className="font-medium text-lg">Shipping Address</h3>
             <Separator className="mb-4" />
-            
+
             <FormField
               control={form.control}
               name="address1"
@@ -261,7 +308,7 @@ const PersonalDetailsForm = ({ selectedPlant }: PersonalDetailsFormProps) => {
                 </FormItem>
               )}
             />
-            
+
             <FormField
               control={form.control}
               name="address2"
@@ -275,7 +322,7 @@ const PersonalDetailsForm = ({ selectedPlant }: PersonalDetailsFormProps) => {
                 </FormItem>
               )}
             />
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormField
                 control={form.control}
@@ -290,7 +337,7 @@ const PersonalDetailsForm = ({ selectedPlant }: PersonalDetailsFormProps) => {
                   </FormItem>
                 )}
               />
-              
+
               <FormField
                 control={form.control}
                 name="state"
@@ -305,7 +352,7 @@ const PersonalDetailsForm = ({ selectedPlant }: PersonalDetailsFormProps) => {
                 )}
               />
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormField
                 control={form.control}
@@ -320,7 +367,7 @@ const PersonalDetailsForm = ({ selectedPlant }: PersonalDetailsFormProps) => {
                   </FormItem>
                 )}
               />
-              
+
               <FormField
                 control={form.control}
                 name="country"
@@ -336,12 +383,12 @@ const PersonalDetailsForm = ({ selectedPlant }: PersonalDetailsFormProps) => {
               />
             </div>
           </div>
-          
+
           {/* Additional Information */}
           <div className="space-y-4">
             <h3 className="font-medium text-lg">Additional Information</h3>
             <Separator className="mb-4" />
-            
+
             <FormField
               control={form.control}
               name="comments"
@@ -349,10 +396,10 @@ const PersonalDetailsForm = ({ selectedPlant }: PersonalDetailsFormProps) => {
                 <FormItem>
                   <FormLabel>Comments or Special Instructions (Optional)</FormLabel>
                   <FormControl>
-                    <Textarea 
+                    <Textarea
                       placeholder="Any special requirements or information we should know about your order"
-                      className="min-h-[100px]" 
-                      {...field} 
+                      className="min-h-[100px]"
+                      {...field}
                     />
                   </FormControl>
                   <FormMessage />
@@ -360,15 +407,25 @@ const PersonalDetailsForm = ({ selectedPlant }: PersonalDetailsFormProps) => {
               )}
             />
           </div>
-          
-          <div className="pt-4">
-            <Button 
-              type="submit" 
-              size="lg" 
-              className="w-full bg-wwwax-green text-black hover:bg-wwwax-green/80"
+
+          <div className="flex pt-4">
+            <Button
+              type="submit"
+              size="lg"
+              className="w-[47%] text-black bg-[#08fc04] hover:bg-[#2ae627]"
               disabled={isSubmitting}
             >
               {isSubmitting ? "Submitting..." : "Complete Order"}
+            </Button>
+
+            <Button
+              type="button"
+              size="lg"
+              className="w-[47%] text-black bg-[#08fc04] hover:bg-[#2ae627]"
+              onClick={handleSaveForLater}
+              disabled={isSubmitting}
+            >
+              Save My Order For Later
             </Button>
           </div>
         </form>

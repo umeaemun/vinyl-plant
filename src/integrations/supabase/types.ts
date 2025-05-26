@@ -418,6 +418,7 @@ export type Database = {
       requirements_form_details:{
         Row:{
           id: string;
+          plant_id: string;
           user_id: string;
           name: string;
           email: string;
@@ -435,6 +436,7 @@ export type Database = {
         };
         Insert:{
           id: string;
+          plant_id: string;
           user_id: string;
           name: string;
           email: string;
@@ -452,6 +454,7 @@ export type Database = {
         };
         Update:{
           id?: string;
+          plant_id?: string;
           user_id?: string;
           name?: string;
           email?: string;

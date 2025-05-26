@@ -122,7 +122,7 @@ const PersonalDetailsForm = ({ selectedPlant }: PersonalDetailsFormProps) => {
             user_id: userProfile?.id,
             status: 'pending',
             project_name: selectedPlant?.name || "",
-            email: selectedPlant.owner?.email || "",
+            email: selectedPlant.owner?.email || userProfile?.email || "",
             quantity: vinylSpecs.quantity,
             size: vinylSpecs.size,
             type: vinylSpecs.type,
@@ -201,9 +201,10 @@ const PersonalDetailsForm = ({ selectedPlant }: PersonalDetailsFormProps) => {
       .from('requirements_form_details')
       .upsert(
         [{
+          plant_id: selectedPlant?.id || localStorage.getItem('selectedPlantId'),
           user_id: userProfile?.id,
           name: selectedPlant?.name || "",
-          email: selectedPlant?.owner?.email || "",
+          email: selectedPlant?.owner?.email || userProfile?.email || "",
           quantity: data.quantity,
           size: data.size,
           type: data.type,
@@ -229,6 +230,19 @@ const PersonalDetailsForm = ({ selectedPlant }: PersonalDetailsFormProps) => {
     }
     // console.log("Form data saved to Supabase:", formData);
 
+    toast({
+      title: "Order saved for later",
+      description: "Your order details have been saved. You can complete it later.",
+    });
+
+    // Clear localStorage data
+    localStorage.removeItem('selectedPlantId');
+    localStorage.removeItem('vinylFormData');
+    // Redirect to home or a thank you page
+    setTimeout(() => {
+      navigate('/');
+    }
+    , 2000);
 
   }
 

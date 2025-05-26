@@ -99,26 +99,50 @@ const PersonalDetailsForm = ({ selectedPlant }: PersonalDetailsFormProps) => {
 
       // Get the vinyl specs from localStorage
       const vinylFormData = localStorage.getItem('vinylFormData');
+      const vinylSpecs = vinylFormData ? JSON.parse(vinylFormData) : null;
+      if (!vinylSpecs) {
+        toast({
+          title: "No Vinyl Specs Found",
+          description: "Please fill out the vinyl specifications before submitting your order.",
+          variant: "destructive",
+        });
+        return;
+      }
 
-      // Combine the personal details with vinyl specs
-      const orderData = {
-        personalDetails: values,
-        vinylSpecs: vinylFormData ? JSON.parse(vinylFormData) : {},
-        selectedPlantId: selectedPlant?.id || localStorage.getItem('selectedPlantId'),
-      };
-
-      // Save the full order data to localStorage for demonstration
-      // localStorage.setItem('orderData', JSON.stringify(orderData));
+      const personalDetails = values;
+      const selectedPlantId = selectedPlant?.id || localStorage.getItem('selectedPlantId');
+     
 
       // submit the order data to supabase
       const { data, error } = await supabase
         .from('orders')
         .insert([
           {
+            plant_id: selectedPlantId,
             user_id: userProfile?.id,
-            plant_id: orderData.selectedPlantId,
-            personal_details: orderData.personalDetails,
-            vinyl_specs: orderData.vinylSpecs,
+            status: 'pending',
+            project_name: selectedPlant?.name || "",
+            email: personalDetails.email,
+            quantity: vinylSpecs.quantity,
+            size: vinylSpecs.size,
+            type: vinylSpecs.type,
+            weight: vinylSpecs.weight,
+            colour: vinylSpecs.colour,
+            inner_sleeve: vinylSpecs.innerSleeve,
+            jacket: vinylSpecs.jacket,
+            inserts: vinylSpecs.inserts,
+            shrink_wrap: vinylSpecs.shrinkWrap,
+            first_name: personalDetails.firstName,
+            last_name: personalDetails.lastName,
+            company: personalDetails.companyLabel,
+            phone: personalDetails.phone,
+            address_1: personalDetails.address1,
+            address_2: personalDetails.address2,
+            city: personalDetails.city,
+            state: personalDetails.state,
+            postal_code: personalDetails.postalCode,
+            country: personalDetails.country,
+            comments: personalDetails.comments,
           },
         ])
         .single();

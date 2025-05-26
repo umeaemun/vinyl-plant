@@ -315,6 +315,17 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
   };
 
   const handleSubmit = async (values: FormValues) => {
+
+    if (!user || !userProfile) {
+      console.error("User not authenticated");
+      toast({
+        title: "Authentication Required",
+        description: "Please log in to submit your project details.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     console.log("Form submit triggered with values:", values);
 
     if (isSubmitting) {

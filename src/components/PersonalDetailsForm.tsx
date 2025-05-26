@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/form";
 import { Separator } from '@/components/ui/separator';
 import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
 
 interface PersonalDetailsFormProps {
   selectedPlant: Plant | null;
@@ -26,7 +27,8 @@ interface PersonalDetailsFormProps {
 
 const formSchema = z.object({
   firstName: z.string().min(2, { message: "First name must be at least 2 characters." }),
-  lastName: z.string().min(2, { message: "Last name must be at least 2 characters." }),
+  // lastName: z.string().min(2, { message: "Last name must be at least 2 characters." }),
+  lastName: z.string(),
   email: z.string().email({ message: "Please enter a valid email address." }),
   phone: z.string().min(5, { message: "Please enter a valid phone number." }),
   companyLabel: z.string().optional(),
@@ -93,7 +95,7 @@ const PersonalDetailsForm = ({ selectedPlant }: PersonalDetailsFormProps) => {
     setIsSubmitting(true);
     
     try {
-      console.log("Form values:", values);
+      console.log("personal details Form values:", values);
       
       // Get the vinyl specs from localStorage
       const vinylFormData = localStorage.getItem('vinylFormData');
@@ -106,10 +108,30 @@ const PersonalDetailsForm = ({ selectedPlant }: PersonalDetailsFormProps) => {
       };
       
       // Save the full order data to localStorage for demonstration
-      localStorage.setItem('orderData', JSON.stringify(orderData));
-      
-      // In a real app, you'd send this to your backend
-      // await submitOrderToBackend(orderData);
+      // localStorage.setItem('orderData', JSON.stringify(orderData));
+ 
+      // submit the order data to supabase
+      const { data, error } = await supabase
+        .from('orders')
+        .insert([
+          {
+            user_id: userProfile?.id,
+            plant_id: orderData.selectedPlantId,
+            personal_details: orderData.personalDetails,
+            vinyl_specs: orderData.vinylSpecs,
+          },
+        ])
+        .single();
+      if (error) {
+        console.error("Error submitting order:", error);  
+        toast({
+          title: "Submission failed",
+          description: "There was a problem submitting your order. Please try again.",
+          variant: "destructive",
+        });
+        return;
+      }
+      console.log("Order submitted successfully:", data);
       
       toast({
         title: "Order submitted successfully!",

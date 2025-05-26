@@ -17,6 +17,7 @@ import { useAuth } from '@/contexts/AuthContext';
 
 interface RecordProjectFormProps {
   hideSubmitButton?: boolean;
+  selectedPlantDetails?: {}
 }
 
 interface PricingData {
@@ -32,7 +33,8 @@ interface PricingData {
   };
 }
 
-const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton = false }) => {
+const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton = false, selectedPlantDetails = {} }) => {
+  
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedPlant, setSelectedPlant] = useState<string | null>(null);
   const navigate = useNavigate();
@@ -46,8 +48,8 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      username: userProfile?.username || "",
-      email: user?.email || "",
+      name: "",
+      email: "",
       quantity: parsedData?.quantity || "1500",
       size: parsedData?.size || "12",
       type: parsedData?.type || "1LP",
@@ -61,12 +63,12 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
   });
 
 
-  useEffect(() => {
-    if (user && userProfile) {
-      form.setValue("email", user.email);
-      form.setValue("username", userProfile.username || "");
-    }
-  }, [user, userProfile, form]);
+  // useEffect(() => {
+  //   if (user && userProfile) {
+  //     form.setValue("email", user.email);
+  //     form.setValue("username", userProfile.username || "");
+  //   }
+  // }, [user, userProfile, form]);
 
   useEffect(() => {
     const fetchPlants = async () => {
@@ -444,7 +446,7 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
           )}
 
           <div className="w-full">
-            <ProjectDetailsSection control={form.control} disabled={hideSubmitButton}/>
+            <ProjectDetailsSection control={form.control} disabled={hideSubmitButton} plant={selectedPlantDetails}/>
           </div>
 
           <Separator className="my-6" />

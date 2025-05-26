@@ -122,7 +122,7 @@ const PersonalDetailsForm = ({ selectedPlant }: PersonalDetailsFormProps) => {
             user_id: userProfile?.id,
             status: 'pending',
             project_name: selectedPlant?.name || "",
-            email: personalDetails.email,
+            email: selectedPlant.owner?.email || "",
             quantity: vinylSpecs.quantity,
             size: vinylSpecs.size,
             type: vinylSpecs.type,
@@ -202,6 +202,8 @@ const PersonalDetailsForm = ({ selectedPlant }: PersonalDetailsFormProps) => {
       .upsert(
         [{
           user_id: userProfile?.id,
+          name: selectedPlant?.name || "",
+          email: selectedPlant?.owner?.email || "",
           quantity: data.quantity,
           size: data.size,
           type: data.type,
@@ -432,7 +434,7 @@ const PersonalDetailsForm = ({ selectedPlant }: PersonalDetailsFormProps) => {
             />
           </div>
 
-          <div className="flex pt-4">
+          <div className="flex pt-4 justify-between">
             <Button
               type="submit"
               size="lg"

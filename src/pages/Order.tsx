@@ -34,8 +34,6 @@ const Order = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-
-
   useEffect(() => {
     // Get plant information
     const plantId = localStorage.getItem('selectedPlantId');
@@ -217,7 +215,7 @@ const Order = () => {
             <div>
               <h2 className="text-xl font-semibold mb-4">1. Vinyl Project Specifications</h2>
               <div className="bg-white rounded-lg shadow-sm">
-                <RecordProjectForm hideSubmitButton={true} />
+                <RecordProjectForm hideSubmitButton={true} selectedPlantDetails={selectedPlant}/>
               </div>
             </div>
 

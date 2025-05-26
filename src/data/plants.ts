@@ -76,7 +76,7 @@ export interface Plant {
   name: string;
   location: string;
   country: string;
-  owner: string;
+  owner: any;
   description: string;
   minimum_order: number;
   turnaround_time: string;

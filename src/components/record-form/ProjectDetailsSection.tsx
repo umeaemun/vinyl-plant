@@ -16,13 +16,12 @@ const ProjectDetailsSection = ({
 }: ProjectDetailsSectionProps) => {
   
   return (
-    !disabled &&
        <div className="space-y-4">
       <h3 className="font-display font-medium text-lg">Project Details</h3>
       <Separator className="mb-4" />
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <FormField control={control} name="username" render={({
+        <FormField control={control} name="name" render={({
         field
       }) => <FormItem>
               <FormLabel>Name</FormLabel>

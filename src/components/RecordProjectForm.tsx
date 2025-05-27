@@ -34,7 +34,7 @@ interface PricingData {
 }
 
 const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton = false, selectedPlantDetails = {} }) => {
-  
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedPlant, setSelectedPlant] = useState<string | null>(null);
   const navigate = useNavigate();
@@ -92,7 +92,7 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
 
   }, []);
 
-  
+
 
   useEffect(() => {
     const plantId = localStorage.getItem('selectedPlantId');
@@ -364,37 +364,6 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
         console.log("Selected plant saved:", selectedPlant);
       }
 
-      // // save form data to Supabase
-      // const { data: formData, error: formError } = await supabase
-      //   .from('requirements_form_details')
-      //   .upsert(
-      //     [{
-      //       user_id: user?.id,
-      //       quantity: values.quantity,
-      //       size: values.size,
-      //       type: values.type,
-      //       weight: values.weight,
-      //       colour: values.colour,
-      //       inner_sleeve: values.innerSleeve,
-      //       jacket: values.jacket,
-      //       inserts: values.inserts,
-      //       shrink_wrap: values.shrinkWrap
-      //     }],
-      //     {
-      //       onConflict: 'user_id',
-      //       ignoreDuplicates: false,
-      //     }
-      //   )
-      //   .select('*')
-      //   .single();
-
-
-      // if (formError) {
-      //   console.error('Error saving form data:', formError);
-      //   throw new Error('Failed to save form data');
-      // }
-      // // console.log("Form data saved to Supabase:", formData);
-
       toast({
         title: "Form submitted successfully",
         description: "Redirecting to comparison page...",
@@ -447,15 +416,18 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
             </div>
           )}
 
-          <div className="w-full">
-            <ProjectDetailsSection control={form.control} disabled={hideSubmitButton} />
-          </div>
-
-          <Separator className="my-6" />
+          {!hideSubmitButton && 
+          <>
+            <div className="w-full">
+              <ProjectDetailsSection control={form.control} disabled={hideSubmitButton} />
+            </div>
+            <Separator className="my-6" />
+          </>
+          }
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <VinylDetailsSection control={form.control} disabled={hideSubmitButton}/>
-            <PackagingSection control={form.control} disabled={hideSubmitButton}/>
+            <VinylDetailsSection control={form.control} disabled={hideSubmitButton} />
+            <PackagingSection control={form.control} disabled={hideSubmitButton} />
           </div>
 
           {!hideSubmitButton && (

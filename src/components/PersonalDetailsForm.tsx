@@ -122,7 +122,6 @@ const PersonalDetailsForm = ({ selectedPlant }: PersonalDetailsFormProps) => {
             user_id: userProfile?.id,
             status: 'pending',
             project_name: selectedPlant?.name || "",
-            email: selectedPlant.owner?.email || userProfile?.email || "",
             quantity: vinylSpecs.quantity,
             size: vinylSpecs.size,
             type: vinylSpecs.type,
@@ -135,6 +134,7 @@ const PersonalDetailsForm = ({ selectedPlant }: PersonalDetailsFormProps) => {
             first_name: personalDetails.firstName,
             last_name: personalDetails.lastName,
             company: personalDetails.companyLabel,
+            email: userProfile?.email,
             phone: personalDetails.phone,
             address_1: personalDetails.address1,
             address_2: personalDetails.address2,
@@ -195,6 +195,7 @@ const PersonalDetailsForm = ({ selectedPlant }: PersonalDetailsFormProps) => {
       return;
     }
     const data = JSON.parse(vinylFormData);
+    console.log("Saving form data for later:", data);
     
     // save form data to Supabase
     const { data: formData, error: formError } = await supabase
@@ -203,8 +204,8 @@ const PersonalDetailsForm = ({ selectedPlant }: PersonalDetailsFormProps) => {
         [{
           plant_id: selectedPlant?.id || localStorage.getItem('selectedPlantId'),
           user_id: userProfile?.id,
-          name: selectedPlant?.name || "",
-          email: selectedPlant?.owner?.email || userProfile?.email || "",
+          name: data?.name || "",
+          email: data?.email || "",
           quantity: data.quantity,
           size: data.size,
           type: data.type,

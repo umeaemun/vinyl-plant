@@ -123,7 +123,7 @@ const Order = () => {
   };
 
   // console.log('Selected Plant:', selectedPlant);
-  console.log('Order Summary:', orderSummary);
+  // console.log('Order Summary:', orderSummary);
 
   return (
     <div className="flex flex-col min-h-screen">

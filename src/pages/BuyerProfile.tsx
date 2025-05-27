@@ -36,7 +36,6 @@ const BuyerProfile = () => {
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
 
   const [isUploading, setIsUploading] = useState(false);
-  const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   const { data: orders, isLoading: ordersLoading, error: ordersError } = useQuery({
     queryKey: ['orders', user?.id],
@@ -83,6 +82,7 @@ const BuyerProfile = () => {
         addressPostalCode: userProfile.address_postal_code || '',
         avatarUrl: userProfile.avatar_url || ''
       });
+
     }
   }, [userProfile]);
 
@@ -113,28 +113,40 @@ const BuyerProfile = () => {
         address_postal_code: profileData.addressPostalCode
       };
 
+
+
       if (avatarFile) {
-        const fileExt = avatarFile.name.split('.').pop();
-        const fileName = `${user.id}/${Math.random()}.${fileExt}`;
-        
-        const { error: uploadError } = await supabase.storage
-          .from('avatars')
-          .upload(fileName, avatarFile);
+     
 
-        if (uploadError) {
-          toast({
-            title: 'Avatar Upload Failed',
-            description: uploadError.message,
-            variant: 'destructive',
-          });
-          return;
-        }
 
-        const { data: { publicUrl } } = supabase.storage
-          .from('avatars')
-          .getPublicUrl(fileName);
-
-        updateData.avatar_url = publicUrl;
+      // setIsUploading(true);
+  
+      const filePath = `${user?.id}/profile.jpg`;
+  
+      const { data: uploadedData, error: uploadError } = await supabase.storage
+        .from('avatars')
+        .upload(filePath, avatarFile, {
+          cacheControl: '3600',
+          upsert: true,
+        });
+  
+      if (uploadError) {
+        console.error('Upload error:', uploadError);
+        setIsUploading(false);
+        toast({
+          title: 'Upload failed',
+          description: 'Could not upload image.',
+          variant: 'destructive',
+        });
+        return;
+      }
+  
+  
+      const { data } = await supabase.storage.from('avatars').getPublicUrl(filePath);
+      const publicUrl = `${data.publicUrl}?t=${Date.now()}`;
+  
+      updateData.avatar_url = publicUrl;
+     
       }
 
       const { data: updatedProfile, error: profileError } = await supabase
@@ -163,11 +175,11 @@ const BuyerProfile = () => {
     },
   });
 
-  // const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   if (e.target.files && e.target.files[0]) {
-  //     setAvatarFile(e.target.files[0]);
-  //   }
-  // };
+  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setAvatarFile(e.target.files[0]);
+    }
+  };
 
   const handleInputChange = (field: keyof typeof profileData, value: string) => {
     setProfileData(prev => ({
@@ -176,63 +188,6 @@ const BuyerProfile = () => {
     }));
   };
 
-  const handleImageClick = () => {
-    fileInputRef.current?.click();
-  };
-
-   const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-      const file = e.target.files?.[0];
-      if (!file) return;
-  
-      setIsUploading(true);
-  
-      const filePath = `${user?.id}/profile.jpg`;
-  
-      const { data: uploadedData, error: uploadError } = await supabase.storage
-        .from('avatars')
-        .upload(filePath, file, {
-          cacheControl: '3600',
-          upsert: true,
-        });
-  
-      if (uploadError) {
-        console.error('Upload error:', uploadError);
-        setIsUploading(false);
-        toast({
-          title: 'Upload failed',
-          description: 'Could not upload image.',
-          variant: 'destructive',
-        });
-        return;
-      }
-  
-  
-      const { data } = await supabase.storage.from('avatars').getPublicUrl(filePath);
-      const publicUrl = `${data.publicUrl}?t=${Date.now()}`;
-  
-      setProfileData(prev => ({
-        ...prev,
-        avatarUrl: publicUrl
-      }));
-      setAvatarFile(file);
-  
-      const { data: updatedProfile, error} = await supabase
-        .from('profiles')
-        .update({ avatar_url : publicUrl })
-        .eq('id', user.id)
-        .single();
-        
-      if (error) {
-        console.error('Error updating plant:', error);   
-      }
-      setIsUploading(false);
-  
-      toast({
-        title: 'Image uploaded',
-        description: 'Your profile image has been updated.',
-      });
-  
-    };
 
    const initials = userProfile?.username
     .split(' ')
@@ -295,10 +250,10 @@ const BuyerProfile = () => {
               </CardHeader>
               <CardContent>
                 <div className="flex items-center space-x-6">
-                  <div className="relative" onClick={handleImageClick}>
+                  <div className="relative" >
                     <Avatar className="w-24 h-24">
                       <AvatarImage 
-                        src={profileData.avatarUrl} 
+                        src={avatarFile ? URL.createObjectURL(avatarFile) : profileData.avatarUrl} 
                         alt="Profile avatar" 
                       />
                       <AvatarFallback>
@@ -316,6 +271,7 @@ const BuyerProfile = () => {
                           accept="image/*"
                           className="hidden"
                           onChange={handleAvatarChange}
+                          // disabled={!editMode || isUploading}
                         />
                       </label>
                     )}

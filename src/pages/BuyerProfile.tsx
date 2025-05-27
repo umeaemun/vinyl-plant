@@ -11,6 +11,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { useToast } from '@/hooks/use-toast';
 import { Phone, Building, MapPin } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 type ProfileData = {
   username: string;
@@ -26,7 +27,7 @@ type ProfileData = {
 const BuyerProfile = () => {
   const { user, userProfile, setUserProfile } = useAuth();
   const { toast } = useToast();
-  const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   // console.log('userProfile', userProfile);
 
@@ -61,8 +62,16 @@ const BuyerProfile = () => {
     enabled: !!user,
   });
 
+
+
   useEffect(() => {
     if(userProfile){
+
+      if(userProfile.role !== 'buyer') {
+        navigate('/plant-profile/0'); // Redirect if not a buyer
+        return;
+      }
+
       setProfileData({
         username: userProfile.username || '',
         phone: userProfile.phone || '',
@@ -390,9 +399,12 @@ const BuyerProfile = () => {
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>Project Name</TableHead>
+                        <TableHead>Plant Name</TableHead>
                         <TableHead>Vinyl Type</TableHead>
                         <TableHead>Quantity</TableHead>
+                        <TableHead>Size</TableHead>
+                        <TableHead>Weight</TableHead>
+                        <TableHead>Colour</TableHead>
                         <TableHead>Status</TableHead>
                         <TableHead>Order Date</TableHead>
                       </TableRow>
@@ -400,9 +412,12 @@ const BuyerProfile = () => {
                     <TableBody>
                       {orders?.map((order) => (
                         <TableRow key={order.id}>
-                          <TableCell>{order.project_name}</TableCell>
-                          <TableCell>{order.vinyl_type}</TableCell>
+                          <TableCell>{order.plant_name}</TableCell>
+                          <TableCell>{order.type}</TableCell>
                           <TableCell>{order.quantity}</TableCell>
+                          <TableCell>{order.size}"</TableCell>
+                          <TableCell>{order.weight}</TableCell>
+                          <TableCell>{order.colour}</TableCell>
                           <TableCell className="capitalize">{order.status}</TableCell>
                           <TableCell>
                             {new Date(order.created_at).toLocaleDateString()}

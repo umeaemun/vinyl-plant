@@ -325,7 +325,7 @@ export type Database = {
           plant_id: string;
           user_id: string;
           status: string;
-          project_name: string;
+          plant_name: string;
           email: string;
           quantity: number;
           size: string;
@@ -356,7 +356,7 @@ export type Database = {
           plant_id: string;
           user_id: string;
           status: string;
-          project_name: string;
+          plant_name: string;
           email: string;
           quantity: number;
           size: string;
@@ -387,7 +387,7 @@ export type Database = {
           plant_id?: string;
           user_id?: string;
           status?: string;
-          project_name?: string;
+          plant_name?: string;
           email?: string;
           quantity?: number;
           size?: string;

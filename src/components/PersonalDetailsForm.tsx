@@ -121,7 +121,7 @@ const PersonalDetailsForm = ({ selectedPlant }: PersonalDetailsFormProps) => {
             plant_id: selectedPlantId,
             user_id: userProfile?.id,
             status: 'pending',
-            project_name: selectedPlant?.name || "",
+            plant_name: selectedPlant?.name || "",
             quantity: vinylSpecs.quantity,
             size: vinylSpecs.size,
             type: vinylSpecs.type,

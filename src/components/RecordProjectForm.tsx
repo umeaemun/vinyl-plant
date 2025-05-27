@@ -229,8 +229,6 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
 
         console.log(index, "4 finalColorAdditionalCost:", colorAdditionalCost);
 
-
-
         // Calculate additional costs for weight
         const weightOption = weightOptionsData.find(
           wo => wo.plant_id == plantId && wo.weight == values.weight

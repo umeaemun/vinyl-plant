@@ -8,16 +8,16 @@ import { Control } from 'react-hook-form';
 type ProjectDetailsSectionProps = {
   control: Control<any>;
   disabled?: boolean;
-  plant?: any;
 };
 
 const ProjectDetailsSection = ({
   control,
   disabled,
-  plant
 }: ProjectDetailsSectionProps) => {
   
-  return <div className="space-y-4">
+  return (
+    !disabled &&
+       <div className="space-y-4">
       <h3 className="font-display font-medium text-lg">Project Details</h3>
       <Separator className="mb-4" />
       
@@ -27,7 +27,7 @@ const ProjectDetailsSection = ({
       }) => <FormItem>
               <FormLabel>Name</FormLabel>
               <FormControl>
-                <Input placeholder="Your name" {...field} disabled={disabled} className="disabled-opacity-100" value={plant?.name}/>
+                <Input placeholder="Your name" {...field} disabled={disabled} className="disabled-opacity-100" />
               </FormControl>
             </FormItem>} />
         
@@ -40,7 +40,9 @@ const ProjectDetailsSection = ({
               </FormControl>
             </FormItem>} />
       </div>
-    </div>;
+    </div>
+  )
+ ;
 };
 
 export default ProjectDetailsSection;

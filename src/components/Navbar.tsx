@@ -33,7 +33,7 @@ const languages = [
 const Navbar = () => {
   const isMobile = useIsMobile();
   const [currentLanguage, setCurrentLanguage] = useState('en');
-  const { user, signOut } = useAuth();
+  const { user, userProfile, signOut } = useAuth();
   const { currency, setCurrency } = useCurrency();
   const navigate = useNavigate();
 
@@ -49,7 +49,7 @@ const Navbar = () => {
     setCurrentLanguage(langCode);
     localStorage.setItem('language', langCode);
     document.documentElement.lang = langCode;
-    
+
     console.log(`Language changed to: ${langCode}`);
   };
 
@@ -107,7 +107,7 @@ const Navbar = () => {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56">
                   {currencies.map((curr) => (
-                    <DropdownMenuItem 
+                    <DropdownMenuItem
                       key={curr.code}
                       className="flex justify-between items-center cursor-pointer"
                       onClick={() => handleCurrencyChange(curr.code)}
@@ -120,7 +120,7 @@ const Navbar = () => {
                   ))}
                 </DropdownMenuContent>
               </DropdownMenu>
-              
+
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="icon" className="flex items-center">
@@ -129,7 +129,7 @@ const Navbar = () => {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56">
                   {languages.map((lang) => (
-                    <DropdownMenuItem 
+                    <DropdownMenuItem
                       key={lang.code}
                       className="flex justify-between items-center cursor-pointer"
                       onClick={() => handleLanguageChange(lang.code)}
@@ -144,26 +144,31 @@ const Navbar = () => {
               </DropdownMenu>
             </>
           )}
-          
+
           <div className="flex items-center">
             {user ? (
               <DropdownMenu>
+
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="flex items-center gap-2">
                     <User className="h-5 w-5" />
                     <span className="hidden sm:inline">Account</span>
                   </Button>
                 </DropdownMenuTrigger>
+
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem asChild>
-                    <Link to="/plant-profiles">My Plants</Link>
-                  </DropdownMenuItem>
+                  {userProfile.role == 'admin' &&
+                    <DropdownMenuItem asChild>
+                      <Link to="/plant-profiles">All Plants</Link>
+                    </DropdownMenuItem>
+                  }
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleLogout}>
                     <LogOut className="h-4 w-4 mr-2" />
                     Logout
                   </DropdownMenuItem>
                 </DropdownMenuContent>
+
               </DropdownMenu>
             ) : (
               <Link to="/auth" className="flex items-center gap-2 font-medium text-lg">
@@ -187,9 +192,11 @@ const Navbar = () => {
                   </Link>
                   {user ? (
                     <>
-                      <Link to="/plant-profiles" className="flex items-center gap-2 font-medium">
-                        My Plants
-                      </Link>
+                      {userProfile.role == 'admin' &&
+                        <Link to="/plant-profiles" className="flex items-center gap-2 font-medium">
+                          My Plants
+                        </Link>
+                      }
                       <Button variant="outline" onClick={handleLogout} className="flex items-center gap-2">
                         <LogOut className="h-4 w-4" />
                         Logout
@@ -200,7 +207,7 @@ const Navbar = () => {
                       Log In
                     </Link>
                   )}
-                  
+
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button variant="outline" className="flex items-center gap-2 w-full justify-start">
@@ -210,7 +217,7 @@ const Navbar = () => {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="start" className="w-full">
                       {currencies.map((curr) => (
-                        <DropdownMenuItem 
+                        <DropdownMenuItem
                           key={curr.code}
                           className="flex justify-between items-center cursor-pointer"
                           onClick={() => handleCurrencyChange(curr.code)}
@@ -223,7 +230,7 @@ const Navbar = () => {
                       ))}
                     </DropdownMenuContent>
                   </DropdownMenu>
-                  
+
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button variant="outline" className="flex items-center gap-2 w-full justify-start">
@@ -233,7 +240,7 @@ const Navbar = () => {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="start" className="w-full">
                       {languages.map((lang) => (
-                        <DropdownMenuItem 
+                        <DropdownMenuItem
                           key={lang.code}
                           className="flex justify-between items-center cursor-pointer"
                           onClick={() => handleLanguageChange(lang.code)}

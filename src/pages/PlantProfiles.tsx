@@ -17,8 +17,8 @@ const PlantProfiles = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
-  const [isAdmin, setIsAdmin] = useState(false);
-  // const [isAdmin, setIsAdmin] = useState(true);
+  // const [isAdmin, setIsAdmin] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(true);
   
   useEffect(() => {
     const checkAuth = async () => {
@@ -47,14 +47,12 @@ const PlantProfiles = () => {
       const loadPlants = async () => {
         let dbPlants: Plant[] = [];
         
-        if (user) {
           try {
             const { data: plantsData, error: plantsError } = await supabase
               .from('plants')
               .select('*')
-              .eq('owner', user.id);
+              .order('name', { ascending: true });
 
-              
             if (plantsData && plantsData.length > 0 && !plantsError) {
 
               dbPlants = plantsData.map((plant) => {
@@ -69,7 +67,7 @@ const PlantProfiles = () => {
                   features: plant.features || [],
                   rating: plant.rating || 0,
                   review_count: plant.review_count || 0,
-                  minimum_order: plant.minimum_order || 100,
+                  minimum_order: plant.minimum_order || 0,
                   turnaround_time: plant.turnaround_time || '8-12',
                   website: plant.website || '#',
                   image_url: plant.image_url || '',
@@ -84,7 +82,8 @@ const PlantProfiles = () => {
           } catch (error) {
             console.error('Error fetching user profile:', error);
           }
-        }
+
+
         setAllPlants(dbPlants);
         setLoading(false);
       };

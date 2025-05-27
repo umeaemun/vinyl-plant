@@ -13,10 +13,10 @@ import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 
 const PlantDirectory = () => {
-  const [allPlants, setAllPlants] = useState<Plant[]>([]);
-  const [filteredPlants, setFilteredPlants] = useState<Plant[]>([]);
+  const [allPlants, setAllPlants] = useState<Plant[] | null>(null);
+  const [filteredPlants, setFilteredPlants] = useState<Plant[] | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedView, setSelectedView] = useState<'grid' | 'list'>('grid');
+  // const [selectedView, setSelectedView] = useState<'grid' | 'list'>('grid');
   const { user } = useAuth();
 
   // Load plants from data and local storage
@@ -36,28 +36,28 @@ const PlantDirectory = () => {
     };
 
     fetchPlants();
-   
-   
+
+
   }, []);
 
   // Handle search functionality
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value.toLowerCase();
     setSearchQuery(query);
-    
+
     if (query === '') {
       setFilteredPlants(allPlants);
       return;
     }
-    
-    const filtered = allPlants.filter(plant => 
+
+    const filtered = allPlants.filter(plant =>
       plant.name.toLowerCase().includes(query) ||
       plant.location.toLowerCase().includes(query) ||
       plant.country.toLowerCase().includes(query) ||
       plant.description.toLowerCase().includes(query) ||
       plant.features.some(feature => feature.toLowerCase().includes(query))
     );
-    
+
     setFilteredPlants(filtered);
   };
 
@@ -67,21 +67,21 @@ const PlantDirectory = () => {
       setFilteredPlants(allPlants);
       return;
     }
-    
-    const filtered = allPlants.filter(plant => 
+
+    const filtered = allPlants.filter(plant =>
       plant.country === country
     );
-    
+
     setFilteredPlants(filtered);
   };
 
   // Get unique countries for filtering
-  const countries = [...new Set(allPlants.map(plant => plant.country))];
+  const countries = [...new Set(allPlants?.map(plant => plant.country))];
 
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
-      
+
       <main className="flex-grow pt-20">
         <div className="container mx-auto px-4 py-8">
           <div className="flex justify-between items-center mb-6">
@@ -95,11 +95,11 @@ const PlantDirectory = () => {
               </Button>
             )}
           </div>
-          
+
           <p className="text-muted-foreground mb-8">
             Browse our comprehensive directory of vinyl pressing plants around the world. Find the perfect partner for your next vinyl project.
           </p>
-          
+
           <div className="bg-card border border-border rounded-lg p-6 mb-8">
             <div className="flex flex-col md:flex-row gap-4 items-center">
               <div className="relative flex-grow w-full">
@@ -111,7 +111,7 @@ const PlantDirectory = () => {
                   className="pl-10"
                 />
               </div>
-              
+
               <Tabs defaultValue="all" className="w-full md:w-auto">
                 <TabsList>
                   <TabsTrigger value="all" onClick={() => filterByCountry(null)}>All Countries</TabsTrigger>
@@ -124,22 +124,31 @@ const PlantDirectory = () => {
               </Tabs>
             </div>
           </div>
-          
-          {filteredPlants.length === 0 ? (
-            <div className="text-center py-12">
-              <h3 className="text-xl font-medium mb-2">No plants found</h3>
-              <p className="text-muted-foreground">Try adjusting your search criteria</p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredPlants.map(plant => (
-                <PlantCard key={plant.id} plant={plant} />
-              ))}
-            </div>
-          )}
+
+          {filteredPlants ?
+            (
+              filteredPlants.length === 0 ?
+
+              <div className="text-center py-12">
+                <h3 className="text-xl font-medium mb-2">No plants found</h3>
+                <p className="text-muted-foreground">Try adjusting your search criteria</p>
+              </div>
+              :
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {filteredPlants.map(plant => (
+                  <PlantCard key={plant.id} plant={plant} />
+                ))}
+              </div>
+            )
+            : 
+            (
+              <div className="text-center py-12">
+                <p className="text-muted-foreground">Loading plants...</p>
+              </div>
+            )}
         </div>
       </main>
-      
+
       <Footer />
     </div>
   );

@@ -159,11 +159,14 @@ const Navbar = () => {
 
                 <DropdownMenuContent align="end">
                   {userProfile.role == 'admin' &&
-                    <DropdownMenuItem asChild>
-                      <Link to="/plant-profiles">All Plants</Link>
-                    </DropdownMenuItem>
+                    <>
+                      <DropdownMenuItem asChild>
+                        <Link to="/plant-profiles">All Plants</Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                    </>
                   }
-                  <DropdownMenuSeparator />
+
                   <DropdownMenuItem onClick={handleLogout}>
                     <LogOut className="h-4 w-4 mr-2" />
                     Logout
@@ -191,7 +194,7 @@ const Navbar = () => {
                   <Link to="/plant-directory" className="flex items-center gap-2 font-medium">
                     Plant Directory
                   </Link>
-                  {user && userProfile? (
+                  {user && userProfile ? (
                     <>
                       {userProfile.role == 'admin' &&
                         <Link to="/plant-profiles" className="flex items-center gap-2 font-medium">

@@ -35,6 +35,9 @@ const BuyerProfile = () => {
   const [profileData, setProfileData] = useState<ProfileData | null>(null);
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
 
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+
   const { data: orders, isLoading: ordersLoading, error: ordersError } = useQuery({
     queryKey: ['orders', user?.id],
     queryFn: async () => {
@@ -65,7 +68,7 @@ const BuyerProfile = () => {
   useEffect(() => {
     if(userProfile){
 
-      if(userProfile.role !== 'buyer') {
+      if(userProfile.role == 'manufacturer'){
         navigate('/plant-profile/0'); // Redirect if not a buyer
         return;
       }
@@ -160,11 +163,11 @@ const BuyerProfile = () => {
     },
   });
 
-  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setAvatarFile(e.target.files[0]);
-    }
-  };
+  // const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   if (e.target.files && e.target.files[0]) {
+  //     setAvatarFile(e.target.files[0]);
+  //   }
+  // };
 
   const handleInputChange = (field: keyof typeof profileData, value: string) => {
     setProfileData(prev => ({
@@ -172,6 +175,71 @@ const BuyerProfile = () => {
       [field]: value
     }));
   };
+
+  const handleImageClick = () => {
+    fileInputRef.current?.click();
+  };
+
+   const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+  
+      setIsUploading(true);
+  
+      const filePath = `${user?.id}/profile.jpg`;
+  
+      const { data: uploadedData, error: uploadError } = await supabase.storage
+        .from('avatars')
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: true,
+        });
+  
+      if (uploadError) {
+        console.error('Upload error:', uploadError);
+        setIsUploading(false);
+        toast({
+          title: 'Upload failed',
+          description: 'Could not upload image.',
+          variant: 'destructive',
+        });
+        return;
+      }
+  
+  
+      const { data } = await supabase.storage.from('avatars').getPublicUrl(filePath);
+      const publicUrl = `${data.publicUrl}?t=${Date.now()}`;
+  
+      setProfileData(prev => ({
+        ...prev,
+        avatarUrl: publicUrl
+      }));
+      setAvatarFile(file);
+  
+      const { data: updatedProfile, error} = await supabase
+        .from('profiles')
+        .update({ avatar_url : publicUrl })
+        .eq('id', user.id)
+        .single();
+        
+      if (error) {
+        console.error('Error updating plant:', error);   
+      }
+      setIsUploading(false);
+  
+      toast({
+        title: 'Image uploaded',
+        description: 'Your profile image has been updated.',
+      });
+  
+    };
+
+   const initials = userProfile?.username
+    .split(' ')
+    .map(part => part[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2);
 
   if (ordersLoading || !profileData) {
     return (
@@ -227,14 +295,14 @@ const BuyerProfile = () => {
               </CardHeader>
               <CardContent>
                 <div className="flex items-center space-x-6">
-                  <div className="relative">
+                  <div className="relative" onClick={handleImageClick}>
                     <Avatar className="w-24 h-24">
                       <AvatarImage 
-                        src={avatarFile ? URL.createObjectURL(avatarFile) : profileData.avatarUrl} 
+                        src={profileData.avatarUrl} 
                         alt="Profile avatar" 
                       />
                       <AvatarFallback>
-                        {user?.email?.[0].toUpperCase()}
+                        {initials}
                       </AvatarFallback>
                     </Avatar>
                     {editMode && (

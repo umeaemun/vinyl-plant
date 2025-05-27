@@ -35,8 +35,6 @@ const PlantProfileImageUploader: React.FC<PlantProfileImageUploaderProps> = ({
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // In a real application, you would upload the file to a server
-    // For the demo, we'll simulate an upload
     setIsUploading(true);
 
     const filePath = `${plant?.owner || user?.id}/${plant.id}/profile.jpg`;

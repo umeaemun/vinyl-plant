@@ -39,7 +39,7 @@ const PlantProfileImageUploader: React.FC<PlantProfileImageUploaderProps> = ({
     // For the demo, we'll simulate an upload
     setIsUploading(true);
 
-    const filePath = `${user?.id || plant?.owner}/${plant.id}/profile.jpg`;
+    const filePath = `${plant?.owner || user?.id}/${plant.id}/profile.jpg`;
 
     const { data: uploadedData, error: uploadError } = await supabase.storage
       .from('plant-profile-pics')

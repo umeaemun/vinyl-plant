@@ -12,10 +12,18 @@ import Footer from '@/components/Footer';
 const PlantProfile = () => {
   const { id } = useParams<{ id: string }>();     // id is userId
   const { toast } = useToast();
-  const { user } = useAuth();
+  const { user, userProfile } = useAuth();
   const navigate = useNavigate();
 
   const [plant, setPlant] = useState(null);
+
+   useEffect(() => { 
+      if(userProfile && userProfile.role == 'buyer') {
+        // if user is a buyer, redirect to their profile
+        navigate(`/buyer-profile`);
+  
+      }
+    }, [userProfile]);
 
   // Check if user is authenticated and accessing their own profile
   useEffect(() => {

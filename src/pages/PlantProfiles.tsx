@@ -17,8 +17,8 @@ const PlantProfiles = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
-  // const [isAdmin, setIsAdmin] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
+  // const [isAdmin, setIsAdmin] = useState(true);
   
   useEffect(() => {
     const checkAuth = async () => {

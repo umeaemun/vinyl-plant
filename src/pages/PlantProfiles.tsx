@@ -12,7 +12,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
 const PlantProfiles = () => {
-  const [allPlants, setAllPlants] = useState<Plant[]>([]);
+  const [allPlants, setAllPlants] = useState<Plant[]>(null);
   const { user, userProfile } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -28,25 +28,25 @@ const PlantProfiles = () => {
         setIsAdmin(false);
       }
 
-      if (userProfile.role !== 'admin') {
-        toast({
-          title: "Redirecting",
-          description: "You've been redirected to your plant profile."
-        });
-        navigate(`/plant-profile/${user.id}`);
-      }
+      // if (userProfile.role !== 'admin') {
+      //   toast({
+      //     title: "Redirecting",
+      //     description: "You've been redirected to your plant profile."
+      //   });
+      //   navigate(`/plant-profile/${user.id}`);
+      // }
 
       setLoading(false);
     };
 
     if (user && userProfile) {
-      // checkAuth();
-      setIsAdmin(true);
+      checkAuth();
+      // setIsAdmin(true);
     }
   }, [user, userProfile, navigate, toast]);
 
   useEffect(() => {
-    if (isAdmin) {
+    if (isAdmin && !allPlants) {
       setLoading(true);
       const loadPlants = async () => {
         let dbPlants: Plant[] = [];
@@ -161,7 +161,7 @@ const PlantProfiles = () => {
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {allPlants.map((plant) => (
+            {allPlants?.map((plant) => (
               <Card key={plant.id} className="overflow-hidden">
                 <CardHeader className="pb-4">
                   <div className="flex items-center space-x-2 mb-2 text-muted-foreground">

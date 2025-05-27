@@ -14,21 +14,24 @@ const Auth = () => {
   const [activeTab, setActiveTab] = useState<"login" | "register">("login");
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { user, signIn, signUp, loading } = useAuth();
+  const { user, userProfile, signIn, signUp, loading } = useAuth();
 
   // Redirect if user is already logged in
   useEffect(() => {
-    if (user && !loading) {
+    if (user && userProfile && !loading) {
       // User is authenticated, redirect to their plant profile page
-      console.log("Authenticated user detected, redirecting to profile:", user);
+      console.log("Authenticated user detected, redirecting to profile:", userProfile);
 
-      if (user.user_metadata?.role === "manufacturer") {
+      if (userProfile.role === "admin") {
+        navigate(`/plant-profiles`);
+      } 
+      else if (userProfile.role === "manufacturer") {
         navigate(`/plant-profile/${user.id}`);
-      } else {
+      } else  {
         navigate(`/buyer-profile`);
       }
     }
-  }, [user, loading, navigate]);
+  }, [user, userProfile, loading, navigate]);
 
   const handleLogin = async (email: string, password: string) => {
     try {

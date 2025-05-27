@@ -17,13 +17,6 @@ const PlantProfile = () => {
 
   const [plant, setPlant] = useState(null);
 
-   useEffect(() => { 
-      if(userProfile && userProfile.role == 'buyer') {
-        // if user is a buyer, redirect to their profile
-        navigate(`/buyer-profile`);
-  
-      }
-    }, [userProfile]);
 
   // Check if user is authenticated and accessing their own profile
   useEffect(() => {
@@ -33,27 +26,21 @@ const PlantProfile = () => {
       return;
     }
 
-    if (id && user.id !== id) {
+    if(userProfile && userProfile.role == 'buyer') {
+        // if user is a buyer, redirect to their profile
+        navigate(`/buyer-profile`);
+
+    }else if (userProfile && userProfile?.role == 'manufacturer' && (id && user.id !== id)) {
       // If trying to access another user's profile, redirect to their own
       navigate(`/plant-profile/${user.id}`);
     }
-  }, [user, id, navigate]);
+  }, [user, userProfile, id, navigate]);
 
   // Check if data exists in Supabase for this plant ID
   useEffect(() => {
     
-    const checkPlantData = async () => {
+    const getPlantByOwnerId = async () => {
       try {
-        // First check if this is a new user
-        const { data: profile, error: profileError } = await supabase
-          .from('profiles')
-          .select('email')
-          .eq('id', id)
-          .single();
-
-        if (profileError) {
-          throw new Error(`Error checking profile: ${profileError.message}`);
-        }
 
         const { data: plantData, error: plantError } = await supabase
           .from('plants')
@@ -64,7 +51,7 @@ const PlantProfile = () => {
           throw new Error(`Error checking plant data: ${plantError.message}`);
         }
 
-        // console.log('plantData', plantData);
+        console.log('plantData', plantData);
 
         if (plantData && plantData.length > 0 ) {
           // Add default values for fields not in the profile table
@@ -93,24 +80,6 @@ const PlantProfile = () => {
 
           if (vinylError) {
             throw new Error(`Error checking vinyl pricing: ${vinylError.message}`);
-          }
-
-          // If no pricing data exists for this plant in Supabase yet
-          if (!vinylPricing || vinylPricing.length === 0) {
-            // If it's a newly created profile, show a welcome message
-            if (profile && user && user.id === id) {
-              // toast({
-              //   title: "Welcome to Your Plant Profile",
-              //   description: "Start building your plant profile by adding your information, features, and pricing data.",
-              //   duration: 8000
-              // });
-            } else {
-              toast({
-                title: "Data Not Found in Database",
-                description: "This plant's pricing data hasn't been saved to the database yet. You can save it from the Pricing tab.",
-                duration: 5000
-              });
-            }
           }
 
         } else if (plantData && plantData.length === 0) {
@@ -147,12 +116,93 @@ const PlantProfile = () => {
       }
     };
 
+    const getPlantByPlantId = async () => {
+      try {
+
+        const { data: plant, error: plantError } = await supabase
+          .from('plants')
+          .select('*')
+          .eq('id', id)
+          .single();
+
+        if (plantError) {
+          throw new Error(`Error checking plant data: ${plantError.message}`);
+        }
+
+        console.log('plantData', plant);
+
+        if (plant) {
+          // Add default values for fields not in the profile table
+
+          setPlant({
+            id: plant.id,
+            name: plant.name || '',
+            location: plant.location || '',
+            country: plant.country || '',
+            owner: plant.owner || '',
+            description: plant.description || '',
+            features: plant.features || [],
+            rating: plant.rating || 0,
+            review_count: plant.review_count || 0,
+            minimum_order: plant.minimum_order || 0,
+            turnaround_time: plant.turnaround_time || '8-12',
+            website: plant.website || '',
+            image_url: plant.image_url || '',
+          });
+
+          // Check if the user has any pricing data
+          const { data: vinylPricing, error: vinylError } = await supabase
+            .from('vinyl_pricing')
+            .select('id')
+            .eq('plant_id', plant?.id || '')
+
+          if (vinylError) {
+            throw new Error(`Error checking vinyl pricing: ${vinylError.message}`);
+          }
+
+        } else if (!plant) {
+          setPlant({
+            id: id,
+            name: '',
+            location: '',
+            country: '',
+            owner: '',
+            description: '',
+            features: [],
+            rating: 0,
+            review_count: 0,
+            minimum_order: 0,
+            turnaround_time: '8-12',
+            website: '',
+            image_url: '',
+            specialties: [],
+            reviews: []
+          });
+
+          toast({
+            title: "No Plant Data Found",
+            description: "This plant's data hasn't been saved to the database yet. You can save it from the Profile tab.",
+            duration: 5000
+          });
+        } else {
+          // Not a valid plant and not the user's own profile
+          navigate('/not-found');
+        }
+
+      } catch (error) {
+        console.error('Error checking plant data:', error);
+      }
+    };
+
     // Only run if we have a user and an ID
     if (user && id) {
-      if (user.id === id){
+      if (user.id === id ) {
         // If the user is authenticated and accessing their own profile
-        checkPlantData();
-      }else {
+        getPlantByOwnerId();
+      }else if ( userProfile?.role === 'admin'){
+        getPlantByPlantId();
+      }
+      else {
         // If the user is authenticated but accessing another user's profile then Redirect to their own profile
         navigate(`/plant-profile/${user.id}`);
       }

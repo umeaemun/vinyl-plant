@@ -37,7 +37,7 @@ const Navbar = () => {
   const { currency, setCurrency } = useCurrency();
   const navigate = useNavigate();
 
-  console.log('Current user:', userProfile);
+  // console.log('Current user:', userProfile);
   useEffect(() => {
     const savedLanguage = localStorage.getItem('language');
     if (savedLanguage) {

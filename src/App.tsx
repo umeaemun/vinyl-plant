@@ -37,14 +37,14 @@ const App = () => (
               <Route path="/auth" element={<Auth />} />                                 {/*  DONE */}
 
               {/* Buyer */}
-              <Route path="/buyer-profile" element={<BuyerProfile />} />               {/*  avatar and order status remaining */} 
+              <Route path="/buyer-profile" element={<BuyerProfile />} />               {/*  avatar remaining */} 
               <Route path="/order" element={<Order />} />
-              <Route path="/compare" element={<Compare />} />                          {/*  Form wala remaining */}
-              <Route path="/plant/:id" element={<PlantDetails />} />                   {/*  working, this screen comes after clicking a plant from compare screen */}
+              <Route path="/compare" element={<Compare />} />                          {/*  DONE */}
+              <Route path="/plant/:id" element={<PlantDetails />} />                   {/*  DONE */}
 
 
               {/* Manufacturer */}
-              <Route path="/plant-profile/:id" element={<PlantProfile />} />           {/*here id is userId,  edit plant details */}
+              <Route path="/plant-profile/:id" element={<PlantProfile />} />           {/*  DONE */}
 
               {/* not discussed in scope */}
               <Route path="/plant-profiles" element={<PlantProfiles />} />             {/* for admin */}

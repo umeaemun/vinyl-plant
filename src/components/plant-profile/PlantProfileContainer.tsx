@@ -12,9 +12,8 @@ import PlantProfileTabs from './PlantProfileTabs';
 import { useAuth } from '@/contexts/AuthContext';
 
 const PlantProfileContainer = ({ plant, setPlant }: { plant: Plant , setPlant: React.Dispatch<any> }) => {
-  const { id } = useParams<{ id: string }>();
   // const navigate = useNavigate();
-  const { toast } = useToast();
+  // const { toast } = useToast();
   const { user } = useAuth();
 
 
@@ -30,7 +29,7 @@ const PlantProfileContainer = ({ plant, setPlant }: { plant: Plant , setPlant: R
 
     };
 
-  }, [id, plant, user]);
+  }, [ plant, user]);
 
   if (!plant) {
     return null;

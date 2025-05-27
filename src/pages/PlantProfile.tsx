@@ -10,7 +10,7 @@ import Footer from '@/components/Footer';
 
 // screen to edit personal and plants information
 const PlantProfile = () => {
-  const { id } = useParams<{ id: string }>();     // id is userId
+  const { id } = useParams<{ id: string }>();     // id can be userId in case of manufacturer or plantId in case of admin
   const { toast } = useToast();
   const { user, userProfile } = useAuth();
   const navigate = useNavigate();
@@ -195,20 +195,20 @@ const PlantProfile = () => {
     };
 
     // Only run if we have a user and an ID
-    if (user && id) {
-      if (user.id === id ) {
-        // If the user is authenticated and accessing their own profile
-        getPlantByOwnerId();
-      }else if ( userProfile?.role === 'admin'){
-        getPlantByPlantId();
-      }
-      else {
-        // If the user is authenticated but accessing another user's profile then Redirect to their own profile
-        navigate(`/plant-profile/${user.id}`);
-      }
-      
+    if (user && id && userProfile) {
+        if (user.id === id ) {
+          // If the user is authenticated and accessing their own profile
+          getPlantByOwnerId();
+        }else if ( userProfile?.role === 'admin'){
+          getPlantByPlantId();
+        }
+        else {
+          // If the user is authenticated but accessing another user's profile then Redirect to their own profile
+          navigate(`/plant-profile/${user.id}`);
+        }
     }
-  }, [id, user]);
+    
+  }, [id, user, userProfile]);
 
   // Don't render anything until user is authenticated
   if (!user) {

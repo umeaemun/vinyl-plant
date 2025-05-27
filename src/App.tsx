@@ -48,13 +48,13 @@ const App = () => (
 
               {/* not discussed in scope */}
               <Route path="/plant-profiles" element={<PlantProfiles />} />             {/* for admin */}
-              <Route path="/plant-directory" element={<PlantDirectory />} />
-              <Route path="/vinyl-glossary" element={<VinylGlossary />} />
-
+              <Route path="/plant-directory" element={<PlantDirectory />} />           {/* for public/ unauthenticated */}
+              
 
               {/* No work */}
               <Route path="/about" element={<About />} />
               <Route path="/contact" element={<Contact />} />
+              <Route path="/vinyl-glossary" element={<VinylGlossary />} /> 
               <Route path="*" element={<NotFound />} />
 
               

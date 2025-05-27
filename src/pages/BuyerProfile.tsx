@@ -62,8 +62,6 @@ const BuyerProfile = () => {
     enabled: !!user,
   });
 
-
-
   useEffect(() => {
     if(userProfile){
 

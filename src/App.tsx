@@ -31,7 +31,7 @@ const App = () => (
           <Sonner />
           <BrowserRouter>
             <Routes>
-              <Route path="/" element={<Index />} />                                    {/*  save reqs in db in new table */}   
+              <Route path="/" element={<Index />} />                                    {/*  condition for logouts remaining */}   
 
               {/* Auth */}
               <Route path="/auth" element={<Auth />} />                                 {/*  DONE */}

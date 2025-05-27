@@ -37,6 +37,7 @@ const Navbar = () => {
   const { currency, setCurrency } = useCurrency();
   const navigate = useNavigate();
 
+  console.log('Current user:', userProfile);
   useEffect(() => {
     const savedLanguage = localStorage.getItem('language');
     if (savedLanguage) {
@@ -146,7 +147,7 @@ const Navbar = () => {
           )}
 
           <div className="flex items-center">
-            {user ? (
+            {user && userProfile ? (
               <DropdownMenu>
 
                 <DropdownMenuTrigger asChild>
@@ -190,7 +191,7 @@ const Navbar = () => {
                   <Link to="/plant-directory" className="flex items-center gap-2 font-medium">
                     Plant Directory
                   </Link>
-                  {user ? (
+                  {user && userProfile? (
                     <>
                       {userProfile.role == 'admin' &&
                         <Link to="/plant-profiles" className="flex items-center gap-2 font-medium">

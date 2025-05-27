@@ -13,85 +13,89 @@ import { useToast } from '@/hooks/use-toast';
 
 const PlantProfiles = () => {
   const [allPlants, setAllPlants] = useState<Plant[]>([]);
-  const { user } = useAuth();
+  const { user, userProfile } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
-  const [isAdmin, setIsAdmin] = useState(false);
-  // const [isAdmin, setIsAdmin] = useState(true);
-  
+  const [isAdmin, setIsAdmin] = useState(null);
+
   useEffect(() => {
     const checkAuth = async () => {
-      
-      // how to check if user is admin
-      setIsAdmin(false);
-      
-      if (!isAdmin) {
+
+      if (userProfile.role === 'admin') {
+        setIsAdmin(true);
+      } else {
+        setIsAdmin(false);
+      }
+
+      if (userProfile.role !== 'admin') {
         toast({
           title: "Redirecting",
           description: "You've been redirected to your plant profile."
         });
         navigate(`/plant-profile/${user.id}`);
       }
-      
+
       setLoading(false);
     };
-    
-    // checkAuth();
-    setLoading(false);
-  }, [user, navigate, toast]);
-  
+
+    if (user && userProfile) {
+      // checkAuth();
+      setIsAdmin(true);
+    }
+  }, [user, userProfile, navigate, toast]);
+
   useEffect(() => {
     if (isAdmin) {
       setLoading(true);
       const loadPlants = async () => {
         let dbPlants: Plant[] = [];
-        
-          try {
-            const { data: plantsData, error: plantsError } = await supabase
-              .from('plants')
-              .select('*')
-              .order('name', { ascending: true });
 
-            if (plantsData && plantsData.length > 0 && !plantsError) {
+        try {
+          const { data: plantsData, error: plantsError } = await supabase
+            .from('plants')
+            .select('*')
+            .order('name', { ascending: true });
 
-              dbPlants = plantsData.map((plant) => {
+          if (plantsData && plantsData.length > 0 && !plantsError) {
 
-                const userPlant: Plant = {
-                  id: plant.id || '',
-                  name: plant.name || 'N/A',
-                  location: plant.location || 'Unknown Location',
-                  country: plant.country || 'Unknown Country',
-                  owner: plant.owner || '',
-                  description: plant.description || 'N/A',
-                  features: plant.features || [],
-                  rating: plant.rating || 0,
-                  review_count: plant.review_count || 0,
-                  minimum_order: plant.minimum_order || 0,
-                  turnaround_time: plant.turnaround_time || '8-12',
-                  website: plant.website || '#',
-                  image_url: plant.image_url || '',
-                };
-                
-                return userPlant;
-              });
+            dbPlants = plantsData.map((plant) => {
 
-            
-            }
+              const userPlant: Plant = {
+                id: plant.id || '',
+                name: plant.name || 'N/A',
+                location: plant.location || 'Unknown Location',
+                country: plant.country || 'Unknown Country',
+                owner: plant.owner || '',
+                description: plant.description || 'N/A',
+                features: plant.features || [],
+                rating: plant.rating || 0,
+                review_count: plant.review_count || 0,
+                minimum_order: plant.minimum_order || 0,
+                turnaround_time: plant.turnaround_time || '8-12',
+                website: plant.website || '#',
+                image_url: plant.image_url || '',
+              };
 
-          } catch (error) {
-            console.error('Error fetching user profile:', error);
+              return userPlant;
+            });
+
+
           }
+
+        } catch (error) {
+          console.error('Error fetching user profile:', error);
+        }
 
 
         setAllPlants(dbPlants);
         setLoading(false);
       };
-      
+
       loadPlants();
     }
   }, [user, isAdmin]);
-  
+
   if (loading) {
     return (
       <div className="flex flex-col min-h-screen">
@@ -105,7 +109,7 @@ const PlantProfiles = () => {
       </div>
     );
   }
-  
+
   if (!isAdmin) {
     return (
       <div className="flex flex-col min-h-screen">
@@ -135,11 +139,11 @@ const PlantProfiles = () => {
       </div>
     );
   }
-  
+
   return (
-     <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen">
       <Navbar />
-      
+
       <main className="flex-grow pt-20">
         <div className="container mx-auto px-4 py-8">
           <div className="flex justify-between items-center mb-8">
@@ -151,11 +155,11 @@ const PlantProfiles = () => {
               </Link>
             </Button>
           </div>
-          
+
           <p className="text-muted-foreground mb-8">
             Access and manage all pressing plant profiles from this central dashboard
           </p>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {allPlants.map((plant) => (
               <Card key={plant.id} className="overflow-hidden">
@@ -182,7 +186,7 @@ const PlantProfiles = () => {
                       </span>
                     )}
                   </div>
-                  
+
                   <div className="flex gap-3 mt-4">
                     <Button asChild variant="outline" size="sm" className="flex-1">
                       <Link to={`/plant/${plant.id}`}>
@@ -201,7 +205,7 @@ const PlantProfiles = () => {
           </div>
         </div>
       </main>
-      
+
       <Footer />
     </div>
   );

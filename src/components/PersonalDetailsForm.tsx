@@ -145,7 +145,9 @@ const PersonalDetailsForm = ({ selectedPlant }: PersonalDetailsFormProps) => {
             comments: personalDetails.comments,
           },
         ])
+        .select('*')
         .single();
+
       if (error) {
         console.error("Error submitting order:", error);
         toast({
@@ -195,7 +197,7 @@ const PersonalDetailsForm = ({ selectedPlant }: PersonalDetailsFormProps) => {
       return;
     }
     const data = JSON.parse(vinylFormData);
-    console.log("Saving form data for later:", data);
+    // console.log("Saving form data for later:", data);
     
     // save form data to Supabase
     const { data: formData, error: formError } = await supabase

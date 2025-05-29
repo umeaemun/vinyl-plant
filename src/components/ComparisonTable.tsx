@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { FormValues } from '@/components/record-form/FormSchema';
 import { useCurrency } from '@/contexts/CurrencyContext';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface PricingData {
   id: string;
@@ -27,6 +28,9 @@ type SortField = 'name' | 'costPerUnit' | 'turnaroundTime' | 'rating';
 type SortDirection = 'asc' | 'desc';
 
 const ComparisonTable: React.FC<ComparisonTableProps> = ({ plants, formData, pricingData }) => {
+
+  const { user, userProfile } =  useAuth();
+
   const [sortField, setSortField] = useState<SortField>('costPerUnit');
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
   const { convertPrice, formatPrice } = useCurrency();
@@ -196,11 +200,13 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({ plants, formData, pri
                           <h3 className="font-medium text-lg">{plant.name}</h3>
                         </Link>
                         <p className="text-muted-foreground text-sm">{plant.location}, {plant.country}</p>
+                       {/* { user && userProfile && */}
                         <Link to="/order" onClick={() => selectPlantForQuote(plant.id)}>
                           <Button variant="default" className="bg-wwwax-green text-black hover:bg-wwwax-green/80 text-xs px-3 py-1 h-auto mt-2">
                             Order Now
                           </Button>
                         </Link>
+                        {/* } */}
                       </div>
                     </div>
                   </td>

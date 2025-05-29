@@ -47,7 +47,7 @@ const PersonalDetailsForm = ({ selectedPlant }: PersonalDetailsFormProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { userProfile } = useAuth();
+  const { user, session, userProfile } = useAuth();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -92,6 +92,16 @@ const PersonalDetailsForm = ({ selectedPlant }: PersonalDetailsFormProps) => {
   }, [userProfile, form]);
 
   const onSubmit = async (values: FormValues) => {
+
+    if (!user || !userProfile || !session) {
+      toast({
+        title: "Authentication Required",
+        description: "Please log in to submit your order.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
@@ -186,6 +196,17 @@ const PersonalDetailsForm = ({ selectedPlant }: PersonalDetailsFormProps) => {
   };
 
   const handleSaveForLater = async () => {
+
+    if (!user || !userProfile || !session) {
+      toast({
+        title: "Authentication Required",
+        description: "Please log in to save your order for later.",
+        variant: "destructive",
+      });
+      return;
+    }
+    setIsSubmitting(true);
+
     const vinylFormData = localStorage.getItem('vinylFormData');
 
     if (!vinylFormData) {
@@ -237,6 +258,7 @@ const PersonalDetailsForm = ({ selectedPlant }: PersonalDetailsFormProps) => {
       title: "Order saved for later",
       description: "Your order details have been saved. You can complete it later.",
     });
+    setIsSubmitting(false);
 
     // Clear localStorage data
     localStorage.removeItem('selectedPlantId');

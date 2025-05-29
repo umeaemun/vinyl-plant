@@ -20,9 +20,12 @@ import {
 import { Separator } from '@/components/ui/separator';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
+import emailjs from 'emailjs-com';
+
 
 interface PersonalDetailsFormProps {
   selectedPlant: Plant | null;
+  orderSummary: any
 }
 
 const formSchema = z.object({
@@ -43,7 +46,7 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-const PersonalDetailsForm = ({ selectedPlant }: PersonalDetailsFormProps) => {
+const PersonalDetailsForm = ({ selectedPlant, orderSummary }: PersonalDetailsFormProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -91,6 +94,59 @@ const PersonalDetailsForm = ({ selectedPlant }: PersonalDetailsFormProps) => {
     }
   }, [userProfile, form]);
 
+  function sendEmailToAdmin(orderData) {
+
+    const templateParams = {
+      image_url: orderData.image_url,
+      plant_name: orderData.plant_name,
+      units: orderData.quantity,
+      price: orderData.perUnit,
+      total: orderData.total,
+      email: "bilalkhan689883@gmail.com",
+    };
+
+    // console.log("Sending email with params:", templateParams);
+
+
+    emailjs.send("service_ub4n5aj", "template_dp8pbcf",
+      templateParams,
+      "FZ2o2qSKeDHybPLnz"
+    )
+      .then((response) => {
+        console.log('Admin Email sent successfully:', response.text);
+      })
+      .catch((err) => {
+        console.error('Admin Email sending failed:', err);
+      });
+  }
+
+  function sendEmailToBuyer(orderData) {
+
+    const templateParams = {
+      image_url: orderData.image_url,
+      plant_name: orderData.plant_name,
+      units: orderData.quantity,
+      price: orderData.perUnit,
+      total: orderData.total,
+      email: orderData.email,
+    };
+
+    // console.log("Sending buyer email with params:", templateParams);
+
+
+    emailjs.send("service_ub4n5aj", "template_q1x90oa",
+      templateParams,
+      "FZ2o2qSKeDHybPLnz"
+    )
+      .then((response) => {
+        console.log('Buyer Email sent successfully:', response.text);
+      })
+      .catch((err) => {
+        console.error('Buyer Email sending failed:', err);
+      });
+  }
+
+
   const onSubmit = async (values: FormValues) => {
 
     if (!user || !userProfile || !session) {
@@ -105,7 +161,7 @@ const PersonalDetailsForm = ({ selectedPlant }: PersonalDetailsFormProps) => {
     setIsSubmitting(true);
 
     try {
-      console.log("personal details Form values:", values);
+      // console.log("personal details Form values:", values);
 
       // Get the vinyl specs from localStorage
       const vinylFormData = localStorage.getItem('vinylFormData');
@@ -121,7 +177,7 @@ const PersonalDetailsForm = ({ selectedPlant }: PersonalDetailsFormProps) => {
 
       const personalDetails = values;
       const selectedPlantId = selectedPlant?.id || localStorage.getItem('selectedPlantId');
-     
+
 
       // submit the order data to supabase
       const { data, error } = await supabase
@@ -132,6 +188,8 @@ const PersonalDetailsForm = ({ selectedPlant }: PersonalDetailsFormProps) => {
             user_id: userProfile?.id,
             status: 'pending',
             plant_name: selectedPlant?.name || "",
+            per_unit: orderSummary.perUnit || "",
+            total: vinylSpecs.quantity * (orderSummary.perUnit || 0) || "",
             quantity: vinylSpecs.quantity,
             size: vinylSpecs.size,
             type: vinylSpecs.type,
@@ -168,6 +226,25 @@ const PersonalDetailsForm = ({ selectedPlant }: PersonalDetailsFormProps) => {
         return;
       }
       console.log("Order submitted successfully:", data);
+
+      // send email to admin
+      await sendEmailToAdmin({
+        plant_name: selectedPlant?.name || "",
+        image_url: selectedPlant?.image_url || "",
+        quantity: vinylSpecs.quantity,
+        perUnit: data.per_unit,
+        total: data.total,
+      });
+
+      // send email to buyer
+      await sendEmailToBuyer({
+        plant_name: selectedPlant?.name || "",
+        image_url: selectedPlant?.image_url || "",
+        quantity: vinylSpecs.quantity,
+        perUnit: data.per_unit,
+        total: data.total,
+        email: personalDetails.email,
+      });
 
       toast({
         title: "Order submitted successfully!",
@@ -219,7 +296,7 @@ const PersonalDetailsForm = ({ selectedPlant }: PersonalDetailsFormProps) => {
     }
     const data = JSON.parse(vinylFormData);
     // console.log("Saving form data for later:", data);
-    
+
     // save form data to Supabase
     const { data: formData, error: formError } = await supabase
       .from('requirements_form_details')
@@ -267,7 +344,7 @@ const PersonalDetailsForm = ({ selectedPlant }: PersonalDetailsFormProps) => {
     setTimeout(() => {
       navigate('/');
     }
-    , 2000);
+      , 2000);
 
   }
 

@@ -326,7 +326,8 @@ export type Database = {
           user_id: string;
           status: string;
           plant_name: string;
-          email: string;
+          per_unit: number;
+          total: number;
           quantity: number;
           size: string;
           type: string;
@@ -339,7 +340,7 @@ export type Database = {
           first_name: string;
           last_name: string;
           company: string;
-          // email: string;
+          email: string;
           phone: string;
           address_1: string;
           address_2: string;
@@ -357,7 +358,8 @@ export type Database = {
           user_id: string;
           status: string;
           plant_name: string;
-          email: string;
+          per_unit: number;
+          total: number;
           quantity: number;
           size: string;
           type: string;
@@ -370,7 +372,7 @@ export type Database = {
           first_name: string;
           last_name: string;
           company: string;
-          // email: string;
+          email: string;
           phone: string;
           address_1: string;
           address_2: string;
@@ -388,7 +390,8 @@ export type Database = {
           user_id?: string;
           status?: string;
           plant_name?: string;
-          email?: string;
+          per_unit?: number;
+          total?: number;
           quantity?: number;
           size?: string;
           type?: string;
@@ -401,7 +404,7 @@ export type Database = {
           first_name?: string;
           last_name?: string;
           company?: string;
-          // email?: string;
+          email?: string;
           phone?: string;
           address_1?: string;
           address_2?: string;

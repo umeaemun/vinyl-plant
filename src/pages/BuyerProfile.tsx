@@ -415,11 +415,13 @@ const BuyerProfile = () => {
                       <TableRow>
                         <TableHead>Plant Name</TableHead>
                         <TableHead>Vinyl Type</TableHead>
-                        <TableHead>Quantity</TableHead>
                         <TableHead>Size</TableHead>
                         <TableHead>Weight</TableHead>
                         <TableHead>Colour</TableHead>
                         <TableHead>Status</TableHead>
+                        <TableHead>Quantity</TableHead>
+                        <TableHead>Per Unit Cost</TableHead>
+                        <TableHead>Total</TableHead>
                         <TableHead>Order Date</TableHead>
                       </TableRow>
                     </TableHeader>
@@ -428,11 +430,13 @@ const BuyerProfile = () => {
                         <TableRow key={order.id}>
                           <TableCell>{order.plant_name}</TableCell>
                           <TableCell>{order.type}</TableCell>
-                          <TableCell>{order.quantity}</TableCell>
                           <TableCell>{order.size}"</TableCell>
                           <TableCell>{order.weight}</TableCell>
                           <TableCell>{order.colour}</TableCell>
                           <TableCell className="capitalize">{order.status}</TableCell>
+                          <TableCell>{order.quantity}</TableCell>
+                          <TableCell>${order.per_unit % 1 === 0 ? order.per_unit : order.per_unit.toFixed(2)}</TableCell>
+                          <TableCell>${order.total % 1 === 0 ? order.total : (order.total).toFixed(2)}</TableCell>
                           <TableCell>
                             {new Date(order.created_at).toLocaleDateString()}
                           </TableCell>

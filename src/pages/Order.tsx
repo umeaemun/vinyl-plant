@@ -222,7 +222,7 @@ const Order = () => {
             <div>
               <h2 className="text-xl font-semibold mb-4">2. Personal Details</h2>
               <div className="bg-white rounded-lg shadow-sm">
-                <PersonalDetailsForm selectedPlant={selectedPlant} />
+                <PersonalDetailsForm selectedPlant={selectedPlant} orderSummary={orderSummary}/>
               </div>
             </div>
           </div>

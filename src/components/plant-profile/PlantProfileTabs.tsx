@@ -14,6 +14,7 @@ import PlantEquipments from './PlantEquipments';
 import PlantClients from './PlantClients';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface PlantProfileTabsProps {
   plant: Plant;
@@ -21,17 +22,17 @@ interface PlantProfileTabsProps {
   disabled: boolean;
 }
 
-const PlantProfileTabs: React.FC<PlantProfileTabsProps> = ({ 
-  plant, 
-  setPlant, 
-  disabled 
+const PlantProfileTabs: React.FC<PlantProfileTabsProps> = ({
+  plant,
+  setPlant,
+  disabled
 }) => {
   const { toast } = useToast();
   const [isSaving, setIsSaving] = React.useState(false);
 
   const handleChange = (field: keyof Plant, value: any) => {
     if (plant) {
-      setPlant({...plant, [field]: value});
+      setPlant({ ...plant, [field]: value });
     }
   };
 
@@ -46,7 +47,7 @@ const PlantProfileTabs: React.FC<PlantProfileTabsProps> = ({
     }
 
     setIsSaving(true);
-    
+
     try {
       console.log('Saving plant details:', plant);
 
@@ -65,11 +66,11 @@ const PlantProfileTabs: React.FC<PlantProfileTabsProps> = ({
         .eq('id', plant.id)
         .select()
         .single();
-   
+
       if (profileError) {
         throw new Error(`Error saving plant profile: ${profileError.message}`);
       }
-      
+
       console.log('Plant profile updated successfully', data);
       toast({
         title: "Success",
@@ -86,7 +87,7 @@ const PlantProfileTabs: React.FC<PlantProfileTabsProps> = ({
       setIsSaving(false);
     }
   };
-  
+
 
   return (
     <div className="md:col-span-2">
@@ -98,7 +99,7 @@ const PlantProfileTabs: React.FC<PlantProfileTabsProps> = ({
           <TabsTrigger value="equipment">Equipment</TabsTrigger>
           <TabsTrigger value="clients">Clients</TabsTrigger>
         </TabsList>
-        
+
         <TabsContent value="details" className="space-y-4">
           <Card>
             <CardHeader>
@@ -108,8 +109,8 @@ const PlantProfileTabs: React.FC<PlantProfileTabsProps> = ({
             <CardContent className="space-y-4">
               {!disabled && (
                 <div className="flex justify-end mb-4">
-                  <Button 
-                    onClick={savePlantDescription} 
+                  <Button
+                    onClick={savePlantDescription}
                     disabled={isSaving}
                     className="flex items-center gap-2"
                   >
@@ -118,44 +119,58 @@ const PlantProfileTabs: React.FC<PlantProfileTabsProps> = ({
                   </Button>
                 </div>
               )}
-              
+
               <div className="space-y-2">
                 <Label htmlFor="description">Description</Label>
-                <Textarea 
-                  id="description" 
-                  value={plant.description} 
+                <Textarea
+                  id="description"
+                  value={plant.description}
                   onChange={(e) => handleChange('description', e.target.value)}
                   disabled={disabled}
                   className="min-h-[120px]"
                 />
               </div>
-              
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="minimumOrder">Minimum Order</Label>
-                  <Input 
-                    id="minimumOrder" 
+                  <Input
+                    id="minimumOrder"
                     type="number"
-                    value={plant.minimum_order} 
+                    value={plant.minimum_order}
                     onChange={(e) => handleChange('minimum_order', parseInt(e.target.value) || 0)}
                     disabled={disabled}
                   />
                 </div>
-                
+
                 <div className="space-y-2">
                   <Label htmlFor="turnaroundTime">Turnaround Time</Label>
-                  <Input 
+                  {/* <Input 
                     id="turnaroundTime" 
                     value={plant.turnaround_time} 
                     onChange={(e) => handleChange('turnaround_time', e.target.value)}
                     disabled={disabled}
-                  />
+                  /> */}
+                  <Select
+                    value={plant.turnaround_time}
+                    onValueChange={(value) => { handleChange('turnaround_time', value) }}
+                    disabled={disabled}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select Timeframe" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="under8">Under 8 weeks</SelectItem>
+                      <SelectItem value="8to12">8-12 weeks</SelectItem>
+                      <SelectItem value="over12">Over 12 weeks</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
             </CardContent>
           </Card>
         </TabsContent>
-        
+
         <TabsContent value="pricing">
           <Card>
             <CardHeader>
@@ -168,15 +183,15 @@ const PlantProfileTabs: React.FC<PlantProfileTabsProps> = ({
                   <TabsTrigger value="vinyl">Vinyl Pricing</TabsTrigger>
                   <TabsTrigger value="packaging">Packaging Pricing</TabsTrigger>
                 </TabsList>
-                
+
                 <TabsContent value="vinyl">
-                  <PlantVinylPricing 
-                    plant={plant} 
-                    setPlant={setPlant} 
-                    disabled={disabled} 
+                  <PlantVinylPricing
+                    plant={plant}
+                    setPlant={setPlant}
+                    disabled={disabled}
                   />
                 </TabsContent>
-                
+
                 <TabsContent value="packaging">
                   {/* <div className="space-y-8">
                     {(['innerSleeve', 'jacket', 'inserts', 'shrinkWrap'] as const).map(type => (
@@ -281,35 +296,35 @@ const PlantProfileTabs: React.FC<PlantProfileTabsProps> = ({
                     plant={plant}
                     setPlant={setPlant}
                     disabled={disabled}
-                    />
+                  />
                 </TabsContent>
               </Tabs>
             </CardContent>
           </Card>
         </TabsContent>
-        
+
         <TabsContent value="features">
-          <PlantProfileFeatures 
-            plant={plant} 
-            setPlant={setPlant} 
-            disabled={disabled} 
+          <PlantProfileFeatures
+            plant={plant}
+            setPlant={setPlant}
+            disabled={disabled}
           />
         </TabsContent>
 
         <TabsContent value="equipment">
-          <PlantEquipments 
-            plant={plant} 
-            setPlant={setPlant} 
+          <PlantEquipments
+            plant={plant}
+            setPlant={setPlant}
             disabled={disabled}
           />
         </TabsContent>
 
         <TabsContent value="clients">
-          <PlantClients 
-            plant={plant} 
-            setPlant={setPlant} 
+          <PlantClients
+            plant={plant}
+            setPlant={setPlant}
             disabled={disabled}
-            />
+          />
         </TabsContent>
       </Tabs>
     </div>

@@ -13,6 +13,13 @@ export const formSchema = z.object({
   jacket: z.string(),
   inserts: z.string(),
   shrinkWrap: z.string(),
+  location1: z.string(),
+  quantity1: z.string(),
+  location2: z.string().optional(),
+  quantity2: z.union([z.string(), z.number()]).optional(),
+  location3: z.string().optional(),
+  quantity3: z.union([z.string(), z.number()]).optional(),
+  splitManufacturing: z.boolean().optional()
 });
 
 export type FormValues = z.infer<typeof formSchema>;

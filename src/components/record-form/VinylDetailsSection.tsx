@@ -122,7 +122,7 @@ const VinylDetailsSection = ({
         </Select>
       </FormItem>} />
 
-    <FormField control={control} name="colour" render={({
+   <FormField control={control} name="colour" render={({
       field
     }) => <FormItem>
         <FormLabel className="flex items-center">

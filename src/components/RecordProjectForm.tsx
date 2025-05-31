@@ -14,6 +14,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { X } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
+import ManufacturingOptions from './record-form/ManufacturingOptions';
 
 interface RecordProjectFormProps {
   hideSubmitButton?: boolean;
@@ -59,6 +60,13 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
       jacket: parsedData?.jacket || "single-pocket-3mm",
       inserts: parsedData?.inserts || "single-insert",
       shrinkWrap: parsedData?.shrinkWrap || "yes",
+      location1: parsedData?.location1 || "",
+      quantity1: parsedData?.quantity1 || "",
+      location2: parsedData?.location2 || "",
+      quantity2: parsedData?.quantity2 || "",
+      location3: parsedData?.location3 || "",
+      quantity3: parsedData?.quantity3 || "",
+      splitManufacturing: false
     }
   });
 
@@ -428,6 +436,11 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
             <VinylDetailsSection control={form.control} disabled={hideSubmitButton} />
             <PackagingSection control={form.control} disabled={hideSubmitButton} />
           </div>
+          <Separator className="my-6" />
+            <div className="w-full">
+              <ManufacturingOptions control={form.control} disabled={hideSubmitButton} />
+            </div>
+          {/* manufacturing component here: */}
 
           {!hideSubmitButton && (
             <div className="flex justify-center">

@@ -24,6 +24,8 @@ interface OrderSummary {
   inserts: string;
   shrinkWrap: string;
   perUnit: number;
+  splitManufacturing?: boolean;
+  splitManufacturingDetails?: any[];
 }
 
 const Order = () => {
@@ -215,7 +217,7 @@ const Order = () => {
             <div>
               <h2 className="text-xl font-semibold mb-4">1. Vinyl Project Specifications</h2>
               <div className="bg-white rounded-lg shadow-sm">
-                <RecordProjectForm hideSubmitButton={true} selectedPlantDetails={selectedPlant}/>
+                <RecordProjectForm hideSubmitButton={true} setOrderSummary={setOrderSummary}/>
               </div>
             </div>
 

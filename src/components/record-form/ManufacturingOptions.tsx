@@ -18,10 +18,25 @@ import {
 import { Checkbox } from '@/components/ui/checkbox';
 import FormTooltip from './FormTooltip';
 
+interface OrderSummary {
+  quantity: string;
+  size: string;
+  type: string;
+  weight: string;
+  colour: string;
+  innerSleeve: string;
+  jacket: string;
+  inserts: string;
+  shrinkWrap: string;
+  perUnit: number;
+  splitManufacturing?: boolean;
+  splitManufacturingDetails?: any[];
+}
 
 type ManufacturingOptionsProps = {
   control: Control<any>;
   disabled?: boolean;
+  setOrderSummary?: React.Dispatch<React.SetStateAction<OrderSummary>>;
 };
 
 const locationOptions = [
@@ -41,6 +56,7 @@ const defaultQuantities = [500, 1000, 1500];
 const ManufacturingOptions = ({
   control,
   disabled,
+  setOrderSummary
 }: ManufacturingOptionsProps) => {
   const locations = [1, 2, 3];
 
@@ -57,8 +73,18 @@ const ManufacturingOptions = ({
               <FormControl>
                 <Checkbox
                   checked={field.value}
-                  onCheckedChange={field.onChange}
-                  disabled={disabled}
+                  onCheckedChange={()=>{
+                    field.onChange(!field.value);
+
+                    setOrderSummary?.((prev) => ({
+                      ...prev,
+                      splitManufacturing: !field.value,
+                      splitManufacturingDetails: !field.value ? [] : (prev.splitManufacturingDetails || [])
+                    }));
+
+                    
+                  }}
+                  // disabled={disabled}
                 />
               </FormControl>
               <FormLabel className="m-0 flex">Split manufacturing across different locations
@@ -89,7 +115,20 @@ const ManufacturingOptions = ({
 
                             </FormLabel>
                             <Select
-                              onValueChange={field.onChange}
+                              onValueChange={(value => {
+                                field.onChange(value);
+                                setOrderSummary?.((prev) => {
+                                  const newDetails = prev.splitManufacturingDetails;
+                                  newDetails[i] = {
+                                    location: value,
+                                    quantity: prev.splitManufacturingDetails?.[i]?.quantity,
+                                  };
+                                  return {
+                                    ...prev,
+                                    splitManufacturingDetails: newDetails
+                                  };
+                                });
+                              })}
                               value={field.value ?? defaultLocationValues[i]}
                               disabled={disabled}
                             >

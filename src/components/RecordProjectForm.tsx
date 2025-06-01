@@ -16,9 +16,24 @@ import { X } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import ManufacturingOptions from './record-form/ManufacturingOptions';
 
+interface OrderSummary {
+  quantity: string;
+  size: string;
+  type: string;
+  weight: string;
+  colour: string;
+  innerSleeve: string;
+  jacket: string;
+  inserts: string;
+  shrinkWrap: string;
+  perUnit: number;
+  splitManufacturing?: boolean;
+  splitManufacturingDetails?: any[];
+}
+
 interface RecordProjectFormProps {
   hideSubmitButton?: boolean;
-  selectedPlantDetails?: {}
+  setOrderSummary?: React.Dispatch<React.SetStateAction<OrderSummary>>;
 }
 
 interface PricingData {
@@ -34,7 +49,7 @@ interface PricingData {
   };
 }
 
-const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton = false, selectedPlantDetails = {} }) => {
+const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton = false, setOrderSummary }) => {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedPlant, setSelectedPlant] = useState<string | null>(null);
@@ -60,13 +75,13 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
       jacket: parsedData?.jacket || "single-pocket-3mm",
       inserts: parsedData?.inserts || "single-insert",
       shrinkWrap: parsedData?.shrinkWrap || "yes",
-      location1: parsedData?.location1 || "",
-      quantity1: parsedData?.quantity1 || "",
-      location2: parsedData?.location2 || "",
-      quantity2: parsedData?.quantity2 || "",
-      location3: parsedData?.location3 || "",
-      quantity3: parsedData?.quantity3 || "",
-      splitManufacturing: false
+      splitManufacturing: parsedData?.splitManufacturing || false,
+      location1: parsedData?.splitManufacturingDetails[0]?.location || "",
+      quantity1: parsedData?.splitManufacturingDetails[0]?.quantity || "",
+      location2: parsedData?.splitManufacturingDetails[1]?.location || "",
+      quantity2: parsedData?.splitManufacturingDetails[1]?.quantity || "",
+      location3: parsedData?.splitManufacturingDetails[2]?.location || "",
+      quantity3: parsedData?.splitManufacturingDetails[2]?.quantity || "",
     }
   });
 
@@ -354,8 +369,37 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
 
       // console.log("Starting pricing calculation with quantity:", numericQuantity);
 
+      const formData = {
+        name: values.name,
+        email: values.email,
+        quantity: numericQuantity,
+        size: values.size,
+        type: values.type,
+        weight: values.weight,
+        colour: values.colour,
+        innerSleeve: values.innerSleeve,
+        jacket: values.jacket,
+        inserts: values.inserts,
+        shrinkWrap: values.shrinkWrap,
+        splitManufacturing: values.splitManufacturing,
+        splitManufacturingDetails: [
+          {
+            location: values.location1 || "",
+            quantity: values.quantity1 || 0
+          },
+          {
+            location: values.location2 || "",
+            quantity: values.quantity2 || 0
+          },
+          {
+            location: values.location3 || "",
+            quantity: values.quantity3 || 0
+          }
+        ],
+      }
+
       // Save form data to localStorage
-      localStorage.setItem('vinylFormData', JSON.stringify(values));
+      localStorage.setItem('vinylFormData', JSON.stringify(formData));
       // console.log("Form data saved to localStorage");
 
       // Calculate pricing using Supabase data
@@ -438,7 +482,7 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
           </div>
           <Separator className="my-6" />
             <div className="w-full">
-              <ManufacturingOptions control={form.control} disabled={hideSubmitButton} />
+              <ManufacturingOptions control={form.control} disabled={hideSubmitButton} setOrderSummary={setOrderSummary}/>
             </div>
 
           {!hideSubmitButton && (

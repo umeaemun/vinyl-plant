@@ -261,7 +261,7 @@ export type Database = {
           created_at?: string;
         };
         Relationships: [];
-      }
+      };
       plant_clients: {
         Row: {
           id: string;
@@ -289,7 +289,7 @@ export type Database = {
         };
         Relationships: [];
       };
-      plant_reviews:{
+      plant_reviews: {
         Row: {
           id: string;
           plant_id: string;
@@ -310,7 +310,7 @@ export type Database = {
         };
         Update: {
           id?: string;
-          plant_id?: string;    
+          plant_id?: string;
           username?: string;
           user_id?: string;
           rating?: string;
@@ -318,7 +318,7 @@ export type Database = {
           created_at?: string;
         };
         Relationships: [];
-      }
+      };
       orders: {
         Row: {
           id: string;
@@ -337,6 +337,8 @@ export type Database = {
           jacket: string;
           inserts: string;
           shrink_wrap: string;
+          split_manufacturing: boolean;
+          split_manufacturing_details: string[];
           first_name: string;
           last_name: string;
           company: string;
@@ -369,6 +371,8 @@ export type Database = {
           jacket: string;
           inserts: string;
           shrink_wrap: string;
+          split_manufacturing: boolean;
+          split_manufacturing_details: string[];
           first_name: string;
           last_name: string;
           company: string;
@@ -401,6 +405,8 @@ export type Database = {
           jacket?: string;
           inserts?: string;
           shrink_wrap?: string;
+          split_manufacturing?: boolean;
+          split_manufacturing_details?: string[];
           first_name?: string;
           last_name?: string;
           company?: string;
@@ -418,8 +424,8 @@ export type Database = {
         };
         Relationships: [];
       };
-      requirements_form_details:{
-        Row:{
+      requirements_form_details: {
+        Row: {
           id: string;
           plant_id: string;
           user_id: string;
@@ -434,10 +440,12 @@ export type Database = {
           jacket: string;
           inserts: string;
           shrink_wrap: string;
+          split_manufacturing: boolean;
+          split_manufacturing_details: string[];
           created_at: string;
           updated_at: string;
         };
-        Insert:{
+        Insert: {
           id: string;
           plant_id: string;
           user_id: string;
@@ -452,10 +460,12 @@ export type Database = {
           jacket: string;
           inserts: string;
           shrink_wrap: string;
+          split_manufacturing: boolean;
+          split_manufacturing_details: string[];
           created_at?: string;
           updated_at?: string;
         };
-        Update:{
+        Update: {
           id?: string;
           plant_id?: string;
           user_id?: string;
@@ -470,12 +480,13 @@ export type Database = {
           jacket?: string;
           inserts?: string;
           shrink_wrap?: string;
+          split_manufacturing?: boolean
+          split_manufacturing_details?: string[];
           created_at?: string;
           updated_at?: string;
         };
         Relationships: [];
-      }
-
+      };
     };
     Views: {
       [_ in never]: never;

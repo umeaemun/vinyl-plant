@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import {
@@ -17,6 +17,9 @@ import {
 } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
 import FormTooltip from './FormTooltip';
+import countries from 'i18n-iso-countries';
+import enLocale from 'i18n-iso-countries/langs/en.json';
+
 
 interface OrderSummary {
   quantity: string;
@@ -39,27 +42,29 @@ type ManufacturingOptionsProps = {
   setOrderSummary?: React.Dispatch<React.SetStateAction<OrderSummary>>;
 };
 
-const locationOptions = [
-  { label: 'None', value: 'none' },
-  { label: 'Standard Black', value: 'standard_black' },
-  { label: 'Solid Colour', value: 'solid_colour' },
-  { label: 'Translucent Colour', value: 'translucent_colour' },
-];
-
-const defaultLocationValues = [
-  'standard_black',
-  'solid_colour',
-  'translucent_colour',
-];
-
-const defaultQuantities = [500, 1000, 1500];
-
 const ManufacturingOptions = ({
   control,
   disabled,
   setOrderSummary
 }: ManufacturingOptionsProps) => {
+
+  const [locationOptions, setLocationOptions] = useState([]);
   const locations = [1, 2, 3];
+
+  useEffect(() => {
+    countries.registerLocale(enLocale);
+    // Initialize country options
+    const countryObj = countries.getNames('en');
+    const countryList = Object.entries(countryObj).map(([code, name]) => {
+      return {
+        label: name,
+        value: name,
+      }
+    }
+
+    );
+    setLocationOptions(countryList);
+  }, []);
 
   return (
     <div className="space-y-4 mb-10">
@@ -74,7 +79,7 @@ const ManufacturingOptions = ({
               <FormControl>
                 <Checkbox
                   checked={field.value}
-                  onCheckedChange={(value)=>{
+                  onCheckedChange={(value) => {
                     field.onChange(value);
 
                     setOrderSummary?.((prev) => ({
@@ -83,7 +88,7 @@ const ManufacturingOptions = ({
                     }));
 
                   }}
-                  // disabled={disabled}
+                // disabled={disabled}
                 />
               </FormControl>
               <FormLabel className="m-0 flex">Split manufacturing across different locations
@@ -125,8 +130,8 @@ const ManufacturingOptions = ({
                                   };
                                 });
                               })}
-                              value={field.value ?? defaultLocationValues[i]}
-                              // disabled={disabled}
+                              value={field.value || ''}
+                            // disabled={disabled}
                             >
                               <FormControl>
                                 <SelectTrigger className="disabled-opacity-100">
@@ -169,7 +174,7 @@ const ManufacturingOptions = ({
                                     };
                                   });
                                 }}
-                                value={field.value ?? defaultQuantities[i]}
+                                value={field.value || 0}
                                 // disabled={disabled}
                                 className="disabled-opacity-100 flex items-center"
                               />

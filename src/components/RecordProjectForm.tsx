@@ -60,6 +60,7 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
   const [plants, setPlants] = useState<any[]>(null);
   const vinylFormData = localStorage.getItem('vinylFormData');
   const parsedData = JSON.parse(vinylFormData);
+  console.log("parsedData",parsedData)
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -372,7 +373,7 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
       const formData = {
         name: values.name,
         email: values.email,
-        quantity: numericQuantity,
+        quantity: values.quantity,
         size: values.size,
         type: values.type,
         weight: values.weight,

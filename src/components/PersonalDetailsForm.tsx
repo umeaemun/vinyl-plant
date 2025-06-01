@@ -22,10 +22,24 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import emailjs from 'emailjs-com';
 
+interface OrderSummary {
+  quantity: string;
+  size: string;
+  type: string;
+  weight: string;
+  colour: string;
+  innerSleeve: string;
+  jacket: string;
+  inserts: string;
+  shrinkWrap: string;
+  perUnit: number;
+  splitManufacturing?: boolean;
+  splitManufacturingDetails?: any[];
+}
 
 interface PersonalDetailsFormProps {
   selectedPlant: Plant | null;
-  orderSummary: any
+  orderSummary: OrderSummary
 }
 
 const formSchema = z.object({
@@ -158,120 +172,120 @@ const PersonalDetailsForm = ({ selectedPlant, orderSummary }: PersonalDetailsFor
       return;
     }
 
-    console.log("Submitting personal details form with values:", orderSummary);
+    setIsSubmitting(true);
 
-    // setIsSubmitting(true);
+    try {
+      // console.log("personal details Form values:", values);
 
-    // try {
-    //   // console.log("personal details Form values:", values);
+      // Get the vinyl specs from localStorage
+      const vinylFormData = localStorage.getItem('vinylFormData');
+      const vinylSpecs = vinylFormData ? JSON.parse(vinylFormData) : null;
+      if (!vinylSpecs) {
+        toast({
+          title: "No Vinyl Specs Found",
+          description: "Please fill out the vinyl specifications before submitting your order.",
+          variant: "destructive",
+        });
+        return;
+      }
 
-    //   // Get the vinyl specs from localStorage
-    //   const vinylFormData = localStorage.getItem('vinylFormData');
-    //   const vinylSpecs = vinylFormData ? JSON.parse(vinylFormData) : null;
-    //   if (!vinylSpecs) {
-    //     toast({
-    //       title: "No Vinyl Specs Found",
-    //       description: "Please fill out the vinyl specifications before submitting your order.",
-    //       variant: "destructive",
-    //     });
-    //     return;
-    //   }
-
-    //   const personalDetails = values;
-    //   const selectedPlantId = selectedPlant?.id || localStorage.getItem('selectedPlantId');
+      const personalDetails = values;
+      const selectedPlantId = selectedPlant?.id || localStorage.getItem('selectedPlantId');
 
 
-    //   // submit the order data to supabase
-    //   const { data, error } = await supabase
-    //     .from('orders')
-    //     .insert([
-    //       {
-    //         plant_id: selectedPlantId,
-    //         user_id: userProfile?.id,
-    //         status: 'pending',
-    //         plant_name: selectedPlant?.name || "",
-    //         per_unit: orderSummary.perUnit || "",
-    //         total: vinylSpecs.quantity * (orderSummary.perUnit || 0) || "",
-    //         quantity: vinylSpecs.quantity,
-    //         size: vinylSpecs.size,
-    //         type: vinylSpecs.type,
-    //         weight: vinylSpecs.weight,
-    //         colour: vinylSpecs.colour,
-    //         inner_sleeve: vinylSpecs.innerSleeve,
-    //         jacket: vinylSpecs.jacket,
-    //         inserts: vinylSpecs.inserts,
-    //         shrink_wrap: vinylSpecs.shrinkWrap,
-    //         first_name: personalDetails.firstName,
-    //         last_name: personalDetails.lastName,
-    //         company: personalDetails.companyLabel,
-    //         email: userProfile?.email,
-    //         phone: personalDetails.phone,
-    //         address_1: personalDetails.address1,
-    //         address_2: personalDetails.address2,
-    //         city: personalDetails.city,
-    //         state: personalDetails.state,
-    //         postal_code: personalDetails.postalCode,
-    //         country: personalDetails.country,
-    //         comments: personalDetails.comments,
-    //       },
-    //     ])
-    //     .select('*')
-    //     .single();
+      // submit the order data to supabase
+      const { data, error } = await supabase
+        .from('orders')
+        .insert([
+          {
+            plant_id: selectedPlantId,
+            user_id: userProfile?.id,
+            status: 'pending',
+            plant_name: selectedPlant?.name || "",
+            per_unit: orderSummary.perUnit || "",
+            total: vinylSpecs.quantity * (orderSummary.perUnit || 0) || "",
+            quantity: vinylSpecs.quantity,
+            size: vinylSpecs.size,
+            type: vinylSpecs.type,
+            weight: vinylSpecs.weight,
+            colour: vinylSpecs.colour,
+            inner_sleeve: vinylSpecs.innerSleeve,
+            jacket: vinylSpecs.jacket,
+            inserts: vinylSpecs.inserts,
+            shrink_wrap: vinylSpecs.shrinkWrap,
+            split_manufacturing: orderSummary.splitManufacturing,
+            split_manufacturing_details: orderSummary.splitManufacturingDetails,
+            first_name: personalDetails.firstName,
+            last_name: personalDetails.lastName,
+            company: personalDetails.companyLabel,
+            email: userProfile?.email,
+            phone: personalDetails.phone,
+            address_1: personalDetails.address1,
+            address_2: personalDetails.address2,
+            city: personalDetails.city,
+            state: personalDetails.state,
+            postal_code: personalDetails.postalCode,
+            country: personalDetails.country,
+            comments: personalDetails.comments,
+          },
+        ])
+        .select('*')
+        .single();
 
-    //   if (error) {
-    //     console.error("Error submitting order:", error);
-    //     toast({
-    //       title: "Submission failed",
-    //       description: "There was a problem submitting your order. Please try again.",
-    //       variant: "destructive",
-    //     });
-    //     return;
-    //   }
-    //   console.log("Order submitted successfully:", data);
+      if (error) {
+        console.error("Error submitting order:", error);
+        toast({
+          title: "Submission failed",
+          description: "There was a problem submitting your order. Please try again.",
+          variant: "destructive",
+        });
+        return;
+      }
+      console.log("Order submitted successfully:", data);
 
-    //   // send email to admin
-    //   await sendEmailToAdmin({
-    //     plant_name: selectedPlant?.name || "",
-    //     image_url: selectedPlant?.image_url || "",
-    //     quantity: vinylSpecs.quantity,
-    //     perUnit: data.per_unit,
-    //     total: data.total,
-    //   });
+      // send email to admin
+      await sendEmailToAdmin({
+        plant_name: selectedPlant?.name || "",
+        image_url: selectedPlant?.image_url || "",
+        quantity: vinylSpecs.quantity,
+        perUnit: data.per_unit,
+        total: data.total,
+      });
 
-    //   // send email to buyer
-    //   await sendEmailToBuyer({
-    //     plant_name: selectedPlant?.name || "",
-    //     image_url: selectedPlant?.image_url || "",
-    //     quantity: vinylSpecs.quantity,
-    //     perUnit: data.per_unit,
-    //     total: data.total,
-    //     email: personalDetails.email,
-    //   });
+      // send email to buyer
+      await sendEmailToBuyer({
+        plant_name: selectedPlant?.name || "",
+        image_url: selectedPlant?.image_url || "",
+        quantity: vinylSpecs.quantity,
+        perUnit: data.per_unit,
+        total: data.total,
+        email: personalDetails.email,
+      });
 
-    //   toast({
-    //     title: "Order submitted successfully!",
-    //     description: "We've received your order and will be in touch soon.",
-    //   });
+      toast({
+        title: "Order submitted successfully!",
+        description: "We've received your order and will be in touch soon.",
+      });
 
-    //   // Clear localStorage data that's no longer needed
-    //   localStorage.removeItem('selectedPlantId');
-    //   localStorage.removeItem('vinylFormData');
+      // Clear localStorage data that's no longer needed
+      localStorage.removeItem('selectedPlantId');
+      localStorage.removeItem('vinylFormData');
 
-    //   // Redirect to home or a thank you page
-    //   setTimeout(() => {
-    //     navigate('/');
-    //   }, 2000);
+      // Redirect to home or a thank you page
+      setTimeout(() => {
+        navigate('/');
+      }, 2000);
 
-    // } catch (error) {
-    //   console.error("Order submission error:", error);
-    //   toast({
-    //     title: "Submission failed",
-    //     description: "There was a problem submitting your order. Please try again.",
-    //     variant: "destructive",
-    //   });
-    // } finally {
-    //   setIsSubmitting(false);
-    // }
+    } catch (error) {
+      console.error("Order submission error:", error);
+      toast({
+        title: "Submission failed",
+        description: "There was a problem submitting your order. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleSaveForLater = async () => {
@@ -316,7 +330,9 @@ const PersonalDetailsForm = ({ selectedPlant, orderSummary }: PersonalDetailsFor
           inner_sleeve: data.innerSleeve,
           jacket: data.jacket,
           inserts: data.inserts,
-          shrink_wrap: data.shrinkWrap
+          shrink_wrap: data.shrinkWrap,
+          split_manufacturing: orderSummary.splitManufacturing,
+          split_manufacturing_details: orderSummary.splitManufacturingDetails,
         }],
         {
           onConflict: 'user_id',

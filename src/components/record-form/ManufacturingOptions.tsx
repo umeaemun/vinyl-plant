@@ -77,8 +77,6 @@ const ManufacturingOptions = ({
                   onCheckedChange={(value)=>{
                     field.onChange(value);
 
-                    console.log(value)
-
                     setOrderSummary?.((prev) => ({
                       ...prev,
                       splitManufacturing: value ? true : false,

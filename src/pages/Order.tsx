@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { useCurrency } from '@/contexts/CurrencyContext';
 
 interface OrderSummary {
   quantity: string;
@@ -35,6 +36,7 @@ const Order = () => {
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { currency, setCurrency } = useCurrency();
 
   useEffect(() => {
     // Get plant information
@@ -201,11 +203,11 @@ const Order = () => {
                   <div className="mt-4 pt-4 border-t">
                     <div className="flex justify-between mb-1">
                       <p className="font-medium">Price per unit:</p>
-                      <p className="font-medium">${orderSummary.perUnit.toFixed(2)}</p>
+                      <p className="font-medium">{currency.symbol} {orderSummary.perUnit.toFixed(2)}</p>
                     </div>
                     <div className="flex justify-between">
                       <p className="font-semibold">Total price:</p>
-                      <p className="font-semibold">${(Number(orderSummary.quantity) * orderSummary.perUnit).toFixed(2)}</p>
+                      <p className="font-semibold">{currency.symbol} {(Number(orderSummary.quantity) * orderSummary.perUnit).toFixed(2)}</p>
                     </div>
                   </div>
                 </div>

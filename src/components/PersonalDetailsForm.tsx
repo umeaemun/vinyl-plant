@@ -21,6 +21,7 @@ import { Separator } from '@/components/ui/separator';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import emailjs from 'emailjs-com';
+import { useCurrency } from '@/contexts/CurrencyContext';
 
 interface OrderSummary {
   quantity: string;
@@ -65,6 +66,7 @@ const PersonalDetailsForm = ({ selectedPlant, orderSummary }: PersonalDetailsFor
   const navigate = useNavigate();
   const { toast } = useToast();
   const { user, session, userProfile } = useAuth();
+  const { currency } = useCurrency();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -202,6 +204,7 @@ const PersonalDetailsForm = ({ selectedPlant, orderSummary }: PersonalDetailsFor
             user_id: userProfile?.id,
             status: 'pending',
             plant_name: selectedPlant?.name || "",
+            currency: currency,
             per_unit: orderSummary.perUnit || "",
             total: vinylSpecs.quantity * (orderSummary.perUnit || 0) || "",
             quantity: parseInt(vinylSpecs.quantity),
@@ -322,6 +325,7 @@ const PersonalDetailsForm = ({ selectedPlant, orderSummary }: PersonalDetailsFor
           user_id: userProfile?.id,
           name: data?.name || "",
           email: data?.email || "",
+          currency: currency,
           quantity: parseInt(data.quantity) || 0,
           size: data.size,
           type: data.type,

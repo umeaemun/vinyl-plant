@@ -440,7 +440,6 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
             <div className="w-full">
               <ManufacturingOptions control={form.control} disabled={hideSubmitButton} />
             </div>
-          {/* manufacturing component here: */}
 
           {!hideSubmitButton && (
             <div className="flex justify-center">

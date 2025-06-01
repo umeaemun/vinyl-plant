@@ -40,6 +40,7 @@ type ManufacturingOptionsProps = {
 };
 
 const locationOptions = [
+  { label: 'None', value: 'none' },
   { label: 'Standard Black', value: 'standard_black' },
   { label: 'Solid Colour', value: 'solid_colour' },
   { label: 'Translucent Colour', value: 'translucent_colour' },
@@ -73,16 +74,16 @@ const ManufacturingOptions = ({
               <FormControl>
                 <Checkbox
                   checked={field.value}
-                  onCheckedChange={()=>{
-                    field.onChange(!field.value);
+                  onCheckedChange={(value)=>{
+                    field.onChange(value);
+
+                    console.log(value)
 
                     setOrderSummary?.((prev) => ({
                       ...prev,
-                      splitManufacturing: !field.value,
-                      splitManufacturingDetails: !field.value ? [] : (prev.splitManufacturingDetails || [])
+                      splitManufacturing: value ? true : false,
                     }));
 
-                    
                   }}
                   // disabled={disabled}
                 />
@@ -119,10 +120,7 @@ const ManufacturingOptions = ({
                                 field.onChange(value);
                                 setOrderSummary?.((prev) => {
                                   const newDetails = prev.splitManufacturingDetails;
-                                  newDetails[i] = {
-                                    location: value,
-                                    quantity: prev.splitManufacturingDetails?.[i]?.quantity,
-                                  };
+                                  newDetails[i].location = value;
                                   return {
                                     ...prev,
                                     splitManufacturingDetails: newDetails
@@ -130,7 +128,7 @@ const ManufacturingOptions = ({
                                 });
                               })}
                               value={field.value ?? defaultLocationValues[i]}
-                              disabled={disabled}
+                              // disabled={disabled}
                             >
                               <FormControl>
                                 <SelectTrigger className="disabled-opacity-100">
@@ -161,8 +159,20 @@ const ManufacturingOptions = ({
                                 type="number"
                                 placeholder="e.g., 500"
                                 {...field}
+                                onChange={(e) => {
+                                  const value = e.target.value;
+                                  field.onChange(value);
+                                  setOrderSummary?.((prev) => {
+                                    const newDetails = prev.splitManufacturingDetails;
+                                    newDetails[i].quantity = value;
+                                    return {
+                                      ...prev,
+                                      splitManufacturingDetails: newDetails
+                                    };
+                                  });
+                                }}
                                 value={field.value ?? defaultQuantities[i]}
-                                disabled={disabled}
+                                // disabled={disabled}
                                 className="disabled-opacity-100 flex items-center"
                               />
                             </FormControl>

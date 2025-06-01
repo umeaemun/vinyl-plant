@@ -31,13 +31,13 @@ const App = () => (
           <Sonner />
           <BrowserRouter>
             <Routes>
-              <Route path="/" element={<Index />} />                                    {/*  condition for logouts remaining */}   
+              <Route path="/" element={<Index />} />                                    {/* DONE */}   
 
               {/* Auth */}
               <Route path="/auth" element={<Auth />} />                                 {/*  DONE */}
 
               {/* Buyer */}
-              <Route path="/buyer-profile" element={<BuyerProfile />} />               {/*  avatar remaining */} 
+              <Route path="/buyer-profile" element={<BuyerProfile />} />               {/*  DONE */} 
               <Route path="/order" element={<Order />} />
               <Route path="/compare" element={<Compare />} />                          {/*  DONE */}
               <Route path="/plant/:id" element={<PlantDetails />} />                   {/*  DONE */}

@@ -48,8 +48,8 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
-      email: "",
+      name: parsedData?.name || userProfile?.username || "",
+      email: parsedData?.email || user?.email || "",
       quantity: parsedData?.quantity || "1500",
       size: parsedData?.size || "12",
       type: parsedData?.type || "1LP",
@@ -63,12 +63,12 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
   });
 
 
-  // useEffect(() => {
-  //   if (user && userProfile) {
-  //     form.setValue("email", user.email);
-  //     form.setValue("username", userProfile.username || "");
-  //   }
-  // }, [user, userProfile, form]);
+  useEffect(() => {
+    if (user && userProfile) {
+      form.setValue("name", parsedData?.name || userProfile.username || "");
+      form.setValue("email", parsedData?.email || user.email);
+    }
+  }, [user, userProfile, form]);
 
   useEffect(() => {
     const fetchPlants = async () => {

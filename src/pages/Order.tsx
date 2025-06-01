@@ -36,7 +36,7 @@ const Order = () => {
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { currency, setCurrency } = useCurrency();
+  const { currency } = useCurrency();
 
   useEffect(() => {
     // Get plant information

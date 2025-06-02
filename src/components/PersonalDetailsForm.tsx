@@ -124,7 +124,8 @@ const PersonalDetailsForm = ({ selectedPlant, orderSummary }: PersonalDetailsFor
     // console.log("Sending email with params:", templateParams);
 
 
-    emailjs.send("service_ub4n5aj", "template_dp8pbcf",
+    // emailjs.send("service_ub4n5aj", "template_dp8pbcf",
+    emailjs.send("service_squbmun","template_qzrl81q",
       templateParams,
       "FZ2o2qSKeDHybPLnz"
     )
@@ -150,7 +151,8 @@ const PersonalDetailsForm = ({ selectedPlant, orderSummary }: PersonalDetailsFor
     // console.log("Sending buyer email with params:", templateParams);
 
 
-    emailjs.send("service_ub4n5aj", "template_q1x90oa",
+    // emailjs.send("service_ub4n5aj", "template_q1x90oa",
+    emailjs.send("service_squbmun","template_e3p5old",
       templateParams,
       "FZ2o2qSKeDHybPLnz"
     )

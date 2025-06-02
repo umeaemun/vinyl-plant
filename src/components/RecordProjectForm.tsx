@@ -76,12 +76,18 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
       inserts: parsedData?.inserts || "single-insert",
       shrinkWrap: parsedData?.shrinkWrap || "yes",
       splitManufacturing: parsedData?.splitManufacturing || false,
-      location1: parsedData?.splitManufacturingDetails[0]?.location || "",
-      quantity1: parsedData?.splitManufacturingDetails[0]?.quantity || "",
-      location2: parsedData?.splitManufacturingDetails[1]?.location || "",
-      quantity2: parsedData?.splitManufacturingDetails[1]?.quantity || "",
-      location3: parsedData?.splitManufacturingDetails[2]?.location || "",
-      quantity3: parsedData?.splitManufacturingDetails[2]?.quantity || "",
+      location1: parsedData?.splitManufacturingDetails?.length > 0 ? parsedData?.splitManufacturingDetails[0]?.location : "",
+      // quantity1: parsedData?.splitManufacturingDetails[0]?.quantity || "",
+      // location2: parsedData?.splitManufacturingDetails[1]?.location || "",
+      // quantity2: parsedData?.splitManufacturingDetails[1]?.quantity || "",
+      // location3: parsedData?.splitManufacturingDetails[2]?.location || "",
+      // quantity3: parsedData?.splitManufacturingDetails[2]?.quantity || "",
+      quantity1: parsedData?.splitManufacturingDetails?.length > 0 ? parsedData?.splitManufacturingDetails[0]?.quantity : "",
+      location2: parsedData?.splitManufacturingDetails?.length > 1 ? parsedData?.splitManufacturingDetails[1]?.location : "",
+      quantity2: parsedData?.splitManufacturingDetails?.length > 1 ? parsedData?.splitManufacturingDetails[1]?.quantity : "",
+      location3: parsedData?.splitManufacturingDetails?.length > 2 ? parsedData?.splitManufacturingDetails[2]?.location : "",
+      quantity3: parsedData?.splitManufacturingDetails?.length > 2 ? parsedData?.splitManufacturingDetails[2]?.quantity : "",
+
     }
   });
 

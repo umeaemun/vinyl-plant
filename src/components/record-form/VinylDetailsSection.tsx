@@ -75,6 +75,8 @@ const VinylDetailsSection = ({
             type="number"
             {...field}
             className={fieldState.error ? "border-red-600" : ""}
+            // className={`focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-transparent ${fieldState.error ? "border-red-600" : ""
+            //   }`}
             placeholder="Enter quantity"
             onChange={async (e) => {
 

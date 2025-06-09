@@ -1,22 +1,12 @@
 
 import React, { useState } from 'react';
 import { ArrowDown, ArrowUp, MoreHorizontal, Star } from 'lucide-react';
-import { Plant } from '@/data/plants';
+import { Plant, PricingData } from '@/data/plants';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { FormValues } from '@/components/record-form/FormSchema';
 import { useCurrency } from '@/contexts/CurrencyContext';
 import { useAuth } from '@/contexts/AuthContext';
-
-interface PricingData {
-  id: string;
-  calculatedPricing: {
-    vinylPrice: number;
-    packagingPrice: number;
-    perUnit: number;
-    valid: boolean;
-  };
-}
 
 interface ComparisonTableProps {
   plants: Plant[];

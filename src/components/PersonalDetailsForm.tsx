@@ -22,21 +22,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import emailjs from 'emailjs-com';
 import { useCurrency } from '@/contexts/CurrencyContext';
-
-interface OrderSummary {
-  quantity: string;
-  size: string;
-  type: string;
-  weight: string;
-  colour: string;
-  innerSleeve: string;
-  jacket: string;
-  inserts: string;
-  shrinkWrap: string;
-  perUnit: number;
-  splitManufacturing?: boolean;
-  splitManufacturingDetails?: any[];
-}
+import { OrderSummary } from '@/data/plants';
 
 interface PersonalDetailsFormProps {
   selectedPlant: Plant | null;

@@ -7,6 +7,18 @@ export interface PriceTier {
   status? : string;
 }
 
+export interface PricingData {
+  id: string;
+  name: string;
+  location: string;
+  country: string;
+  calculatedPricing: {
+    vinylPrice: number;
+    packagingPrice: number;
+    perUnit: number;
+    valid: boolean;
+  };
+}
 
 export interface PackagingPrice {
   id?: string;
@@ -55,7 +67,6 @@ export interface PlantReviews {
   created_at?: string;
 }
 
-
 export interface PlantFeature {
   id: string;
   name: string;
@@ -86,6 +97,22 @@ export interface Plant {
   image_url: string;
   website: string;
 }
+
+export interface OrderSummary {
+  quantity: string;
+  size: string;
+  type: string;
+  weight: string;
+  colour: string;
+  innerSleeve: string;
+  jacket: string;
+  inserts: string;
+  shrinkWrap: string;
+  perUnit: number;
+  splitManufacturing?: boolean;
+  splitManufacturingDetails?: any[];
+}
+
 
 export const features: PlantFeature[] = [
   {

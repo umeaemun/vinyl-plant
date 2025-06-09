@@ -13,21 +13,8 @@ import { Card } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useCurrency } from '@/contexts/CurrencyContext';
+import { OrderSummary } from '@/data/plants';
 
-interface OrderSummary {
-  quantity: string;
-  size: string;
-  type: string;
-  weight: string;
-  colour: string;
-  innerSleeve: string;
-  jacket: string;
-  inserts: string;
-  shrinkWrap: string;
-  perUnit: number;
-  splitManufacturing?: boolean;
-  splitManufacturingDetails?: any[];
-}
 
 const Order = () => {
   const [selectedPlant, setSelectedPlant] = useState<Plant | null>(null);

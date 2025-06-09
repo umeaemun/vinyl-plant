@@ -19,22 +19,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import FormTooltip from './FormTooltip';
 import countries from 'i18n-iso-countries';
 import enLocale from 'i18n-iso-countries/langs/en.json';
-
-
-interface OrderSummary {
-  quantity: string;
-  size: string;
-  type: string;
-  weight: string;
-  colour: string;
-  innerSleeve: string;
-  jacket: string;
-  inserts: string;
-  shrinkWrap: string;
-  perUnit: number;
-  splitManufacturing?: boolean;
-  splitManufacturingDetails?: any[];
-}
+import { OrderSummary } from '@/data/plants';
 
 type ManufacturingOptionsProps = {
   control: Control<any>;
@@ -116,7 +101,6 @@ const ManufacturingOptions = ({
                             <FormLabel className="flex items-center">
                               Location {index} - Country/Territory
                               {index > 1 && <span className='pl-1'> (Optional)</span>}
-
                             </FormLabel>
                             <Select
                               onValueChange={(value => {

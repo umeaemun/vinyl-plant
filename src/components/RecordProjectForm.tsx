@@ -15,39 +15,13 @@ import { useToast } from '@/hooks/use-toast';
 import { X } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import ManufacturingOptions from './record-form/ManufacturingOptions';
-
-interface OrderSummary {
-  quantity: string;
-  size: string;
-  type: string;
-  weight: string;
-  colour: string;
-  innerSleeve: string;
-  jacket: string;
-  inserts: string;
-  shrinkWrap: string;
-  perUnit: number;
-  splitManufacturing?: boolean;
-  splitManufacturingDetails?: any[];
-}
+import { PricingData, OrderSummary  } from '@/data/plants';
 
 interface RecordProjectFormProps {
   hideSubmitButton?: boolean;
   setOrderSummary?: React.Dispatch<React.SetStateAction<OrderSummary>>;
 }
 
-interface PricingData {
-  id: string;
-  name: string;
-  location: string;
-  country: string;
-  calculatedPricing: {
-    vinylPrice: number;
-    packagingPrice: number;
-    perUnit: number;
-    valid: boolean;
-  };
-}
 
 const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton = false, setOrderSummary }) => {
 
@@ -490,7 +464,7 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
             <div className="flex justify-center">
               <Button
                 type="submit"
-                onClick={() => { handleSubmit(form.getValues()) }}
+                // onClick={() => { handleSubmit(form.getValues()) }}
                 size="lg"
                 className="bg-wwwax-green text-black hover:bg-wwwax-green/80 text-center w-full max-w-md"
                 disabled={isSubmitting}

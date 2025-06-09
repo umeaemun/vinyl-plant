@@ -15,7 +15,7 @@ import { useToast } from '@/hooks/use-toast';
 import { X } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import ManufacturingOptions from './record-form/ManufacturingOptions';
-import { PricingData, OrderSummary  } from '@/data/plants';
+import { PricingData, OrderSummary, Plant  } from '@/data/plants';
 
 interface RecordProjectFormProps {
   hideSubmitButton?: boolean;
@@ -25,15 +25,16 @@ interface RecordProjectFormProps {
 
 const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton = false, setOrderSummary }) => {
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [selectedPlant, setSelectedPlant] = useState<string | null>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
   const { user, userProfile } = useAuth();
 
-  const [plants, setPlants] = useState<any[]>(null);
   const vinylFormData = localStorage.getItem('vinylFormData');
   const parsedData = JSON.parse(vinylFormData);
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [selectedPlantId, setSelectedPlantId] = useState<string | null>(null);
+  const [plants, setPlants] = useState<any[]>(null);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -95,14 +96,14 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
   useEffect(() => {
     const plantId = localStorage.getItem('selectedPlantId');
     if (plantId) {
-      setSelectedPlant(plantId);
+      setSelectedPlantId(plantId);
     }
   }, [form]);
 
   useEffect(() => {
     // if coming from plant details page. it means user is requesting a quote from a specific plant
-    if (selectedPlant && !hideSubmitButton && plants) {
-      const plant = plants.find(p => p.id == selectedPlant);
+    if (selectedPlantId && !hideSubmitButton && plants) {
+      const plant = plants.find(p => p.id == selectedPlantId);
       if (plant) {
         toast({
           title: "Plant Selected",
@@ -110,7 +111,7 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
         });
       }
     }
-  }, [selectedPlant, toast, hideSubmitButton, plants]);
+  }, [selectedPlantId, toast, hideSubmitButton, plants]);
 
   const calculatePricingFromSupabase = async (values: FormValues) => {
     try {
@@ -385,9 +386,9 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
       localStorage.setItem('calculatedPlantPricing', JSON.stringify(plantPricingData));
       // console.log("Pricing data saved for all plants");
 
-      if (selectedPlant) {
-        localStorage.setItem('selectedPlantForQuote', selectedPlant);
-        console.log("Selected plant saved:", selectedPlant);
+      if (selectedPlantId) {
+        localStorage.setItem('selectedPlantForQuote', selectedPlantId);
+        console.log("Selected plant saved:", selectedPlantId);
       }
 
       toast({
@@ -413,7 +414,7 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
 
   const handleResetPlant = () => {
     localStorage.removeItem('selectedPlantId');
-    setSelectedPlant(null);
+    setSelectedPlantId(null);
 
     toast({
       title: "Selection cleared",
@@ -425,7 +426,7 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
     <div className={hideSubmitButton ? "w-full" : "bg-white p-6 rounded-lg w-full max-w-4xl mx-auto border-4 border-wwwax-green"}>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
-          {selectedPlant && !hideSubmitButton && (
+          {selectedPlantId && !hideSubmitButton && (
             <div className="bg-secondary/30 p-4 rounded-md mb-4 flex justify-between items-center">
               <p className="font-medium">
                 You're requesting a quote from a specific pressing plant.
@@ -452,7 +453,7 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
           }
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <VinylDetailsSection control={form.control} disabled={hideSubmitButton} />
+            <VinylDetailsSection control={form.control} disabled={hideSubmitButton} selectedPlantId={selectedPlantId}/>
             <PackagingSection control={form.control} disabled={hideSubmitButton} />
           </div>
           <Separator className="my-6" />
@@ -469,7 +470,7 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
                 className="bg-wwwax-green text-black hover:bg-wwwax-green/80 text-center w-full max-w-md"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? "Processing..." : selectedPlant ? "Request Quote" : "Get Pricing Comparison"}
+                {isSubmitting ? "Processing..." : selectedPlantId ? "Request Quote" : "Get Pricing Comparison"}
               </Button>
             </div>
           )}

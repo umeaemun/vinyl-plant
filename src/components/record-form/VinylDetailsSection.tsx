@@ -1,21 +1,63 @@
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { Control } from 'react-hook-form';
 import { Badge } from "@/components/ui/badge";
 import FormTooltip from './FormTooltip';
-import * as z from "zod";
+import { supabase } from '@/integrations/supabase/client';
+import { useWatch } from "react-hook-form";
+import { Input } from "@/components/ui/input";
 
 type VinylDetailsSectionProps = {
   control: Control<any>;
   disabled?: boolean;
+  selectedPlantId?: string;
 };
 
 const VinylDetailsSection = ({
   control,
-  disabled
+  disabled,
+  selectedPlantId
 }: VinylDetailsSectionProps) => {
+
+  const quantity = useWatch({ control, name: "quantity" });
+  const size = useWatch({ control, name: "size" });
+  const type = useWatch({ control, name: "type" });
+
+  const checkOneDisable = async (quantity) => {
+
+    console.log('Checking if one is disabled with:', { quantity, size, type, selectedPlantId });
+    // Fetch vinyl pricing
+    const { data: vinylPricingData, error: vinylError } = await supabase
+      .from('vinyl_pricing')
+      .select('plant_id, price, quantity, size, type')
+      .eq('size', size)
+      .eq('type', type)
+      .eq('plant_id', selectedPlantId);
+
+    if (vinylError) {
+      console.error('Error fetching vinyl pricing:', vinylError);
+      throw new Error('Failed to fetch vinyl pricing data');
+    }
+
+    if (vinylPricingData.length === 0) {
+      console.warn('No vinyl pricing data found for the selected options');
+      return true;
+    }
+
+
+    vinylPricingData.sort((a, b) => b.quantity - a.quantity);
+    console.log('Vinyl pricing data:', vinylPricingData);
+
+    const vinylPricing = vinylPricingData.find(item => quantity >= item.quantity);
+
+    console.log('Vinyl pricing found:', quantity, !vinylPricing);
+    return !vinylPricing;
+
+  }
+
+
   return <div className="space-y-4">
     <h3 className="font-display font-medium text-lg">Vinyl Specifications</h3>
 
@@ -26,26 +68,26 @@ const VinylDetailsSection = ({
           Quantity
           <FormTooltip content="The total number of vinyl records you want to order. Higher quantities typically result in a lower per-unit cost." />
         </FormLabel>
-        <Select onValueChange={field.onChange} defaultValue={field.value} disabled={disabled}>
-          <FormControl>
-            <SelectTrigger className="disabled-opacity-100">
-              <SelectValue placeholder="Select quantity" />
-            </SelectTrigger>
-          </FormControl>
-          <SelectContent>
-            <SelectItem value="50">50</SelectItem>
-            <SelectItem value="100">100</SelectItem>
-            <SelectItem value="150">150</SelectItem>
-            <SelectItem value="200">200</SelectItem>
-            <SelectItem value="300">300</SelectItem>
-            <SelectItem value="500">500</SelectItem>
-            <SelectItem value="700">700</SelectItem>
-            <SelectItem value="1000">1000</SelectItem>
-            <SelectItem value="1500">1500</SelectItem>
-            <SelectItem value="2000">2000</SelectItem>
-            <SelectItem value="3000">3000</SelectItem>
-          </SelectContent>
-        </Select>
+        <FormControl>
+          <Input
+            type="number"
+            {...field}
+            placeholder="Enter quantity"
+            onBlur={async () => {
+              const enteredQuantity = parseInt(field.value);
+              if (!enteredQuantity || !size || !type || !selectedPlantId) return;
+
+              await checkOneDisable(enteredQuantity).then(disable => {
+                if (disable) {
+                  //show error or disable the field
+                } else {
+                  field.onChange(enteredQuantity);
+                }
+              });
+            }}
+          />
+        </FormControl>
+
       </FormItem>} />
 
     <FormField control={control} name="size" render={({
@@ -55,7 +97,7 @@ const VinylDetailsSection = ({
           Size
           <FormTooltip content="The physical diameter of the vinyl record. Standard 12-inch records are most common for full albums." />
         </FormLabel>
-        <Select onValueChange={field.onChange} defaultValue={field.value} disabled={disabled}>
+        <Select onValueChange={field.onChange} defaultValue={field.value}>
           <FormControl>
             <SelectTrigger className="disabled-opacity-100">
               <SelectValue placeholder="Select size" />
@@ -82,7 +124,7 @@ const VinylDetailsSection = ({
           Type
           <FormTooltip content="The number of vinyl records in your vinyl package e.g. 1LP means one vinyl disc (around 23 min per side max)" />
         </FormLabel>
-        <Select onValueChange={field.onChange} defaultValue={field.value} disabled={disabled}>
+        <Select onValueChange={field.onChange} defaultValue={field.value} >
           <FormControl>
             <SelectTrigger className="disabled-opacity-100">
               <SelectValue placeholder="Select type" />
@@ -109,7 +151,7 @@ const VinylDetailsSection = ({
           Weight
           <FormTooltip content="The weight of the vinyl record. Standard weight is 140gm, while 180gm is considered audiophile quality with better durability." />
         </FormLabel>
-        <Select onValueChange={field.onChange} defaultValue={field.value} disabled={disabled}>
+        <Select onValueChange={field.onChange} defaultValue={field.value} >
           <FormControl>
             <SelectTrigger className="disabled-opacity-100">
               <SelectValue placeholder="Select weight" />
@@ -122,14 +164,14 @@ const VinylDetailsSection = ({
         </Select>
       </FormItem>} />
 
-   <FormField control={control} name="colour" render={({
+    <FormField control={control} name="colour" render={({
       field
     }) => <FormItem>
         <FormLabel className="flex items-center">
           Colour
           <FormTooltip content="The visual appearance / colour of your vinyl record" />
         </FormLabel>
-        <Select onValueChange={field.onChange} defaultValue={field.value} disabled={disabled}>
+        <Select onValueChange={field.onChange} defaultValue={field.value} >
           <FormControl>
             <SelectTrigger className="disabled-opacity-100">
               <SelectValue placeholder="Select colour" />

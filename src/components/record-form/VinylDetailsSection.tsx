@@ -2,11 +2,10 @@
 import React, { useEffect, useState } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
-import { Control } from 'react-hook-form';
+import { Control, useWatch, useFormContext } from 'react-hook-form';
 import { Badge } from "@/components/ui/badge";
 import FormTooltip from './FormTooltip';
 import { supabase } from '@/integrations/supabase/client';
-import { useWatch } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 
 type VinylDetailsSectionProps = {
@@ -20,6 +19,8 @@ const VinylDetailsSection = ({
   disabled,
   selectedPlantId
 }: VinylDetailsSectionProps) => {
+
+  const { setError, clearErrors } = useFormContext();
 
   const quantity = useWatch({ control, name: "quantity" });
   const size = useWatch({ control, name: "size" });
@@ -62,7 +63,8 @@ const VinylDetailsSection = ({
     <h3 className="font-display font-medium text-lg">Vinyl Specifications</h3>
 
     <FormField control={control} name="quantity" render={({
-      field
+      field,
+      fieldState
     }) => <FormItem >
         <FormLabel className="flex items-center ">
           Quantity
@@ -72,22 +74,30 @@ const VinylDetailsSection = ({
           <Input
             type="number"
             {...field}
+            className={fieldState.error ? "border-red-600" : ""}
             placeholder="Enter quantity"
-            onBlur={async () => {
-              const enteredQuantity = parseInt(field.value);
+            onChange={async (e) => {
+
+              const enteredQuantity = parseInt(e.target.value);
+              field.onChange(e); // always call this to update the form state
+
               if (!enteredQuantity || !size || !type || !selectedPlantId) return;
 
-              await checkOneDisable(enteredQuantity).then(disable => {
-                if (disable) {
-                  //show error or disable the field
-                } else {
-                  field.onChange(enteredQuantity);
-                }
-              });
+              const invalid = await checkOneDisable(enteredQuantity);
+              if (invalid) {
+                setError("quantity", {
+                  type: "manual",
+                  message: "No pricing available for this quantity with the selected size/type.",
+                });
+              } else {
+                clearErrors("quantity");
+              }
             }}
           />
         </FormControl>
-
+        {fieldState.error && (
+          <p className="text-sm text-red-600 mt-1">{fieldState.error.message}</p>
+        )}
       </FormItem>} />
 
     <FormField control={control} name="size" render={({

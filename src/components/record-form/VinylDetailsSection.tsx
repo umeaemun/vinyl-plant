@@ -74,7 +74,6 @@ const VinylDetailsSection = ({
       setValidWeights(weights);
       setValidColours(colours);
     };
-
     fetchAvailableOptions();
   }, [selectedPlantId]);
 

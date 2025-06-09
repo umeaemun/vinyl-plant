@@ -30,10 +30,53 @@ const VinylDetailsSection = ({
   selectedPlantId
 }: VinylDetailsSectionProps) => {
   const { setError, clearErrors } = useFormContext();
+  const [validWeights, setValidWeights] = React.useState<string[]>([]);
+  const [validColours, setValidColours] = React.useState<string[]>([]);
+
 
   const quantity = useWatch({ control, name: "quantity" });
   const size = useWatch({ control, name: "size" });
   const type = useWatch({ control, name: "type" });
+
+  React.useEffect(() => {
+    const fetchAvailableOptions = async () => {
+      if (!selectedPlantId) return;
+
+      const { data: weightData , error } = await supabase
+        .from('vinyl_weight_options ')
+        .select('*')
+        .eq('plant_id', selectedPlantId);
+
+      if (error || !weightData) {
+        console.error('Failed to fetch vinyl options', error);
+        return;
+      }
+
+      console.log('Fetched vinyl weight options:', weightData);
+      const { data: colourData, error: colourError } = await supabase
+        .from('vinyl_color_options')
+        .select('*')
+        .eq('plant_id', selectedPlantId);
+
+      if (colourError || !colourData) {
+        console.error('Failed to fetch vinyl colour options', colourError); 
+        return;
+      }
+
+      console.log('Fetched vinyl colour options:', colourData);
+
+      const weights = [...new Set(weightData.map((row) => row.weight).filter(Boolean))];
+      const colours = [...new Set(colourData.map((row) => row.color).filter(Boolean))];
+
+      console.log('Available weights:', weights);
+      console.log('Available colours:', colours);
+
+      setValidWeights(weights);
+      setValidColours(colours);
+    };
+
+    fetchAvailableOptions();
+  }, [selectedPlantId]);
 
   const validateVinylCombination = async ({
     quantity,
@@ -189,11 +232,11 @@ const VinylDetailsSection = ({
               </FormControl>
               <SelectContent>
                 <SelectItem value="7">
-                  7" 
+                  7"
                   {/* <Badge variant="outline" className="ml-2 bg-gray-100">Coming soon</Badge> */}
                 </SelectItem>
                 <SelectItem value="10">
-                  10" 
+                  10"
                   {/* <Badge variant="outline" className="ml-2 bg-gray-100">Coming soon</Badge> */}
                 </SelectItem>
                 <SelectItem value="12">12"</SelectItem>
@@ -252,7 +295,7 @@ const VinylDetailsSection = ({
         )}
       />
 
-      <FormField
+      {/* <FormField
         control={control}
         name="weight"
         render={({ field }) => (
@@ -274,9 +317,40 @@ const VinylDetailsSection = ({
             </Select>
           </FormItem>
         )}
-      />
+      /> */}
 
       <FormField
+        control={control}
+        name="weight"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel className="flex items-center">
+              Weight
+              <FormTooltip content="The weight of the vinyl record. Standard weight is 140gm, while 180gm is considered audiophile quality with better durability." />
+            </FormLabel>
+            <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <FormControl>
+                <SelectTrigger className="disabled-opacity-100">
+                  <SelectValue placeholder="Select weight" />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                <SelectItem value="140gm" 
+                // disabled={!validWeights.includes("140gm")}
+                >
+                  140gm (Standard)
+                </SelectItem>
+                <SelectItem value="180gm" disabled={!validWeights.includes("180gm")}>
+                  180gm
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </FormItem>
+        )}
+      />
+
+
+      {/* <FormField
         control={control}
         name="colour"
         render={({ field }) => (
@@ -302,7 +376,50 @@ const VinylDetailsSection = ({
             </Select>
           </FormItem>
         )}
+      /> */}
+
+      <FormField
+        control={control}
+        name="colour"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel className="flex items-center">
+              Colour
+              <FormTooltip content="The visual appearance / colour of your vinyl record" />
+            </FormLabel>
+            <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <FormControl>
+                <SelectTrigger className="disabled-opacity-100">
+                  <SelectValue placeholder="Select colour" />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                <SelectItem value="black" 
+                // disabled={!validColours.includes("black")}
+                >
+                  Standard Black
+                </SelectItem>
+                <SelectItem value="solid-colour" disabled={!validColours.includes("solid-colour")}>
+                  Solid Colour
+                </SelectItem>
+                <SelectItem value="translucent-colour" disabled={!validColours.includes("translucent-colour")}>
+                  Translucent Colour
+                </SelectItem>
+                <SelectItem value="marbled" disabled={!validColours.includes("marbled")}>
+                  Marbled
+                </SelectItem>
+                <SelectItem value="splatter" disabled={!validColours.includes("splatter")}>
+                  Splatter
+                </SelectItem>
+                <SelectItem value="picture-disc" disabled={!validColours.includes("picture-disc")}>
+                  Picture Disc
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </FormItem>
+        )}
       />
+
     </div>
   );
 };

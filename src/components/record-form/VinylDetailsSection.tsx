@@ -26,7 +26,7 @@ const VinylDetailsSection = ({
   const size = useWatch({ control, name: "size" });
   const type = useWatch({ control, name: "type" });
 
-  const checkOneDisable = async (quantity) => {
+  const checkQuantityDisable = async (quantity) => {
 
     console.log('Checking if one is disabled with:', { quantity, size, type, selectedPlantId });
     // Fetch vinyl pricing
@@ -85,7 +85,7 @@ const VinylDetailsSection = ({
 
               if (!enteredQuantity || !size || !type || !selectedPlantId) return;
 
-              const invalid = await checkOneDisable(enteredQuantity);
+              const invalid = await checkQuantityDisable(enteredQuantity);
               if (invalid) {
                 setError("quantity", {
                   type: "manual",
@@ -116,14 +116,16 @@ const VinylDetailsSection = ({
             </SelectTrigger>
           </FormControl>
           <SelectContent>
-            <div className="flex items-center justify-between px-2 py-1.5 cursor-not-allowed opacity-50">
+            {/* <div className="flex items-center justify-between px-2 py-1.5 cursor-not-allowed opacity-50">
               <span>7"</span>
               <Badge variant="outline" className="ml-2 bg-gray-100">Coming soon</Badge>
             </div>
             <div className="flex items-center justify-between px-2 py-1.5 cursor-not-allowed opacity-50">
               <span>10"</span>
               <Badge variant="outline" className="ml-2 bg-gray-100">Coming soon</Badge>
-            </div>
+            </div> */}
+            <SelectItem value="7">7" <Badge variant="outline" className="ml-2 bg-gray-100">Coming soon</Badge></SelectItem>
+            <SelectItem value="10">10" <Badge variant="outline" className="ml-2 bg-gray-100">Coming soon</Badge></SelectItem>
             <SelectItem value="12">12"</SelectItem>
           </SelectContent>
         </Select>

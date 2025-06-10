@@ -26,7 +26,8 @@ import { OrderSummary } from '@/data/plants';
 
 interface PersonalDetailsFormProps {
   selectedPlant: Plant | null;
-  orderSummary: OrderSummary
+  orderSummary: OrderSummary;
+  allOptionsValid?: any;
 }
 
 const formSchema = z.object({
@@ -47,7 +48,7 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-const PersonalDetailsForm = ({ selectedPlant, orderSummary }: PersonalDetailsFormProps) => {
+const PersonalDetailsForm = ({ selectedPlant, orderSummary, allOptionsValid }: PersonalDetailsFormProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -565,7 +566,7 @@ const PersonalDetailsForm = ({ selectedPlant, orderSummary }: PersonalDetailsFor
               type="submit"
               size="lg"
               className="w-[47%] text-black bg-[#08fc04] hover:bg-[#2ae627]"
-              disabled={isSubmitting}
+              disabled={isSubmitting || !allOptionsValid || allOptionsValid.vinyl === false || allOptionsValid.packaging === false}
             >
               {isSubmitting ? "Submitting..." : "Complete Order"}
             </Button>
@@ -575,7 +576,7 @@ const PersonalDetailsForm = ({ selectedPlant, orderSummary }: PersonalDetailsFor
               size="lg"
               className="w-[47%] text-black bg-[#08fc04] hover:bg-[#2ae627]"
               onClick={handleSaveForLater}
-              disabled={isSubmitting}
+              disabled={isSubmitting || !allOptionsValid || allOptionsValid.vinyl === false || allOptionsValid.packaging === false}
             >
               Save My Order For Later
             </Button>

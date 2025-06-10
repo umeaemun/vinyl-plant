@@ -359,7 +359,7 @@ return (
           <div>
             <h2 className="text-xl font-semibold mb-4">2. Personal Details</h2>
             <div className="bg-white rounded-lg shadow-sm">
-              <PersonalDetailsForm selectedPlant={selectedPlant} orderSummary={orderSummary} />
+              <PersonalDetailsForm selectedPlant={selectedPlant} orderSummary={orderSummary} allOptionsValid={allOptionsValid}/>
             </div>
           </div>
         </div>

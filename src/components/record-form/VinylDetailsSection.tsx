@@ -87,7 +87,7 @@ const VinylDetailsSection = ({
 
   React.useEffect(() => {
     const updatePricingIfValid = async () => {
-      if (!quantity || !size || !type || !hasValidatedQuantity) return;
+      if (!quantity || !size || !type ) return;
 
       const result = await validateVinylCombination({
         quantity,
@@ -255,7 +255,7 @@ const VinylDetailsSection = ({
                 onBlur={async (e) => {
                   const val = parseInt(e.target.value);
                   await handleValidation({ quantityOverride: val });
-                  setHasValidatedQuantity(true);
+                  setHasValidatedQuantity(!hasValidatedQuantity);
                 }}
               />
             </FormControl>

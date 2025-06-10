@@ -109,20 +109,6 @@ const VinylDetailsSection = ({
   updatePricingIfValid();
 }, [quantity, size, type, weight, colour, selectedPlantId]);
 
-
-
-  function updateOrderSummary({ quantity, size, type, weight, colour }: {
-    quantity: number;
-    size: string;
-    type: string;
-    weight: string;
-    colour: string;
-  }) {
-    // update the order summary with the new vinyl specifications and local storage state as well
-    
-   
-  }
-
   const validateVinylCombination = async ({
     quantity,
     size,

@@ -90,84 +90,86 @@ const ManufacturingOptions = ({
                   Specify quantities for each location (total should equal your main quantity).
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-6">
-                  {locations.map((index, i) => (
-                    <React.Fragment key={index}>
-                      {/* Location Select */}
-                      <FormField
-                        control={control}
-                        name={`location${index}`}
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="flex items-center">
-                              Location {index} - Country/Territory
-                              {index > 1 && <span className='pl-1'> (Optional)</span>}
-                            </FormLabel>
-                            <Select
-                              onValueChange={(value => {
-                                field.onChange(value);
-                                setOrderSummary?.((prev) => {
-                                  const newDetails = prev.splitManufacturingDetails;
-                                  newDetails[i].location = value;
-                                  return {
-                                    ...prev,
-                                    splitManufacturingDetails: newDetails
-                                  };
-                                });
-                              })}
-                              value={field.value || ''}
-                            // disabled={disabled}
-                            >
-                              <FormControl>
-                                <SelectTrigger className="disabled-opacity-100">
-                                  <SelectValue placeholder="Select country" />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                {locationOptions.map((opt) => (
-                                  <SelectItem key={opt.value} value={opt.value}>
-                                    {opt.label}
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                          </FormItem>
-                        )}
-                      />
-
-                      {/* Quantity Input */}
-                      <FormField
-                        control={control}
-                        name={`quantity${index}`}
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className='flex'>Quantity for Location {index}</FormLabel>
-                            <FormControl>
-                              <Input
-                                type="number"
-                                placeholder="e.g., 500"
-                                {...field}
-                                onChange={(e) => {
-                                  const value = e.target.value;
+                  {locations.map((index, i) => {
+                    return (
+                      <React.Fragment key={index}>
+                        {/* Location Select */}
+                        <FormField
+                          control={control}
+                          name={`location${index}`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="flex items-center">
+                                Location {index} - Country/Territory
+                                {index > 1 && <span className='pl-1'> (Optional)</span>}
+                              </FormLabel>
+                              <Select
+                                onValueChange={(value => {
                                   field.onChange(value);
                                   setOrderSummary?.((prev) => {
                                     const newDetails = prev.splitManufacturingDetails;
-                                    newDetails[i].quantity = value;
+                                    newDetails[i].location = value;
                                     return {
                                       ...prev,
                                       splitManufacturingDetails: newDetails
                                     };
                                   });
-                                }}
-                                value={field.value || 0}
-                                // disabled={disabled}
-                                className="disabled-opacity-100 flex items-center"
-                              />
-                            </FormControl>
-                          </FormItem>
-                        )}
-                      />
-                    </React.Fragment>
-                  ))}
+                                })}
+                                value={field.value || ''}
+                              // disabled={disabled}
+                              >
+                                <FormControl>
+                                  <SelectTrigger className="disabled-opacity-100">
+                                    <SelectValue placeholder="Select country" />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  {locationOptions.map((opt) => (
+                                    <SelectItem key={opt.value} value={opt.value}>
+                                      {opt.label}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </FormItem>
+                          )}
+                        />
+
+                        {/* Quantity Input */}
+                        <FormField
+                          control={control}
+                          name={`quantity${index}`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className='flex'>Quantity for Location {index}</FormLabel>
+                              <FormControl>
+                                <Input
+                                  type="number"
+                                  placeholder="e.g., 500"
+                                  {...field}
+                                  onChange={(e) => {
+                                    const value = e.target.value;
+                                    field.onChange(value);
+                                    setOrderSummary?.((prev) => {
+                                      const newDetails = prev.splitManufacturingDetails;
+                                      newDetails[i].quantity = value;
+                                      return {
+                                        ...prev,
+                                        splitManufacturingDetails: newDetails
+                                      };
+                                    });
+                                  }}
+                                  value={field.value || 0}
+                                  // disabled={disabled}
+                                  className="disabled-opacity-100 flex items-center"
+                                />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+                      </React.Fragment>
+                    )
+                  })}
                 </div>
               </>
             }

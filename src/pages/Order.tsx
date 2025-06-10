@@ -94,6 +94,13 @@ const Order = () => {
     }
   }, [toast]);
 
+  useEffect(() => {
+    const calculateUpdatedPicing = () => {
+
+    }
+   calculateUpdatedPicing(); 
+  }, [selectedPlant, orderSummary]);
+
   // Don't redirect automatically, let user interact with the page
   if (isLoading || foundPlant === null) {
     return (

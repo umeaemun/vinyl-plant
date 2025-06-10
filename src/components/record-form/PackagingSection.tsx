@@ -76,9 +76,7 @@ const PackagingSection = ({
         }
       }));
     
-  }, [watchInnerSleeve, watchJacket, watchInserts, watchShrinkWrap, validOptions]);
-
-
+  }, [watchInnerSleeve, watchJacket, watchInserts, watchShrinkWrap]);
 
   return <div className="space-y-4">
       <h3 className="font-display font-medium text-lg">Packaging Specifications</h3>

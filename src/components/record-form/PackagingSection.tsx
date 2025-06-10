@@ -3,24 +3,31 @@ import React from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { Badge } from "@/components/ui/badge";
-import { Control } from 'react-hook-form';
+import { Control, useWatch } from 'react-hook-form';
 import FormTooltip from './FormTooltip';
 import * as z from "zod";
 import { supabase } from '@/integrations/supabase/client';
 
 type PackagingSectionProps = {
   control: Control<any>;
+  setOrderSummary: any;
   disabled?: boolean;
   selectedPlantId?: string;
 };
 
 const PackagingSection = ({
   control,
+  setOrderSummary,
   disabled,
   selectedPlantId
 }: PackagingSectionProps) => {
 
   const [validOptions, setValidOptions] = React.useState(null);
+  
+  const watchInnerSleeve = useWatch({control, name: 'innerSleeve'});
+  const watchJacket = useWatch({control, name: 'jacket'});
+  const watchInserts = useWatch({control, name: 'inserts'});
+  const watchShrinkWrap = useWatch({control, name: 'shrinkWrap'});
 
   React.useEffect(() => {
    
@@ -57,6 +64,20 @@ const PackagingSection = ({
 
   }, [selectedPlantId]);
 
+  React.useEffect(() => {
+  
+      setOrderSummary((prevSummary => {
+        return {
+          ...prevSummary,
+          innerSleeve: watchInnerSleeve,
+          jacket: watchJacket,
+          inserts: watchInserts,
+          shrinkWrap: watchShrinkWrap,
+        }
+      }));
+    
+  }, [watchInnerSleeve, watchJacket, watchInserts, watchShrinkWrap, validOptions]);
+
 
 
   return <div className="space-y-4">
@@ -77,11 +98,11 @@ const PackagingSection = ({
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
-                <SelectItem value="white-paper" disabled={!validOptions['innerSleeve']?.includes("white-paper")}>White Paper</SelectItem>
-                <SelectItem value="white-poly-lined" disabled={!validOptions['innerSleeve']?.includes("white-poly-lined")}>White Poly-lined</SelectItem>
-                <SelectItem value="black-paper" disabled={!validOptions['innerSleeve']?.includes("black-paper")}>Black Paper</SelectItem>
-                <SelectItem value="black-poly-lined" disabled={!validOptions['innerSleeve']?.includes("black-poly-lined")}>Black Poly-lined</SelectItem>
-                <SelectItem value="printed" disabled={!validOptions['innerSleeve']?.includes("printed")}>Printed</SelectItem>
+                <SelectItem value="white-paper" disabled={validOptions && !validOptions['innerSleeve']?.includes("white-paper")}>White Paper</SelectItem>
+                <SelectItem value="white-poly-lined" disabled={validOptions && !validOptions['innerSleeve']?.includes("white-poly-lined")}>White Poly-lined</SelectItem>
+                <SelectItem value="black-paper" disabled={validOptions && !validOptions['innerSleeve']?.includes("black-paper")}>Black Paper</SelectItem>
+                <SelectItem value="black-poly-lined" disabled={validOptions && !validOptions['innerSleeve']?.includes("black-poly-lined")}>Black Poly-lined</SelectItem>
+                <SelectItem value="printed" disabled={validOptions && !validOptions['innerSleeve']?.includes("printed")}>Printed</SelectItem>
               </SelectContent>
             </Select>
           </FormItem>} />
@@ -102,10 +123,10 @@ const PackagingSection = ({
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
-                <SelectItem value="single-pocket-3mm" disabled={!validOptions['jacket']?.includes("single-pocket-3mm")}>Single Pocket Jacket (3mm Spine)</SelectItem>
-                <SelectItem value="single-pocket-5mm" disabled={!validOptions['jacket']?.includes("single-pocket-5mm")}>Single Pocket Jacket (5mm Spine)</SelectItem>
-                <SelectItem value="gatefold" disabled={!validOptions['jacket']?.includes("gatefold")}>Gatefold Jacket</SelectItem>
-                <SelectItem value="trifold" disabled={!validOptions['jacket']?.includes("trifold")} className="flex items-center justify-between">
+                <SelectItem value="single-pocket-3mm" disabled={validOptions && !validOptions['jacket']?.includes("single-pocket-3mm")}>Single Pocket Jacket (3mm Spine)</SelectItem>
+                <SelectItem value="single-pocket-5mm" disabled={validOptions && !validOptions['jacket']?.includes("single-pocket-5mm")}>Single Pocket Jacket (5mm Spine)</SelectItem>
+                <SelectItem value="gatefold" disabled={validOptions && !validOptions['jacket']?.includes("gatefold")}>Gatefold Jacket</SelectItem>
+                <SelectItem value="trifold" disabled={validOptions && !validOptions['jacket']?.includes("trifold")} className="flex items-center justify-between">
                   Trifold Jacket
                   <Badge variant="outline" className="ml-2 bg-yellow-100 text-yellow-800 border-yellow-300">
                     Coming Soon
@@ -131,8 +152,8 @@ const PackagingSection = ({
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
-                <SelectItem value="no-insert">No Insert</SelectItem>
-                <SelectItem value="single-insert">Single Insert</SelectItem>
+                <SelectItem disabled={validOptions && !validOptions['inserts']?.includes("no-insert")} value="no-insert">No Insert</SelectItem>
+                <SelectItem disabled={validOptions && !validOptions['inserts']?.includes("single-insert")} value="single-insert">Single Insert</SelectItem>
               </SelectContent>
             </Select>
           </FormItem>} />
@@ -153,8 +174,8 @@ const PackagingSection = ({
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
-                <SelectItem value="yes">Yes</SelectItem>
-                <SelectItem value="no">No</SelectItem>
+                <SelectItem value="yes" disabled={validOptions && !validOptions['shrinkWrap']?.includes("yes")}>Yes</SelectItem>
+                <SelectItem value="no" disabled={validOptions && !validOptions['shrinkWrap']?.includes("no")}>No</SelectItem>
               </SelectContent>
             </Select>
           </FormItem>} />

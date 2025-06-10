@@ -20,12 +20,14 @@ import { Input } from "@/components/ui/input";
 
 type VinylDetailsSectionProps = {
   control: Control<any>;
+  setOrderSummary: any;
   disabled?: boolean;
   selectedPlantId?: string;
 };
 
 const VinylDetailsSection = ({
   control,
+  setOrderSummary,
   disabled,
   selectedPlantId
 }: VinylDetailsSectionProps) => {
@@ -92,7 +94,15 @@ const VinylDetailsSection = ({
     });
 
     if (result.valid) {
-      const pricing = updateOrderSummary({ quantity, size, type, weight, colour,});
+       setOrderSummary((prevSummary: any) => ({
+        ...prevSummary,
+        quantity,
+        size,
+        type,
+        weight,
+        colour
+      }));
+
     }
   };
 

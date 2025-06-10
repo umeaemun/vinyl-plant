@@ -422,6 +422,7 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
     });
   };
 
+
   return (
     <div className={hideSubmitButton ? "w-full" : "bg-white p-6 rounded-lg w-full max-w-4xl mx-auto border-4 border-wwwax-green"}>
       <Form {...form}>
@@ -453,8 +454,8 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
           }
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <VinylDetailsSection control={form.control} disabled={hideSubmitButton} selectedPlantId={selectedPlantId}/>
-            <PackagingSection control={form.control} disabled={hideSubmitButton} selectedPlantId={selectedPlantId}/>
+            <VinylDetailsSection control={form.control} setOrderSummary={setOrderSummary} disabled={hideSubmitButton} selectedPlantId={selectedPlantId} />
+            <PackagingSection control={form.control} setOrderSummary={setOrderSummary} disabled={hideSubmitButton} selectedPlantId={selectedPlantId} />
           </div>
           <Separator className="my-6" />
             <div className="w-full">

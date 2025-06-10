@@ -474,6 +474,7 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ setAllOptionsVali
               <Button
                 type="submit"
                 // onClick={() => { handleSubmit(form.getValues()) }}
+                onClick={form.handleSubmit(handleSubmit)}
                 size="lg"
                 className="bg-wwwax-green text-black hover:bg-wwwax-green/80 text-center w-full max-w-md"
                 disabled={isSubmitting}

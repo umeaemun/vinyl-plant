@@ -124,7 +124,7 @@ const VinylDetailsSection = ({
       }));
     }
   };
-
+  
   updatePricingIfValid();
 }, [quantity, size, type, weight, colour, selectedPlantId]);
 

@@ -22,6 +22,8 @@ const Order = () => {
   const [orderSummary, setOrderSummary] = useState<OrderSummary | null>(null);
   const [allOptionsValid, setAllOptionsValid] = useState<any>({vinyl: true, packaging: true});
   const [isLoading, setIsLoading] = useState(true);
+  const [perUnit, setPerUnit] = useState<number>(0);
+  const [totalPrice, setTotalPrice] = useState<number>(0);
   const navigate = useNavigate();
   const { toast } = useToast();
   const { currency } = useCurrency();
@@ -171,18 +173,18 @@ const Order = () => {
         // console.log('2:', colorPrice);
         // console.log('3:', weightPrice);
 
-        // console.log('Packaging Options:', packagingOptionsData);
 
-        const innerSleeveOption = packagingOptionsData.find(option => option.type === 'innerSleeve' && option.option === orderSummary.innerSleeve);
-        // const jacketOption = packagingOptionsData.find(option => option.type === 'jacket' && option.option === orderSummary.jacket);
-        // const insertsOption = packagingOptionsData.find(option => option.type === 'inserts' && option.option === orderSummary.inserts);
-        // const shrinkWrapOption = packagingOptionsData.find(option => option.type === 'shrinkWrap' && option.option === orderSummary.shrinkWrap);
-
-        // console.log('Inner Sleeve Option:', innerSleeveOption, orderSummary.innerSleeve);
-
+        const innerSleeveOption = packagingOptionsData.find(option => option.type === 'innerSleeve' && option.option === orderSummary.innerSleeve)?.price || 0;
+        const jacketOption = packagingOptionsData.find(option => option.type === 'jacket' && option.option === orderSummary.jacket)?.price || 0;
+        const insertsOption = packagingOptionsData.find(option => option.type === 'inserts' && option.option === orderSummary.inserts)?.price || 0;
+        const shrinkWrapOption = packagingOptionsData.find(option => option.type === 'shrinkWrap' && option.option === orderSummary.shrinkWrap)?.price || 0;
+     
+        packagingPrice = innerSleeveOption + jacketOption + insertsOption + shrinkWrapOption;
       }
 
-
+      const perUnit = vinylPrice + colorPrice + weightPrice + packagingPrice;
+      setPerUnit(perUnit);
+      setTotalPrice(perUnit * parseInt(orderSummary?.quantity));
 
     }
 
@@ -190,6 +192,18 @@ const Order = () => {
       calculateUpdatedPicing();
     }
   }, [orderSummary]);
+
+  useEffect(() => {
+    // Update order summary with perUnit and totalPrice
+    if (orderSummary && !isNaN(perUnit) && !isNaN(totalPrice)) {
+      setOrderSummary(prev => ({
+        ...prev,
+        perUnit: perUnit,
+        totalPrice: totalPrice
+      }));
+    }
+  }
+  , [perUnit, totalPrice]);
 
   // Don't redirect automatically, let user interact with the page
   if (isLoading || foundPlant === null) {

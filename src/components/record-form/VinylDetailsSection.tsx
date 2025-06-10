@@ -55,7 +55,7 @@ const VinylDetailsSection = ({
         return;
       }
 
-      console.log('Fetched vinyl weight options:', weightData);
+      // console.log('Fetched vinyl weight options:', weightData);
       const { data: colourData, error: colourError } = await supabase
         .from('vinyl_color_options')
         .select('*')
@@ -66,13 +66,13 @@ const VinylDetailsSection = ({
         return;
       }
 
-      console.log('Fetched vinyl colour options:', colourData);
+      // console.log('Fetched vinyl colour options:', colourData);
 
       const weights = [...new Set(weightData.map((row) => row.weight).filter(Boolean))];
       const colours = [...new Set(colourData.map((row) => row.color).filter(Boolean))];
 
-      console.log('Available weights:', weights);
-      console.log('Available colours:', colours);
+      // console.log('Available weights:', weights);
+      // console.log('Available colours:', colours);
 
       setValidWeights(weights);
       setValidColours(colours);
@@ -313,14 +313,6 @@ const VinylDetailsSection = ({
                 <SelectItem value="3LP">3LP
                   {/* <Badge variant="outline" className="ml-2 bg-gray-100">Coming soon</Badge> */}
                 </SelectItem>
-                {/* <div className="flex items-center justify-between px-2 py-1.5 cursor-not-allowed opacity-50">
-                  <span>2LP</span>
-                  <Badge variant="outline" className="ml-2 bg-gray-100">Coming soon</Badge>
-                </div>
-                <div className="flex items-center justify-between px-2 py-1.5 cursor-not-allowed opacity-50">
-                  <span>3LP</span>
-                  <Badge variant="outline" className="ml-2 bg-gray-100">Coming soon</Badge>
-                </div> */}
               </SelectContent>
             </Select>
             {fieldState.error && (

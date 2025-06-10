@@ -454,7 +454,7 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <VinylDetailsSection control={form.control} disabled={hideSubmitButton} selectedPlantId={selectedPlantId}/>
-            <PackagingSection control={form.control} disabled={hideSubmitButton} />
+            <PackagingSection control={form.control} disabled={hideSubmitButton} selectedPlantId={selectedPlantId}/>
           </div>
           <Separator className="my-6" />
             <div className="w-full">

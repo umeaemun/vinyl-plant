@@ -37,12 +37,15 @@ const VinylDetailsSection = ({
   const quantity = useWatch({ control, name: "quantity" });
   const size = useWatch({ control, name: "size" });
   const type = useWatch({ control, name: "type" });
+  const weight = useWatch({ control, name: "weight" });
+  const colour = useWatch({ control, name: "colour" });
+
 
   React.useEffect(() => {
     const fetchAvailableOptions = async () => {
       if (!selectedPlantId) return;
 
-      const { data: weightData , error } = await supabase
+      const { data: weightData, error } = await supabase
         .from('vinyl_weight_options ')
         .select('*')
         .eq('plant_id', selectedPlantId);
@@ -59,7 +62,7 @@ const VinylDetailsSection = ({
         .eq('plant_id', selectedPlantId);
 
       if (colourError || !colourData) {
-        console.error('Failed to fetch vinyl colour options', colourError); 
+        console.error('Failed to fetch vinyl colour options', colourError);
         return;
       }
 
@@ -76,6 +79,39 @@ const VinylDetailsSection = ({
     };
     fetchAvailableOptions();
   }, [selectedPlantId]);
+
+  React.useEffect(() => {
+  const updatePricingIfValid = async () => {
+    if (!quantity || !size || !type) return;
+
+    const result = await validateVinylCombination({
+      quantity,
+      size,
+      type,
+      selectedPlantId,
+    });
+
+    if (result.valid) {
+      const pricing = updateOrderSummary({ quantity, size, type, weight, colour,});
+    }
+  };
+
+  updatePricingIfValid();
+}, [quantity, size, type, weight, colour, selectedPlantId]);
+
+
+
+  function updateOrderSummary({ quantity, size, type, weight, colour }: {
+    quantity: number;
+    size: string;
+    type: string;
+    weight: string;
+    colour: string;
+  }) {
+    // update the order summary with the new vinyl specifications and local storage state as well
+    
+   
+  }
 
   const validateVinylCombination = async ({
     quantity,
@@ -334,7 +370,7 @@ const VinylDetailsSection = ({
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
-                <SelectItem value="140gm" 
+                <SelectItem value="140gm"
                 // disabled={!validWeights.includes("140gm")}
                 >
                   140gm (Standard)
@@ -393,7 +429,7 @@ const VinylDetailsSection = ({
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
-                <SelectItem value="black" 
+                <SelectItem value="black"
                 // disabled={!validColours.includes("black")}
                 >
                   Standard Black

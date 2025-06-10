@@ -10,6 +10,7 @@ import { supabase } from '@/integrations/supabase/client';
 
 type PackagingSectionProps = {
   control: Control<any>;
+  setAllOptionsValid: React.Dispatch<React.SetStateAction<any>>;
   orderSummary: any;
   setOrderSummary: any;
   disabled?: boolean;
@@ -18,14 +19,14 @@ type PackagingSectionProps = {
 
 const PackagingSection = ({
   control,
+  setAllOptionsValid,
   orderSummary,
   setOrderSummary,
   disabled,
   selectedPlantId
 }: PackagingSectionProps) => {
 
-  const { setError, clearErrors } = useFormContext();
-
+  const { formState, setError, clearErrors } = useFormContext();
 
   const [validOptions, setValidOptions] = React.useState(null);
 
@@ -75,6 +76,20 @@ const PackagingSection = ({
 
   React.useEffect(() => {
 
+    if (formState.errors.innerSleeve || formState.errors.jacket || formState.errors.inserts || formState.errors.shrinkWrap) {
+      setAllOptionsValid((prev) => ({
+        ...prev,
+        packaging: false
+      })
+      );
+    } else {
+      setAllOptionsValid((prev) => ({
+        ...prev,
+        packaging: true
+      }));
+    }
+
+
     setOrderSummary((prevSummary => {
       return {
         ...prevSummary,
@@ -95,8 +110,16 @@ const PackagingSection = ({
           type: "manual",
           message: "Selected option is not valid for the current order quantity."
         });
-      }else {
+        setAllOptionsValid((prev) => ({
+          ...prev,
+          packaging: false
+        }));
+      } else {
         clearErrors("innerSleeve");
+        setAllOptionsValid((prev) => ({
+          ...prev,
+          packaging: true
+        }));
       }
 
       if (!validOptions['jacket']?.includes(watchJacket)) {
@@ -104,8 +127,16 @@ const PackagingSection = ({
           type: "manual",
           message: "Selected option is not valid for the current order quantity."
         });
-      }else {
+        setAllOptionsValid((prev) => ({
+          ...prev,
+          packaging: false
+        }));
+      } else {
         clearErrors("jacket");
+        setAllOptionsValid((prev) => ({
+          ...prev,
+          packaging: true
+        }));
       }
 
 
@@ -114,8 +145,16 @@ const PackagingSection = ({
           type: "manual",
           message: "Selected option is not valid for the current order quantity."
         });
-      }else {
+        setAllOptionsValid((prev) => ({
+          ...prev,
+          packaging: false
+        }));
+      } else {
         clearErrors("inserts");
+        setAllOptionsValid((prev) => ({
+          ...prev,
+          packaging: true
+        }));
       }
 
 
@@ -124,8 +163,16 @@ const PackagingSection = ({
           type: "manual",
           message: "Selected option is not valid for the current order quantity."
         });
+        setAllOptionsValid((prev) => ({
+          ...prev,
+          packaging: false
+        }));
       } else {
         clearErrors("shrinkWrap");
+        setAllOptionsValid((prev) => ({
+          ...prev,
+          packaging: true
+        }));
       }
 
     }

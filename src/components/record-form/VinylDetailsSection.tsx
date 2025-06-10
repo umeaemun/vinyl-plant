@@ -20,6 +20,7 @@ import { Input } from "@/components/ui/input";
 
 type VinylDetailsSectionProps = {
   control: Control<any>;
+  setAllOptionsValid: React.Dispatch<React.SetStateAction<any>>;
   setOrderSummary: any;
   disabled?: boolean;
   selectedPlantId?: string;
@@ -27,11 +28,12 @@ type VinylDetailsSectionProps = {
 
 const VinylDetailsSection = ({
   control,
+  setAllOptionsValid,
   setOrderSummary,
   disabled,
   selectedPlantId
 }: VinylDetailsSectionProps) => {
-  const { setError, clearErrors } = useFormContext();
+  const { formState, setError, clearErrors } = useFormContext();
   const [validWeights, setValidWeights] = React.useState<string[]>([]);
   const [validColours, setValidColours] = React.useState<string[]>([]);
 
@@ -94,6 +96,11 @@ const VinylDetailsSection = ({
     });
 
     if (result.valid) {
+      setAllOptionsValid(prev => ({
+        ...prev,
+        vinyl: true
+      })); 
+      
        setOrderSummary((prevSummary: any) => ({
         ...prevSummary,
         quantity,
@@ -103,6 +110,18 @@ const VinylDetailsSection = ({
         colour
       }));
 
+    }else{
+      setAllOptionsValid(prev => ({
+        ...prev,
+        vinyl: false
+      }));
+
+      setOrderSummary((prevSummary: any) => ({
+        ...prevSummary,
+        quantity: quantity,
+        weight: weight,
+        colour: colour,
+      }));
     }
   };
 

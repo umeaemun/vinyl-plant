@@ -18,13 +18,14 @@ import ManufacturingOptions from './record-form/ManufacturingOptions';
 import { PricingData, OrderSummary, Plant  } from '@/data/plants';
 
 interface RecordProjectFormProps {
+  setAllOptionsValid?: React.Dispatch<React.SetStateAction<any>>;
   hideSubmitButton?: boolean;
   orderSummary?: OrderSummary;
   setOrderSummary?: React.Dispatch<React.SetStateAction<OrderSummary>>;
 }
 
 
-const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton = false, orderSummary, setOrderSummary }) => {
+const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ setAllOptionsValid, hideSubmitButton = false, orderSummary, setOrderSummary }) => {
 
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -460,8 +461,8 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
           }
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <VinylDetailsSection control={form.control} setOrderSummary={setOrderSummary} disabled={hideSubmitButton} selectedPlantId={selectedPlantId} />
-            <PackagingSection control={form.control} orderSummary={orderSummary} setOrderSummary={setOrderSummary} disabled={hideSubmitButton} selectedPlantId={selectedPlantId} />
+            <VinylDetailsSection control={form.control} setOrderSummary={setOrderSummary} disabled={hideSubmitButton} selectedPlantId={selectedPlantId} setAllOptionsValid={setAllOptionsValid}/>
+            <PackagingSection control={form.control} orderSummary={orderSummary} setOrderSummary={setOrderSummary} disabled={hideSubmitButton} selectedPlantId={selectedPlantId} setAllOptionsValid={setAllOptionsValid}/>
           </div>
           <Separator className="my-6" />
             <div className="w-full">

@@ -20,6 +20,7 @@ const Order = () => {
   const [selectedPlant, setSelectedPlant] = useState<Plant | null>(null);
   const [foundPlant, setFoundPlant] = useState<boolean | null>(null);
   const [orderSummary, setOrderSummary] = useState<OrderSummary | null>(null);
+  const [allOptionsValid, setAllOptionsValid] = useState<any>({vinyl: true, packaging: true});
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -210,7 +211,8 @@ const Order = () => {
   };
 
   // console.log('Selected Plant:', selectedPlant);
-  console.log('Order Summary:', orderSummary);
+  // console.log('Order Summary:', orderSummary);
+  console.log('All Options Valid:', allOptionsValid);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -302,7 +304,7 @@ const Order = () => {
             <div>
               <h2 className="text-xl font-semibold mb-4">1. Vinyl Project Specifications</h2>
               <div className="bg-white rounded-lg shadow-sm">
-                <RecordProjectForm hideSubmitButton={true} orderSummary={orderSummary} setOrderSummary={setOrderSummary} />
+                <RecordProjectForm hideSubmitButton={true} orderSummary={orderSummary} setOrderSummary={setOrderSummary} setAllOptionsValid={setAllOptionsValid}/>
               </div>
             </div>
 

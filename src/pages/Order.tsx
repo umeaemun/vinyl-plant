@@ -42,12 +42,12 @@ const Order = () => {
         if (plant) {
           setFoundPlant(true);
           setSelectedPlant(plant);
-        }else {
+        } else {
           setFoundPlant(false);
         }
       }
       fetchPlantDetails();
-    }else{
+    } else {
       setFoundPlant(false);
     }
 
@@ -71,7 +71,7 @@ const Order = () => {
         // console.log("Plant Pricing:", plantPricing);
 
         if (specs && plantPricing) {
-          
+
           setOrderSummary({
             ...specs,
             perUnit: plantPricing.calculatedPricing.perUnit
@@ -95,11 +95,100 @@ const Order = () => {
   }, [toast]);
 
   useEffect(() => {
-    const calculateUpdatedPicing = () => {
+    const calculateUpdatedPicing = async () => {
+      let vinylPrice = 0;
+      let colorPrice = 0;
+      let weightPrice = 0;
+      let packagingPrice = 0;
+
+      const { data: vinylPricingData, error } = await supabase
+        .from('vinyl_pricing')
+        .select('*')
+        .eq('size', orderSummary?.size)
+        .eq('type', orderSummary?.type)
+        .eq('plant_id', selectedPlant?.id);
+
+      if (error) {
+        console.error('Error fetching vinyl pricing:', error);
+        return;
+      }
+
+      if (vinylPricingData.length > 0) {
+        vinylPricingData.sort((a, b) => b.quantity - a.quantity);
+        vinylPrice = vinylPricingData.find(vp => vp.quantity <= orderSummary?.quantity)?.price;
+      }
+
+
+      if (orderSummary?.colour !== 'black') {
+
+        const { data: colorOptionsData, error: colorError } = await supabase
+          .from('vinyl_color_options')
+          .select('*')
+          .eq('color', orderSummary?.colour)
+          .eq('plant_id', selectedPlant?.id)
+          .single();
+
+        if (colorError) {
+          console.error('Error fetching color options:', colorError);
+          throw new Error('Failed to fetch color options');
+        }
+
+        if (colorOptionsData) {
+          colorPrice = colorOptionsData.additional_cost;
+        }
+      }
+
+      if (orderSummary?.weight !== '140gm') {
+        const { data: weightOptionsData, error: weightError } = await supabase
+          .from('vinyl_weight_options')
+          .select('*')
+          .eq('weight', orderSummary?.weight)
+          .eq('plant_id', selectedPlant?.id)
+          .single();
+
+        if (weightError) {
+          console.error('Error fetching weight options:', weightError);
+          throw new Error('Failed to fetch weight options');
+        }
+
+        if (weightOptionsData) {
+          weightPrice = weightOptionsData.additional_cost;
+        }
+      }
+
+      const { data: packagingOptionsData, error: packagingError } = await supabase
+        .from('packaging_pricing')
+        .select('*')
+        .eq('plant_id', selectedPlant?.id);
+
+      if (packagingError) {
+        console.error('Error fetching packaging options:', packagingError);
+      }
+
+      if (packagingOptionsData.length > 0) {
+        // console.log('1:', vinylPrice);
+        // console.log('2:', colorPrice);
+        // console.log('3:', weightPrice);
+
+        // console.log('Packaging Options:', packagingOptionsData);
+
+        const innerSleeveOption = packagingOptionsData.find(option => option.type === 'innerSleeve' && option.option === orderSummary.innerSleeve);
+        // const jacketOption = packagingOptionsData.find(option => option.type === 'jacket' && option.option === orderSummary.jacket);
+        // const insertsOption = packagingOptionsData.find(option => option.type === 'inserts' && option.option === orderSummary.inserts);
+        // const shrinkWrapOption = packagingOptionsData.find(option => option.type === 'shrinkWrap' && option.option === orderSummary.shrinkWrap);
+
+        // console.log('Inner Sleeve Option:', innerSleeveOption, orderSummary.innerSleeve);
+
+      }
+
+
 
     }
-   calculateUpdatedPicing(); 
-  }, [selectedPlant, orderSummary]);
+
+    if (orderSummary && selectedPlant) {
+      calculateUpdatedPicing();
+    }
+  }, [orderSummary]);
 
   // Don't redirect automatically, let user interact with the page
   if (isLoading || foundPlant === null) {
@@ -213,14 +302,14 @@ const Order = () => {
             <div>
               <h2 className="text-xl font-semibold mb-4">1. Vinyl Project Specifications</h2>
               <div className="bg-white rounded-lg shadow-sm">
-                <RecordProjectForm hideSubmitButton={true} setOrderSummary={setOrderSummary}/>
+                <RecordProjectForm hideSubmitButton={true} orderSummary={orderSummary} setOrderSummary={setOrderSummary} />
               </div>
             </div>
 
             <div>
               <h2 className="text-xl font-semibold mb-4">2. Personal Details</h2>
               <div className="bg-white rounded-lg shadow-sm">
-                <PersonalDetailsForm selectedPlant={selectedPlant} orderSummary={orderSummary}/>
+                <PersonalDetailsForm selectedPlant={selectedPlant} orderSummary={orderSummary} />
               </div>
             </div>
           </div>

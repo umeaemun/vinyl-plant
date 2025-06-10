@@ -1,9 +1,9 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { Badge } from "@/components/ui/badge";
-import { Control, useWatch } from 'react-hook-form';
+import { Control, useFormContext, useWatch } from 'react-hook-form';
 import FormTooltip from './FormTooltip';
 import * as z from "zod";
 import { supabase } from '@/integrations/supabase/client';
@@ -23,6 +23,9 @@ const PackagingSection = ({
   disabled,
   selectedPlantId
 }: PackagingSectionProps) => {
+
+  const { setError, clearErrors } = useFormContext();
+
 
   const [validOptions, setValidOptions] = React.useState(null);
 
@@ -56,7 +59,7 @@ const PackagingSection = ({
           shrinkWrap: []
         }
         packageOptions.forEach(item => {
-          console.log('Processing item:', item, item.prices.find(price => price.quantity <= orderSummary.quantity));
+          // console.log('Processing item:', item, item.prices.find(price => price.quantity <= orderSummary.quantity));
           if (item.prices.find(price => price.quantity <= orderSummary.quantity)) {
             options[item.type].push(item.option)
           }
@@ -84,10 +87,55 @@ const PackagingSection = ({
 
   }, [watchInnerSleeve, watchJacket, watchInserts, watchShrinkWrap]);
 
+  useEffect(() => {
+    if (validOptions) {
+
+      if (!validOptions['innerSleeve']?.includes(watchInnerSleeve)) {
+        setError("innerSleeve", {
+          type: "manual",
+          message: "Selected option is not valid for the current order quantity."
+        });
+      }else {
+        clearErrors("innerSleeve");
+      }
+
+      if (!validOptions['jacket']?.includes(watchJacket)) {
+        setError("jacket", {
+          type: "manual",
+          message: "Selected option is not valid for the current order quantity."
+        });
+      }else {
+        clearErrors("jacket");
+      }
+
+
+      if (!validOptions['inserts']?.includes(watchInserts)) {
+        setError("inserts", {
+          type: "manual",
+          message: "Selected option is not valid for the current order quantity."
+        });
+      }else {
+        clearErrors("inserts");
+      }
+
+
+      if (!validOptions['shrinkWrap']?.includes(watchShrinkWrap)) {
+        setError("shrinkWrap", {
+          type: "manual",
+          message: "Selected option is not valid for the current order quantity."
+        });
+      } else {
+        clearErrors("shrinkWrap");
+      }
+
+    }
+  }, [validOptions]);
+
   return <div className="space-y-4">
     <h3 className="font-display font-medium text-lg">Packaging Specifications</h3>
     <FormField control={control} name="innerSleeve" render={({
-      field
+      field,
+      fieldState
     }) => <FormItem>
         <FormLabel className="flex items-center">
           Inner Sleeve
@@ -109,10 +157,14 @@ const PackagingSection = ({
             <SelectItem value="printed" disabled={validOptions && !validOptions['innerSleeve']?.includes("printed")}>Printed</SelectItem>
           </SelectContent>
         </Select>
+        {fieldState.error && (
+          <p className="text-sm text-red-600 mt-1">{fieldState.error.message}</p>
+        )}
       </FormItem>} />
 
     <FormField control={control} name="jacket" render={({
-      field
+      field,
+      fieldState
     }) => <FormItem>
         <FormLabel className="flex items-center">
           Jacket
@@ -138,10 +190,14 @@ const PackagingSection = ({
             </SelectItem>
           </SelectContent>
         </Select>
+        {fieldState.error && (
+          <p className="text-sm text-red-600 mt-1">{fieldState.error.message}</p>
+        )}
       </FormItem>} />
 
     <FormField control={control} name="inserts" render={({
-      field
+      field,
+      fieldState
     }) => <FormItem>
         <FormLabel className="flex items-center">
           Inserts
@@ -160,10 +216,14 @@ const PackagingSection = ({
             <SelectItem disabled={validOptions && !validOptions['inserts']?.includes("single-insert")} value="single-insert">Single Insert</SelectItem>
           </SelectContent>
         </Select>
+        {fieldState.error && (
+          <p className="text-sm text-red-600 mt-1">{fieldState.error.message}</p>
+        )}
       </FormItem>} />
 
     <FormField control={control} name="shrinkWrap" render={({
-      field
+      field,
+      fieldState
     }) => <FormItem>
         <FormLabel className="flex items-center">
           Shrink Wrap
@@ -182,6 +242,9 @@ const PackagingSection = ({
             <SelectItem value="no" disabled={validOptions && !validOptions['shrinkWrap']?.includes("no")}>No</SelectItem>
           </SelectContent>
         </Select>
+        {fieldState.error && (
+          <p className="text-sm text-red-600 mt-1">{fieldState.error.message}</p>
+        )}
       </FormItem>} />
   </div>;
 };

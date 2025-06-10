@@ -280,8 +280,13 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ hideSubmitButton 
           priceTiers.sort((a, b) => b.quantity - a.quantity);
 
           // console.log(index,"9 priceTiers:", priceTiers);
-          let packagePrice = priceTiers.find(pt => pt.quantity <= numericQuantity)?.price || 0;
-          packagePrice = parseFloat(packagePrice); // Ensure two decimal places
+          let packagePriceRow = priceTiers.find(pt => pt.quantity <= numericQuantity);
+          if (!packagePriceRow) {
+            console.error(`No packaging price found for plant ID ${plantId} with type ${type} and option ${option}`);
+            invalidPlantIds.push(plantId);
+            return;
+          }
+          const packagePrice = parseFloat(packagePriceRow.price); // Ensure two decimal places
 
           // console.log(index,"10 Best price:", packagePrice);
           packagingPrice += packagePrice;

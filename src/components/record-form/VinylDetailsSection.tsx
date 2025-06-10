@@ -36,6 +36,7 @@ const VinylDetailsSection = ({
   const { formState, setError, clearErrors } = useFormContext();
   const [validWeights, setValidWeights] = React.useState<string[]>([]);
   const [validColours, setValidColours] = React.useState<string[]>([]);
+  const [hasValidatedQuantity, setHasValidatedQuantity] = React.useState(false);
 
 
   const quantity = useWatch({ control, name: "quantity" });
@@ -85,48 +86,48 @@ const VinylDetailsSection = ({
   }, [selectedPlantId]);
 
   React.useEffect(() => {
-  const updatePricingIfValid = async () => {
-    if (!quantity || !size || !type) return;
+    const updatePricingIfValid = async () => {
+      if (!quantity || !size || !type || !hasValidatedQuantity) return;
 
-    const result = await validateVinylCombination({
-      quantity,
-      size,
-      type,
-      selectedPlantId,
-    });
-
-    if (result.valid) {
-      setAllOptionsValid(prev => ({
-        ...prev,
-        vinyl: true
-      })); 
-      
-       setOrderSummary((prevSummary: any) => ({
-        ...prevSummary,
+      const result = await validateVinylCombination({
         quantity,
         size,
         type,
-        weight,
-        colour
-      }));
+        selectedPlantId,
+      });
 
-    }else{
-      setAllOptionsValid(prev => ({
-        ...prev,
-        vinyl: false
-      }));
+      if (result.valid) {
+        setAllOptionsValid(prev => ({
+          ...prev,
+          vinyl: true
+        }));
 
-      setOrderSummary((prevSummary: any) => ({
-        ...prevSummary,
-        quantity: quantity,
-        weight: weight,
-        colour: colour,
-      }));
-    }
-  };
-  
-  updatePricingIfValid();
-}, [quantity, size, type, weight, colour, selectedPlantId]);
+        setOrderSummary((prevSummary: any) => ({
+          ...prevSummary,
+          quantity,
+          size,
+          type,
+          weight,
+          colour
+        }));
+
+      } else {
+        setAllOptionsValid(prev => ({
+          ...prev,
+          vinyl: false
+        }));
+
+        setOrderSummary((prevSummary: any) => ({
+          ...prevSummary,
+          quantity: quantity,
+          weight: weight,
+          colour: colour,
+        }));
+      }
+    };
+
+    updatePricingIfValid();
+  }, [hasValidatedQuantity, size, type, weight, colour, selectedPlantId]);
 
   const validateVinylCombination = async ({
     quantity,
@@ -245,10 +246,16 @@ const VinylDetailsSection = ({
                 {...field}
                 className={fieldState.error ? "border-red-600" : ""}
                 placeholder="Enter quantity"
-                onChange={async (e) => {
+                // onChange={async (e) => {
+                //   const val = parseInt(e.target.value);
+                //   field.onChange(e);
+                //   await handleValidation({ quantityOverride: val });
+                // }}
+                onChange={field.onChange}
+                onBlur={async (e) => {
                   const val = parseInt(e.target.value);
-                  field.onChange(e);
                   await handleValidation({ quantityOverride: val });
+                  setHasValidatedQuantity(true);
                 }}
               />
             </FormControl>

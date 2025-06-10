@@ -189,9 +189,9 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ setAllOptionsVali
           return vp.plant_id == plantId && vp.size == values.size && vp.type == values.type
         });
 
-        // console.log(index,"AllVinylPrice:", vinylPricingData);
+        console.log(index,"AllVinylPrice:", vinylPricingData);
 
-        // console.log(index,"1 matchingVinylPrices:", matchingVinylPrices);
+        console.log(index,"1 matchingVinylPrices:", matchingVinylPrices);
 
         // Sort by quantity (descending) and find the most appropriate tier
         matchingVinylPrices.sort((a, b) => b.quantity - a.quantity);
@@ -210,13 +210,13 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ setAllOptionsVali
 
         // Calculate additional costs for color
 
-        // console.log(index,"AllColorOption:", colorOptionsData);
+        console.log(index,"AllColorOption:", colorOptionsData);
 
         const colorOption = colorOptionsData.find(
           co => co.plant_id == plantId && co.color.toLowerCase().trim() === values.colour.toLowerCase().trim()
         );
 
-        // console.log(index,"3 colorOption:", colorOption);
+        console.log(index,"3 colorOption:", colorOption);
         let colorAdditionalCost = colorOption?.additional_cost || 0;
 
 
@@ -235,9 +235,9 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ setAllOptionsVali
           wo => wo.plant_id == plantId && wo.weight == values.weight
         );
 
-        // console.log(index,"AllWeightOption:", weightOptionsData);
+        console.log(index,"AllWeightOption:", weightOptionsData);
 
-        // console.log(index,"5 weightOption:", weightOption);
+        console.log(index,"5 weightOption:", weightOption);
         let weightAdditionalCost = weightOption?.additional_cost || 0;
 
 

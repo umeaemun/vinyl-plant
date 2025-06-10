@@ -72,25 +72,25 @@ const PackagingSection = ({
     }
     fetchPackageOptions();
 
-  }, [selectedPlantId, orderSummary.quantity]);
+  }, [selectedPlantId, orderSummary?.quantity]);
 
   React.useEffect(() => {
 
     if (formState.errors.innerSleeve || formState.errors.jacket || formState.errors.inserts || formState.errors.shrinkWrap) {
-      setAllOptionsValid((prev) => ({
+      setAllOptionsValid && setAllOptionsValid((prev) => ({
         ...prev,
         packaging: false
       })
       );
     } else {
-      setAllOptionsValid((prev) => ({
+     setAllOptionsValid && setAllOptionsValid((prev) => ({
         ...prev,
         packaging: true
       }));
     }
 
 
-    setOrderSummary((prevSummary => {
+    setOrderSummary && setOrderSummary((prevSummary => {
       return {
         ...prevSummary,
         innerSleeve: watchInnerSleeve,
@@ -110,13 +110,13 @@ const PackagingSection = ({
           type: "manual",
           message: "Selected option is not valid for the current order quantity."
         });
-        setAllOptionsValid((prev) => ({
+        setAllOptionsValid && setAllOptionsValid((prev) => ({
           ...prev,
           packaging: false
         }));
       } else {
         clearErrors("innerSleeve");
-        setAllOptionsValid((prev) => ({
+        setAllOptionsValid && setAllOptionsValid((prev) => ({
           ...prev,
           packaging: true
         }));
@@ -127,13 +127,13 @@ const PackagingSection = ({
           type: "manual",
           message: "Selected option is not valid for the current order quantity."
         });
-        setAllOptionsValid((prev) => ({
+       setAllOptionsValid && setAllOptionsValid((prev) => ({
           ...prev,
           packaging: false
         }));
       } else {
         clearErrors("jacket");
-        setAllOptionsValid((prev) => ({
+        setAllOptionsValid && setAllOptionsValid((prev) => ({
           ...prev,
           packaging: true
         }));
@@ -145,13 +145,13 @@ const PackagingSection = ({
           type: "manual",
           message: "Selected option is not valid for the current order quantity."
         });
-        setAllOptionsValid((prev) => ({
+       setAllOptionsValid && setAllOptionsValid((prev) => ({
           ...prev,
           packaging: false
         }));
       } else {
         clearErrors("inserts");
-        setAllOptionsValid((prev) => ({
+       setAllOptionsValid && setAllOptionsValid((prev) => ({
           ...prev,
           packaging: true
         }));
@@ -163,13 +163,13 @@ const PackagingSection = ({
           type: "manual",
           message: "Selected option is not valid for the current order quantity."
         });
-        setAllOptionsValid((prev) => ({
+       setAllOptionsValid && setAllOptionsValid((prev) => ({
           ...prev,
           packaging: false
         }));
       } else {
         clearErrors("shrinkWrap");
-        setAllOptionsValid((prev) => ({
+       setAllOptionsValid && setAllOptionsValid((prev) => ({
           ...prev,
           packaging: true
         }));

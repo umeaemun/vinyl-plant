@@ -122,42 +122,36 @@ const Order = () => {
       }
 
 
-      if (orderSummary?.colour !== 'black') {
 
         const { data: colorOptionsData, error: colorError } = await supabase
           .from('vinyl_color_options')
           .select('*')
           .eq('color', orderSummary?.colour)
           .eq('plant_id', selectedPlant?.id)
-          .single();
 
         if (colorError) {
           console.error('Error fetching color options:', colorError);
           throw new Error('Failed to fetch color options');
         }
 
-        if (colorOptionsData) {
-          colorPrice = colorOptionsData.additional_cost;
+        if (colorOptionsData.length > 0) {
+          colorPrice = colorOptionsData[0].additional_cost;
         }
-      }
 
-      if (orderSummary?.weight !== '140gm') {
         const { data: weightOptionsData, error: weightError } = await supabase
           .from('vinyl_weight_options')
           .select('*')
           .eq('weight', orderSummary?.weight)
           .eq('plant_id', selectedPlant?.id)
-          .single();
 
         if (weightError) {
           console.error('Error fetching weight options:', weightError);
           throw new Error('Failed to fetch weight options');
         }
 
-        if (weightOptionsData) {
-          weightPrice = weightOptionsData.additional_cost;
+        if (weightOptionsData.length > 0) {
+          weightPrice = weightOptionsData[0].additional_cost;
         }
-      }
 
       const { data: packagingOptionsData, error: packagingError } = await supabase
         .from('packaging_pricing')
@@ -169,17 +163,21 @@ const Order = () => {
       }
 
       if (packagingOptionsData.length > 0) {
-        // console.log('1:', vinylPrice);
-        // console.log('2:', colorPrice);
-        // console.log('3:', weightPrice);
+        // console.log('*:', packagingOptionsData);
 
+        ['innerSleeve', 'jacket', 'inserts', 'shrinkWrap'].forEach((type) => {
 
-        const innerSleeveOption = packagingOptionsData.find(option => option.type === 'innerSleeve' && option.option === orderSummary.innerSleeve)?.price || 0;
-        const jacketOption = packagingOptionsData.find(option => option.type === 'jacket' && option.option === orderSummary.jacket)?.price || 0;
-        const insertsOption = packagingOptionsData.find(option => option.type === 'inserts' && option.option === orderSummary.inserts)?.price || 0;
-        const shrinkWrapOption = packagingOptionsData.find(option => option.type === 'shrinkWrap' && option.option === orderSummary.shrinkWrap)?.price || 0;
-     
-        packagingPrice = innerSleeveOption + jacketOption + insertsOption + shrinkWrapOption;
+          const optionRow = packagingOptionsData.find(option => option.type === type && option.option === orderSummary[type]);
+          if (optionRow) {
+            const priceTiers = optionRow.prices?.sort((a, b) => b.quantity - a.quantity) || [];
+            const price = priceTiers.find(price => price.quantity <= orderSummary.quantity)?.price || 0;
+            // console.log(`${type} option price:`, price);
+            packagingPrice += parseFloat(price);
+          }
+
+        });
+
+        // console.log('Packaging Price:', packagingPrice);
       }
 
       const perUnit = vinylPrice + colorPrice + weightPrice + packagingPrice;

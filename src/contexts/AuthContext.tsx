@@ -178,9 +178,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     try {
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
+
       setSession(null);
       setUser(null);
       setUserProfile(null);
+      localStorage.removeItem("vinylFormData");
+      localStorage.removeItem("selectedPlantId");
+      localStorage.removeItem("calculatedPlantPricing");
+      localStorage.removeItem("selectedPlantForQuote");
+
     } catch (error: any) {
       toast({
         title: "Sign out failed",

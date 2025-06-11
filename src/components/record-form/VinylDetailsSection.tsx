@@ -82,8 +82,11 @@ const VinylDetailsSection = ({
       setValidWeights(weights);
       setValidColours(colours);
     };
-    fetchAvailableOptions();
-  }, [selectedPlantId]);
+
+    if (disabled){  // if it's on order page
+      fetchAvailableOptions();
+    }
+  }, [selectedPlantId, disabled]);
 
   React.useEffect(() => {
     const updatePricingIfValid = async () => {
@@ -97,12 +100,12 @@ const VinylDetailsSection = ({
       });
 
       if (result.valid) {
-        setAllOptionsValid(prev => ({
+        setAllOptionsValid && setAllOptionsValid(prev => ({
           ...prev,
           vinyl: true
         }));
 
-        setOrderSummary((prevSummary: any) => ({
+        setOrderSummary && setOrderSummary((prevSummary: any) => ({
           ...prevSummary,
           quantity,
           size,
@@ -112,12 +115,12 @@ const VinylDetailsSection = ({
         }));
 
       } else {
-        setAllOptionsValid(prev => ({
+        setAllOptionsValid && setAllOptionsValid(prev => ({
           ...prev,
           vinyl: false
         }));
 
-        setOrderSummary((prevSummary: any) => ({
+        setOrderSummary && setOrderSummary((prevSummary: any) => ({
           ...prevSummary,
           quantity: quantity,
           weight: weight,

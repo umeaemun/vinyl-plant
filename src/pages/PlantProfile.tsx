@@ -51,7 +51,7 @@ const PlantProfile = () => {
           throw new Error(`Error checking plant data: ${plantError.message}`);
         }
 
-        console.log('plantData', plantData);
+        // console.log('plantData', plantData);
 
         if (plantData && plantData.length > 0 ) {
           // Add default values for fields not in the profile table
@@ -70,6 +70,8 @@ const PlantProfile = () => {
             turnaround_time: plant.turnaround_time || '8-12',
             website: plant.website || '',
             image_url: plant.image_url || '',
+            reviews: plant.reviews || [],
+            split_manufacturing_capable: plant.split_manufacturing_capable || false,
           });
 
           // Check if the user has any pricing data
@@ -98,7 +100,8 @@ const PlantProfile = () => {
             website: '',
             image_url: '',
             specialties: [],
-            reviews: []
+            reviews: [],
+            split_manufacturing_capable: false,
           });
 
           toast({
@@ -148,6 +151,8 @@ const PlantProfile = () => {
             turnaround_time: plant.turnaround_time || '8-12',
             website: plant.website || '',
             image_url: plant.image_url || '',
+            reviews: plant.reviews || [],
+            split_manufacturing_capable: plant.split_manufacturing_capable || false,
           });
 
           // Check if the user has any pricing data
@@ -176,7 +181,8 @@ const PlantProfile = () => {
             website: '',
             image_url: '',
             specialties: [],
-            reviews: []
+            reviews: [],
+            split_manufacturing_capable: false,
           });
 
           toast({

@@ -1,11 +1,13 @@
 import React from 'react';
-import { Plant, PackagingPrice } from '@/data/plants';
+import { Plant } from '@/data/plants';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Checkbox } from '@/components/ui/checkbox';
 import { Save } from 'lucide-react';
 import PlantVinylPricing from './PlantVinylPricing';
 import PlantPackagingPricing from './PlantPackagingPricing';
@@ -14,7 +16,6 @@ import PlantEquipments from './PlantEquipments';
 import PlantClients from './PlantClients';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface PlantProfileTabsProps {
   plant: Plant;
@@ -54,6 +55,7 @@ const PlantProfileTabs: React.FC<PlantProfileTabsProps> = ({
       const { data, error: profileError } = await supabase
         .from('plants')
         .update({
+          image_url: plant.image_url,
           name: plant.name,
           location: plant.location,
           country: plant.country,
@@ -61,7 +63,7 @@ const PlantProfileTabs: React.FC<PlantProfileTabsProps> = ({
           description: plant.description,
           minimum_order: plant.minimum_order,
           turnaround_time: plant.turnaround_time,
-          image_url: plant.image_url,
+          split_manufacturing_capable: plant.split_manufacturing_capable,
         })
         .eq('id', plant.id)
         .select()
@@ -166,6 +168,16 @@ const PlantProfileTabs: React.FC<PlantProfileTabsProps> = ({
                     </SelectContent>
                   </Select>
                 </div>
+              </div>
+
+              <div className="flex">
+                <Checkbox
+                  className='mt-5'
+                  checked={plant.split_manufacturing_capable}
+                  onCheckedChange={(value) => { handleChange('split_manufacturing_capable', value) }}
+                  disabled={disabled}
+                />
+                <p className="flex ml-4 mt-4">Split manufacturing capable across different locations</p>
               </div>
             </CardContent>
           </Card>

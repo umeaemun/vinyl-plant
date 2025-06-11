@@ -74,6 +74,7 @@ export type Database = {
           features: string[];
           image_url: string;
           website: string;
+          reviews: string[];
           split_manufacturing_capable: boolean;
           created_at: string;
         };
@@ -91,6 +92,7 @@ export type Database = {
           features: string[];
           image_url: string;
           website: string;
+          reviews?: string[];
           split_manufacturing_capable: boolean;
           created_at?: string;
         };
@@ -108,6 +110,7 @@ export type Database = {
           features?: string[];
           image_url?: string;
           website?: string;
+          reviews?: string[];
           split_manufacturing_capable?: boolean;
           created_at?: string;
         };

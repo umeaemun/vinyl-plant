@@ -473,8 +473,10 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ setAllOptionsVali
             <div className="flex justify-center">
               <Button
                 type="submit"
-                // onClick={() => { handleSubmit(form.getValues()) }}
-                onClick={form.handleSubmit(handleSubmit)}
+                onClick={()=>{
+                  form.handleSubmit(handleSubmit); // This will trigger the form validation
+                  // handleSubmit(form.getValues());
+                }}
                 size="lg"
                 className="bg-wwwax-green text-black hover:bg-wwwax-green/80 text-center w-full max-w-md"
                 disabled={isSubmitting}

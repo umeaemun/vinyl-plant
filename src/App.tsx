@@ -46,9 +46,9 @@ const App = () => (
               {/* Manufacturer */}
               <Route path="/plant-profile/:id" element={<PlantProfile />} />           {/*  DONE */}
 
-              {/* not discussed in scope */}
-              <Route path="/plant-profiles" element={<PlantProfiles />} />             {/* for admin */}
-              <Route path="/plant-directory" element={<PlantDirectory />} />           {/* for public/ unauthenticated */}
+              {/* Admin or public */}
+              <Route path="/plant-profiles" element={<PlantProfiles />} />             {/* DONE for admin */}
+              <Route path="/plant-directory" element={<PlantDirectory />} />           {/* DONE for public/ unauthenticated */}
               
 
               {/* No work */}

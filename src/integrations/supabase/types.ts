@@ -74,6 +74,7 @@ export type Database = {
           features: string[];
           image_url: string;
           website: string;
+          split_manufacturing_capable: boolean;
           created_at: string;
         };
         Insert: {
@@ -90,6 +91,7 @@ export type Database = {
           features: string[];
           image_url: string;
           website: string;
+          split_manufacturing_capable: boolean;
           created_at?: string;
         };
         Update: {
@@ -106,6 +108,7 @@ export type Database = {
           features?: string[];
           image_url?: string;
           website?: string;
+          split_manufacturing_capable?: boolean;
           created_at?: string;
         };
       };

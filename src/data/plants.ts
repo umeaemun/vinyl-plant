@@ -93,6 +93,7 @@ export interface Plant {
   features: string[];
   image_url: string;
   website: string;
+  split_manufacturing_capable: boolean;
 }
 
 export interface OrderSummary {

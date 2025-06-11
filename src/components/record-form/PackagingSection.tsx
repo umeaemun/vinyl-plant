@@ -60,8 +60,8 @@ const PackagingSection = ({
           shrinkWrap: []
         }
         packageOptions.forEach(item => {
-          // console.log('Processing item:', item, item.prices.find(price => price.quantity <= orderSummary.quantity));
-          if (item.prices.find(price => price.quantity <= orderSummary.quantity)) {
+          // console.log('Processing item:', item, item.prices.find(price => price.quantity <= orderSummary?.quantity));
+          if (item.prices.find(price => price.quantity <= orderSummary?.quantity)) {
             options[item.type].push(item.option)
           }
         });
@@ -70,7 +70,9 @@ const PackagingSection = ({
         setValidOptions(options);
       }
     }
+    if (disabled) {
     fetchPackageOptions();
+    }
 
   }, [selectedPlantId, orderSummary?.quantity]);
 

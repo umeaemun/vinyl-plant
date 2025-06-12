@@ -26,7 +26,7 @@ const Order = () => {
   const [totalPrice, setTotalPrice] = useState<number>(0);
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { currency } = useCurrency();
+  const { convertPrice, formatPrice, isLoading : currencyLoading, currency } = useCurrency();
 
   useEffect(() => {
     // Get plant information
@@ -74,13 +74,18 @@ const Order = () => {
         // console.log("Plant Pricing:", plantPricing);
 
         if (specs && plantPricing) {
-          const perUnit = specs?.perUnit || plantPricing.calculatedPricing.perUnit;
-          const total = (Number(specs.quantity) * perUnit).toFixed(2);
+          const perUnit = convertPrice(specs?.perUnit || plantPricing.calculatedPricing.perUnit);
+          const formattedPerUnit = parseFloat(perUnit.toFixed(2)); 
+
+
+          const total = formattedPerUnit * (Number(specs.quantity) || 0);
+          const parsedTotal = parseFloat(total.toFixed(2));
+
 
           setOrderSummary({
             ...specs,
-            perUnit: perUnit,
-            totalPrice: total,
+            perUnit: formattedPerUnit,
+            totalPrice: parsedTotal,
           });
         }
       } catch (error) {
@@ -211,13 +216,15 @@ useEffect(() => {
       console.log('Packaging Price:', packagingPrice);
     }
 
-    const perUnit = vinylPrice + colorPrice + weightPrice + packagingPrice;
-    console.log('Per Unit Price:', perUnit);
-    setPerUnit(perUnit);
-    let total = perUnit * (parseInt(orderSummary?.quantity) || 0);
-    total = parseFloat(total.toFixed(2)); // Ensure total is a number with 2 decimal places
+    const perUnit = convertPrice(vinylPrice + colorPrice + weightPrice + packagingPrice);
+    const formattedPerUnit = parseFloat(perUnit.toFixed(2)); // Format to 2 decimal places
+    setPerUnit(formattedPerUnit); // Ensure perUnit is a string with 2 decimal places
+
+    const total = formattedPerUnit * (parseInt(orderSummary?.quantity) || 0);
+    const parsedTotal = parseFloat(total.toFixed(2)); // Format to 2 decimal places
+    setTotalPrice(parsedTotal);
+
     console.log('Total Price:', total);
-    setTotalPrice(total);
 
   }
 
@@ -261,6 +268,15 @@ const handleBackToQuote = () => {
 // console.log('Selected Plant:', selectedPlant);
 // console.log('Order Summary:', orderSummary);
 // console.log('All Options Valid:', allOptionsValid);
+
+// {currencyLoading && (
+//             <Alert variant="default" className="mb-4 bg-muted/50">
+//               <AlertDescription className="flex items-center">
+//                 <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+//                 Loading current exchange rates...
+//               </AlertDescription>
+//             </Alert>
+//           )}
 
 return (
   <div className="flex flex-col min-h-screen">
@@ -336,7 +352,7 @@ return (
                 <div className="mt-4 pt-4 border-t">
                   <div className="flex justify-between mb-1">
                     <p className="font-medium">Price per unit:</p>
-                    <p className="font-medium">{currency.symbol} {orderSummary.perUnit.toFixed(2)}</p>
+                    <p className="font-medium">{currency.symbol} {orderSummary.perUnit}</p>
                   </div>
                   <div className="flex justify-between">
                     <p className="font-semibold">Total price:</p>

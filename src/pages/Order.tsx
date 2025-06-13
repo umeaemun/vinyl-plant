@@ -235,12 +235,11 @@ const Order = () => {
       const parsedTotal = parseFloat(total.toFixed(2)); // Format to 2 decimal places
       setTotalPrice(parsedTotal);
 
-      console.log('Total Price:', total);
+      console.log('Total Price:', parsedTotal);
 
     }
 
     if (orderSummary && selectedPlant && initialLoading === false) {
-      console.log('**', initialLoading);
       // updateVinylFormData();
       calculateUpdatedPicing();
     }
@@ -379,14 +378,14 @@ const Order = () => {
             <div>
               <h2 className="text-xl font-semibold mb-4">1. Vinyl Project Specifications</h2>
               <div className="bg-white rounded-lg shadow-sm">
-                <RecordProjectForm hideSubmitButton={true} orderSummary={orderSummary} setOrderSummary={setOrderSummary} setAllOptionsValid={setAllOptionsValid} />
+                <RecordProjectForm splitCapability={selectedPlant.split_manufacturing_capable} hideSubmitButton={true} orderSummary={orderSummary} setOrderSummary={setOrderSummary} setAllOptionsValid={setAllOptionsValid} />
               </div>
             </div>
 
             <div>
               <h2 className="text-xl font-semibold mb-4">2. Personal Details</h2>
               <div className="bg-white rounded-lg shadow-sm">
-                <PersonalDetailsForm selectedPlant={selectedPlant} orderSummary={orderSummary} allOptionsValid={allOptionsValid} />
+                <PersonalDetailsForm selectedPlant={selectedPlant} orderSummary={orderSummary} allOptionsValid={allOptionsValid}  />
               </div>
             </div>
           </div>

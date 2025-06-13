@@ -23,12 +23,14 @@ import { OrderSummary } from '@/data/plants';
 
 type ManufacturingOptionsProps = {
   control: Control<any>;
+  splitCapability?: boolean;
   disabled?: boolean;
   setOrderSummary?: React.Dispatch<React.SetStateAction<OrderSummary>>;
 };
 
 const ManufacturingOptions = ({
   control,
+  splitCapability,
   disabled,
   setOrderSummary
 }: ManufacturingOptionsProps) => {
@@ -64,6 +66,7 @@ const ManufacturingOptions = ({
               <FormControl>
                 <Checkbox
                   checked={field.value}
+                  disabled= {disabled && !splitCapability}
                   onCheckedChange={(value) => {
                     field.onChange(value);
 
@@ -73,7 +76,6 @@ const ManufacturingOptions = ({
                     }));
 
                   }}
-                // disabled={disabled}
                 />
               </FormControl>
               <FormLabel className="m-0 flex">Split manufacturing across different locations
@@ -116,7 +118,6 @@ const ManufacturingOptions = ({
                                   });
                                 })}
                                 value={field.value || ''}
-                              // disabled={disabled}
                               >
                                 <FormControl>
                                   <SelectTrigger className="disabled-opacity-100">
@@ -160,7 +161,6 @@ const ManufacturingOptions = ({
                                     });
                                   }}
                                   value={field.value || 0}
-                                  // disabled={disabled}
                                   className="disabled-opacity-100 flex items-center"
                                 />
                               </FormControl>

@@ -19,13 +19,14 @@ import { PricingData, OrderSummary, Plant  } from '@/data/plants';
 
 interface RecordProjectFormProps {
   setAllOptionsValid?: React.Dispatch<React.SetStateAction<any>>;
+  splitCapability?: boolean;
   hideSubmitButton?: boolean;
   orderSummary?: OrderSummary;
   setOrderSummary?: React.Dispatch<React.SetStateAction<OrderSummary>>;
 }
 
 
-const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ setAllOptionsValid, hideSubmitButton = false, orderSummary, setOrderSummary }) => {
+const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ setAllOptionsValid, splitCapability = false, hideSubmitButton = false, orderSummary, setOrderSummary }) => {
 
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -466,7 +467,7 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ setAllOptionsVali
           </div>
           <Separator className="my-6" />
             <div className="w-full">
-              <ManufacturingOptions control={form.control} disabled={hideSubmitButton} setOrderSummary={setOrderSummary}/>
+              <ManufacturingOptions splitCapability={splitCapability} control={form.control} disabled={hideSubmitButton} setOrderSummary={setOrderSummary}/>
             </div>
 
           {!hideSubmitButton && (

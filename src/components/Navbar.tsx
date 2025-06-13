@@ -167,9 +167,15 @@ const Navbar = () => {
                     </>
                   }
 
+                  <DropdownMenuItem asChild>
+                    <Link to={userProfile.role === 'manufacturer' ? `/plant-profile/${user.id}` : '/buyer-profile'} className="flex items-center">
+                      My Profile
+                    </Link>
+                  </DropdownMenuItem>
+
                   <DropdownMenuItem onClick={handleLogout}>
                     <LogOut className="h-4 w-4 mr-2" />
-                    Logout
+                    Log out
                   </DropdownMenuItem>
                 </DropdownMenuContent>
 

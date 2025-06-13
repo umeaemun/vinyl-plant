@@ -31,7 +31,7 @@ const PlantProfileEditor: React.FC<PlantProfileEditorProps> = ({
           <CardTitle>Profile</CardTitle>
           <CardDescription>Manage your plant details</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-4 mb-4">
           <PlantProfileImageUploader 
             plant={plant} 
             setPlant={setPlant} 
@@ -68,7 +68,7 @@ const PlantProfileEditor: React.FC<PlantProfileEditorProps> = ({
             />
           </div>
           
-          <div className="space-y-2">
+          {/* <div className="space-y-2">
             <Label htmlFor="website">Website</Label>
             <Input 
               id="website" 
@@ -76,7 +76,7 @@ const PlantProfileEditor: React.FC<PlantProfileEditorProps> = ({
               onChange={(e) => handleChange('website', e.target.value)}
               disabled={disabled}
             />
-          </div>
+          </div> */}
         </CardContent>
       </Card>
     </div>

@@ -201,6 +201,9 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
           status: 'same',
         }));
 
+        // sort the tiers by price
+        updatedVinylPricing.sort((a, b) => a.price - b.price);
+
         setVinylPricing(updatedVinylPricing);
       }
     }
@@ -231,6 +234,10 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
           ...option,
           status: 'same',
         }));
+
+        // sort the options by additional cost
+        updatedColorOptions.sort((a, b) => a.additional_cost - b.additional_cost);
+
         setColorOptions(updatedColorOptions);
       }
     }
@@ -257,6 +264,10 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
           ...option,
           status: 'same',
         }));
+
+        // sort the options by additional cost
+        updatedWeightOptions.sort((a, b) => a.additional_cost - b.additional_cost);
+
         setWeightOptions(updatedWeightOptions);
       }
 

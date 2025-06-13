@@ -245,7 +245,7 @@ const PlantClients: React.FC<PlantVinylPricingProps> = ({
               <TableRow>
                 <TableHead>Name</TableHead>
                 <TableHead>Type</TableHead>
-                <TableHead>Notable Work</TableHead>
+                {/* <TableHead>Notable Work</TableHead> */}
                 {!disabled && <TableHead>Actions</TableHead>}
               </TableRow>
             </TableHeader>
@@ -270,13 +270,13 @@ const PlantClients: React.FC<PlantVinylPricingProps> = ({
                         disabled={disabled}
                       />
                     </TableCell>
-                    <TableCell>
+                    {/* <TableCell>
                       <Input
                         value={client.notable_work}
                         onChange={(e) => updateClient(client.id, 'notable_work', e.target.value)}
                         disabled={disabled}
                       />
-                    </TableCell>
+                    </TableCell> */}
                     {!disabled && (
                       <TableCell>
                         <Button

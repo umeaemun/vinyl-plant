@@ -37,7 +37,7 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ setAllOptionsVali
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedPlantId, setSelectedPlantId] = useState<string | null>(null);
-  const [plants, setPlants] = useState<any[]>(null);
+  const [plants, setPlants] = useState<Plant[]>(null);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -184,6 +184,12 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ setAllOptionsVali
       plantIds.forEach((plantId, index) => {
         const plant = plants.find(p => p.id == plantId);
         if (!plant) return;
+
+        if (values.splitManufacturing === true && plant.split_manufacturing_capable === false ) {
+          console.error(`Plant ${plant.name} does not support split manufacturing.`);
+          invalidPlantIds.push(plantId);
+          return;
+        }
 
         // Find best matching vinyl price
         const matchingVinylPrices = vinylPricingData.filter((vp) => {

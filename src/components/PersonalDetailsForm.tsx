@@ -105,7 +105,7 @@ const PersonalDetailsForm = ({ selectedPlant, orderSummary, allOptionsValid }: P
       units: orderData.quantity,
       price: orderData.perUnit,
       total: orderData.total,
-      email: "bilalkhan689883@gmail.com",
+      email: "joelwoodsnz@gmail.com",
     };
 
     // console.log("Sending email with params:", templateParams);

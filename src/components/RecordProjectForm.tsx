@@ -15,7 +15,8 @@ import { useToast } from '@/hooks/use-toast';
 import { X } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import ManufacturingOptions from './record-form/ManufacturingOptions';
-import { PricingData, OrderSummary, Plant  } from '@/data/plants';
+import { PricingData, OrderSummary, Plant } from '@/data/plants';
+import emailjs from 'emailjs-com';
 
 interface RecordProjectFormProps {
   setAllOptionsValid?: React.Dispatch<React.SetStateAction<any>>;
@@ -185,20 +186,20 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ setAllOptionsVali
         const plant = plants.find(p => p.id == plantId);
         if (!plant) return;
 
-        if (values.splitManufacturing === true && plant.split_manufacturing_capable === false ) {
-          console.error(`Plant ${plant.name} does not support split manufacturing.`);
-          invalidPlantIds.push(plantId);
-          return;
-        }
+        // if (values.splitManufacturing === true && plant.split_manufacturing_capable === false ) {
+        //   console.error(`Plant ${plant.name} does not support split manufacturing.`);
+        //   invalidPlantIds.push(plantId);
+        //   return;
+        // }
 
         // Find best matching vinyl price
         const matchingVinylPrices = vinylPricingData.filter((vp) => {
           return vp.plant_id == plantId && vp.size == values.size && vp.type == values.type
         });
 
-        console.log(index,"AllVinylPrice:", vinylPricingData);
+        console.log(index, "AllVinylPrice:", vinylPricingData);
 
-        console.log(index,"1 matchingVinylPrices:", matchingVinylPrices);
+        console.log(index, "1 matchingVinylPrices:", matchingVinylPrices);
 
         // Sort by quantity (descending) and find the most appropriate tier
         matchingVinylPrices.sort((a, b) => b.quantity - a.quantity);
@@ -217,13 +218,13 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ setAllOptionsVali
 
         // Calculate additional costs for color
 
-        console.log(index,"AllColorOption:", colorOptionsData);
+        console.log(index, "AllColorOption:", colorOptionsData);
 
         const colorOption = colorOptionsData.find(
           co => co.plant_id == plantId && co.color.toLowerCase().trim() === values.colour.toLowerCase().trim()
         );
 
-        console.log(index,"3 colorOption:", colorOption);
+        console.log(index, "3 colorOption:", colorOption);
         let colorAdditionalCost = colorOption?.additional_cost || 0;
 
 
@@ -242,9 +243,9 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ setAllOptionsVali
           wo => wo.plant_id == plantId && wo.weight == values.weight
         );
 
-        console.log(index,"AllWeightOption:", weightOptionsData);
+        console.log(index, "AllWeightOption:", weightOptionsData);
 
-        console.log(index,"5 weightOption:", weightOption);
+        console.log(index, "5 weightOption:", weightOption);
         let weightAdditionalCost = weightOption?.additional_cost || 0;
 
 
@@ -330,6 +331,46 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ setAllOptionsVali
     }
   };
 
+  function sendEmailToAdmin(orderData: FormValues) {
+
+
+    const templateParams = {
+      email: "joelwoodsnz@gmail.com",
+      name: orderData.name,
+      userEmail: orderData.email,
+      size: orderData.size,
+      type: orderData.type,
+      weight: orderData.weight,
+      colour: orderData.colour,
+      quantity: orderData.quantity,
+      innerSleeve: orderData.innerSleeve,
+      jacket: orderData.jacket,
+      inserts: orderData.inserts,
+      shrinkWrap: orderData.shrinkWrap,
+      location1: orderData.location1 || "",
+      quantity1: orderData.quantity1 || 0,
+      location2: orderData.location2 || "",
+      quantity2: orderData.quantity2 || 0,
+      location3: orderData.location3 || "",
+      quantity3: orderData.quantity3 || 0,
+    };
+
+    // console.log("Sending email with params:", templateParams);
+
+
+    // emailjs.send("service_ub4n5aj", "template_dp8pbcf",
+    emailjs.send("service_squbmun", "template_l7wr36o",
+      templateParams,
+      "FZ2o2qSKeDHybPLnz"
+    )
+      .then((response) => {
+        console.log('Admin Email sent successfully:', response.text);
+      })
+      .catch((err) => {
+        console.error('Admin Email sending failed:', err);
+      });
+  }
+
   const handleSubmit = async (values: FormValues) => {
 
     // if (!user || !userProfile) {
@@ -343,6 +384,12 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ setAllOptionsVali
     // }
 
     console.log("Form submit triggered with values:", values);
+
+    if (values.splitManufacturing == true) {
+      navigate('/thank-you-page');
+      sendEmailToAdmin(values);
+      return;
+    }
 
     if (isSubmitting) {
       console.log("Already submitting, preventing duplicate submission");
@@ -458,29 +505,29 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ setAllOptionsVali
             </div>
           )}
 
-          {!hideSubmitButton && 
-          <>
-            <div className="w-full">
-              <ProjectDetailsSection control={form.control} disabled={hideSubmitButton} />
-            </div>
-            <Separator className="my-6" />
-          </>
+          {!hideSubmitButton &&
+            <>
+              <div className="w-full">
+                <ProjectDetailsSection control={form.control} disabled={hideSubmitButton} />
+              </div>
+              <Separator className="my-6" />
+            </>
           }
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <VinylDetailsSection control={form.control} setOrderSummary={setOrderSummary} disabled={hideSubmitButton} selectedPlantId={selectedPlantId} setAllOptionsValid={setAllOptionsValid}/>
-            <PackagingSection control={form.control} orderSummary={orderSummary} setOrderSummary={setOrderSummary} disabled={hideSubmitButton} selectedPlantId={selectedPlantId} setAllOptionsValid={setAllOptionsValid}/>
+            <VinylDetailsSection control={form.control} setOrderSummary={setOrderSummary} disabled={hideSubmitButton} selectedPlantId={selectedPlantId} setAllOptionsValid={setAllOptionsValid} />
+            <PackagingSection control={form.control} orderSummary={orderSummary} setOrderSummary={setOrderSummary} disabled={hideSubmitButton} selectedPlantId={selectedPlantId} setAllOptionsValid={setAllOptionsValid} />
           </div>
           <Separator className="my-6" />
-            <div className="w-full">
-              <ManufacturingOptions splitCapability={splitCapability} control={form.control} disabled={hideSubmitButton} setOrderSummary={setOrderSummary}/>
-            </div>
+          <div className="w-full">
+            <ManufacturingOptions splitCapability={splitCapability} control={form.control} disabled={hideSubmitButton} setOrderSummary={setOrderSummary} />
+          </div>
 
           {!hideSubmitButton && (
             <div className="flex justify-center">
               <Button
                 type="submit"
-                onClick={()=>{
+                onClick={() => {
                   form.handleSubmit(handleSubmit); // This will trigger the form validation
                   // handleSubmit(form.getValues());
                 }}

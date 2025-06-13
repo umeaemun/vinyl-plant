@@ -51,10 +51,10 @@ const App = () => (
               <Route path="/plant-directory" element={<PlantDirectory />} />           {/* DONE for public/ unauthenticated */}
               
 
-              {/* No work */}
               <Route path="/about" element={<About />} />
               <Route path="/contact" element={<Contact />} />
-              <Route path="/vinyl-glossary" element={<VinylGlossary />} /> 
+              <Route path="/vinyl-glossary" element={<VinylGlossary />} />
+              <Route path="/thank-you-page" element={<PlantDetails />} />        {/*  DONE */}
               <Route path="*" element={<NotFound />} />
 
               

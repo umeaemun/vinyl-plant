@@ -205,7 +205,7 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({ plants, formData, pri
                   <td className="py-4 px-6">
                     <div className="flex flex-col items-center gap-1">
                       {renderRating(plant.rating)}
-                      <span className="text-xs text-muted-foreground">({plant.review_count})</span>
+                      <span className="text-xs text-muted-foreground"> {`(${plant.review_count || 0})`}</span>
                     </div>
                   </td>
                   <td className="py-4 px-6">

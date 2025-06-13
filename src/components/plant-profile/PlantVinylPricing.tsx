@@ -247,7 +247,7 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
 
       if (weightOptions.length === 0) {
         const defaultWeight: WeightOption[] = [
-          {id:"1", weight: "180gm", additional_cost: 1, status: 'new' }
+          { id: "1", weight: "180gm", additional_cost: 1, status: 'new' }
         ];
         setWeightOptions(defaultWeight);
 
@@ -514,28 +514,14 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                     <div>
                       <Label htmlFor={`quantity-${index}`}>Quantity</Label>
-                      <Select
+                      <Input
+                        id={`quantity-${index}`}
+                        type="number"
+                        value={tier.quantity}
                         disabled={disabled}
-                        value={tier.quantity.toString()}
-                        onValueChange={(value) => handlePriceTierChange(tier.id, 'quantity', parseInt(value))}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select quantity" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="50">50</SelectItem>
-                          <SelectItem value="100">100</SelectItem>
-                          <SelectItem value="150">150</SelectItem>
-                          <SelectItem value="200">200</SelectItem>
-                          <SelectItem value="300">300</SelectItem>
-                          <SelectItem value="500">500</SelectItem>
-                          <SelectItem value="700">700</SelectItem>
-                          <SelectItem value="1000">1000</SelectItem>
-                          <SelectItem value="1500">1500</SelectItem>
-                          <SelectItem value="2000">2000</SelectItem>
-                          <SelectItem value="3000">3000</SelectItem>
-                        </SelectContent>
-                      </Select>
+                        placeholder="Enter quantity"
+                        onChange={(e) => handlePriceTierChange(tier.id, 'quantity', parseInt(e.target.value) || 0)}
+                      />
                     </div>
 
                     <div>
@@ -769,13 +755,13 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
         </Card>
       </div>
     );
-  }else{
+  } else {
     return (
       <div className="flex items-center justify-center h-[300px]">
-      <svg className="h-8 w-8 text-blue-500 animate-spin" viewBox="0 0 24 24" fill="none">
-        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
-        <path className="opacity-75" fill="currentColor" d="M12 2a10 10 0 0 1 10 10h-4a6 6 0 0 0-6-6V2z"/>
-      </svg>
+        <svg className="h-8 w-8 text-blue-500 animate-spin" viewBox="0 0 24 24" fill="none">
+          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+          <path className="opacity-75" fill="currentColor" d="M12 2a10 10 0 0 1 10 10h-4a6 6 0 0 0-6-6V2z" />
+        </svg>
 
       </div>
     );

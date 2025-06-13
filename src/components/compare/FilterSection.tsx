@@ -16,6 +16,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useNavigate } from 'react-router-dom';
 
 interface FilterSectionProps {
   selectedCountry: string;
@@ -48,6 +49,9 @@ const FilterSection: React.FC<FilterSectionProps> = ({
   countries,
   availableFeatures,
 }) => {
+
+  const navigate = useNavigate();
+  
   const handleFeatureToggle = (feature: string) => {
     setSelectedFeatures(
       selectedFeatures.includes(feature)
@@ -188,7 +192,9 @@ const FilterSection: React.FC<FilterSectionProps> = ({
         <p className="text-sm text-muted-foreground mb-3">
           Get personalized recommendations based on your project needs.
         </p>
-        <Button variant="default" size="sm" className="w-full">
+        <Button variant="default" size="sm" className="w-full"
+          onClick={() => {navigate('/contact')}}
+        >
           Get Recommendations
         </Button>
       </div>

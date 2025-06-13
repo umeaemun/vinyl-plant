@@ -100,7 +100,8 @@ const PlantPackagingPricing: React.FC<PlantPackagingPricingProps> = ({
       const { data: packagingPricing, error } = await supabase
         .from('packaging_pricing')
         .select('*')
-        .eq('plant_id', plant.id);
+        .eq('plant_id', plant.id)
+        .order('type, option, prices->quantity', { ascending: true });
       if (error) {
         console.error('Error fetching packaging pricing:', error);
         return [];

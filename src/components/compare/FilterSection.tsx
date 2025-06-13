@@ -144,9 +144,12 @@ const FilterSection: React.FC<FilterSectionProps> = ({
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="any">Any Timeframe</SelectItem>
-                <SelectItem value="under8">Under 8 weeks</SelectItem>
-                <SelectItem value="8to12">8-12 weeks</SelectItem>
-                <SelectItem value="over12">Over 12 weeks</SelectItem>
+                <SelectItem value="under4">under 4 weeks</SelectItem>
+                <SelectItem value="4to6">4-6 weeks</SelectItem>
+                <SelectItem value="6to8">6-8 weeks</SelectItem>
+                <SelectItem value="8to10">8-10 weeks</SelectItem>
+                <SelectItem value="10to12">10-12 weeks</SelectItem>
+                <SelectItem value="over16">16+ weeks</SelectItem>
               </SelectContent>
             </Select>
           </AccordionContent>

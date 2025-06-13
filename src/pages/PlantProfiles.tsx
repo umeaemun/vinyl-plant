@@ -72,7 +72,7 @@ const PlantProfiles = () => {
                 rating: plant.rating || 0,
                 review_count: plant.review_count || 0,
                 minimum_order: plant.minimum_order || 0,
-                turnaround_time: plant.turnaround_time || '8-12',
+                turnaround_time: plant.turnaround_time || '8-10',
                 website: plant.website || '#',
                 image_url: plant.image_url || '',
               };

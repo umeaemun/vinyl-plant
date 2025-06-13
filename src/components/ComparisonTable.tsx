@@ -160,7 +160,7 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({ plants, formData, pri
                 {renderSortIcon('rating')}
               </button>
             </th>
-            <th className="py-4 px-6 text-left font-medium">Features</th>
+            <th className="py-4 px-6 text-left font-medium">Total Cost</th>
             <th className="py-4 px-6 text-center font-medium">Details</th>
           </tr>
         </thead>
@@ -209,7 +209,7 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({ plants, formData, pri
                     </div>
                   </td>
                   <td className="py-4 px-6">
-                    <div className="flex flex-wrap gap-1 justify-start">
+                    {/* <div className="flex flex-wrap gap-1 justify-start">
                       {plant.features?.slice(0, 3).map((feature, i) => (
                         <div key={i} className="text-xs bg-muted px-2 py-1 rounded-full">
                           {feature.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
@@ -220,6 +220,9 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({ plants, formData, pri
                           +{plant.features.length - 3}
                         </div>
                       )}
+                    </div> */}
+                    <div>
+                      {formatPrice(convertedPrice * (parseInt(formData.quantity) || 0)) }
                     </div>
                   </td>
                   <td className="py-4 px-6">

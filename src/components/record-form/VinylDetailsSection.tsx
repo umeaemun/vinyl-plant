@@ -83,14 +83,14 @@ const VinylDetailsSection = ({
       setValidColours(colours);
     };
 
-    if (disabled){  // if it's on order page
+    if (disabled) {  // if it's on order page
       fetchAvailableOptions();
     }
   }, [selectedPlantId, disabled]);
 
   React.useEffect(() => {
     const updatePricingIfValid = async () => {
-      if (!quantity || !size || !type ) return;
+      if (!quantity || !size || !type) return;
 
       const result = await validateVinylCombination({
         quantity,
@@ -392,7 +392,9 @@ const VinylDetailsSection = ({
                 >
                   140gm (Standard)
                 </SelectItem>
-                <SelectItem value="180gm" disabled={!validWeights.includes("180gm")}>
+                <SelectItem value="180gm"
+                  disabled={disabled && !validWeights.includes("180gm")}
+                >
                   180gm
                 </SelectItem>
               </SelectContent>
@@ -451,19 +453,19 @@ const VinylDetailsSection = ({
                 >
                   Standard Black
                 </SelectItem>
-                <SelectItem value="solid-colour" disabled={!validColours.includes("solid-colour")}>
+                <SelectItem value="solid-colour" disabled={disabled && !validColours.includes("solid-colour")}>
                   Solid Colour
                 </SelectItem>
-                <SelectItem value="translucent-colour" disabled={!validColours.includes("translucent-colour")}>
+                <SelectItem value="translucent-colour" disabled={disabled && !validColours.includes("translucent-colour")}>
                   Translucent Colour
                 </SelectItem>
-                <SelectItem value="marbled" disabled={!validColours.includes("marbled")}>
+                <SelectItem value="marbled" disabled={disabled && !validColours.includes("marbled")}>
                   Marbled
                 </SelectItem>
-                <SelectItem value="splatter" disabled={!validColours.includes("splatter")}>
+                <SelectItem value="splatter" disabled={disabled && !validColours.includes("splatter")}>
                   Splatter
                 </SelectItem>
-                <SelectItem value="picture-disc" disabled={!validColours.includes("picture-disc")}>
+                <SelectItem value="picture-disc" disabled={disabled && !validColours.includes("picture-disc")}>
                   Picture Disc
                 </SelectItem>
               </SelectContent>

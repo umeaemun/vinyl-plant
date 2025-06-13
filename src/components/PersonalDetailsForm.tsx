@@ -32,8 +32,8 @@ interface PersonalDetailsFormProps {
 
 const formSchema = z.object({
   firstName: z.string().min(2, { message: "First name must be at least 2 characters." }),
-  // lastName: z.string().min(2, { message: "Last name must be at least 2 characters." }),
-  lastName: z.string(),
+  lastName: z.string().min(2, { message: "Last name must be at least 2 characters." }),
+  // lastName: z.string(),
   email: z.string().email({ message: "Please enter a valid email address." }),
   phone: z.string().min(5, { message: "Please enter a valid phone number." }),
   companyLabel: z.string().optional(),

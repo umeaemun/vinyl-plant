@@ -71,41 +71,41 @@ const PackagingSection = ({
       }
     }
     if (disabled) {
-    fetchPackageOptions();
+      fetchPackageOptions();
     }
 
   }, [selectedPlantId, orderSummary?.quantity]);
 
   React.useEffect(() => {
-
-    if (formState.errors.innerSleeve || formState.errors.jacket || formState.errors.inserts || formState.errors.shrinkWrap) {
-      setAllOptionsValid && setAllOptionsValid((prev) => ({
-        ...prev,
-        packaging: false
-      })
-      );
-    } else {
-     setAllOptionsValid && setAllOptionsValid((prev) => ({
-        ...prev,
-        packaging: true
-      }));
-    }
-
-
-    setOrderSummary && setOrderSummary((prevSummary => {
-      return {
-        ...prevSummary,
-        innerSleeve: watchInnerSleeve,
-        jacket: watchJacket,
-        inserts: watchInserts,
-        shrinkWrap: watchShrinkWrap,
+    if (disabled) {
+      if (formState.errors.innerSleeve || formState.errors.jacket || formState.errors.inserts || formState.errors.shrinkWrap) {
+        setAllOptionsValid && setAllOptionsValid((prev) => ({
+          ...prev,
+          packaging: false
+        })
+        );
+      } else {
+        setAllOptionsValid && setAllOptionsValid((prev) => ({
+          ...prev,
+          packaging: true
+        }));
       }
-    }));
 
+      setOrderSummary && setOrderSummary((prevSummary => {
+        return {
+          ...prevSummary,
+          innerSleeve: watchInnerSleeve,
+          jacket: watchJacket,
+          inserts: watchInserts,
+          shrinkWrap: watchShrinkWrap,
+        }
+      }));
+
+    }
   }, [watchInnerSleeve, watchJacket, watchInserts, watchShrinkWrap]);
 
   useEffect(() => {
-    if (validOptions) {
+    if (disabled && validOptions) {
 
       if (!validOptions['innerSleeve']?.includes(watchInnerSleeve)) {
         setError("innerSleeve", {
@@ -129,7 +129,7 @@ const PackagingSection = ({
           type: "manual",
           message: "Selected option is not valid for the current order quantity."
         });
-       setAllOptionsValid && setAllOptionsValid((prev) => ({
+        setAllOptionsValid && setAllOptionsValid((prev) => ({
           ...prev,
           packaging: false
         }));
@@ -141,37 +141,35 @@ const PackagingSection = ({
         }));
       }
 
-
       if (!validOptions['inserts']?.includes(watchInserts)) {
         setError("inserts", {
           type: "manual",
           message: "Selected option is not valid for the current order quantity."
         });
-       setAllOptionsValid && setAllOptionsValid((prev) => ({
+        setAllOptionsValid && setAllOptionsValid((prev) => ({
           ...prev,
           packaging: false
         }));
       } else {
         clearErrors("inserts");
-       setAllOptionsValid && setAllOptionsValid((prev) => ({
+        setAllOptionsValid && setAllOptionsValid((prev) => ({
           ...prev,
           packaging: true
         }));
       }
-
 
       if (!validOptions['shrinkWrap']?.includes(watchShrinkWrap)) {
         setError("shrinkWrap", {
           type: "manual",
           message: "Selected option is not valid for the current order quantity."
         });
-       setAllOptionsValid && setAllOptionsValid((prev) => ({
+        setAllOptionsValid && setAllOptionsValid((prev) => ({
           ...prev,
           packaging: false
         }));
       } else {
         clearErrors("shrinkWrap");
-       setAllOptionsValid && setAllOptionsValid((prev) => ({
+        setAllOptionsValid && setAllOptionsValid((prev) => ({
           ...prev,
           packaging: true
         }));
@@ -228,10 +226,13 @@ const PackagingSection = ({
             </SelectTrigger>
           </FormControl>
           <SelectContent>
-            <SelectItem value="single-pocket-3mm" disabled={validOptions && !validOptions['jacket']?.includes("single-pocket-3mm")}>Single Pocket Jacket (3mm Spine)</SelectItem>
-            <SelectItem value="single-pocket-5mm" disabled={validOptions && !validOptions['jacket']?.includes("single-pocket-5mm")}>Single Pocket Jacket (5mm Spine)</SelectItem>
-            <SelectItem value="gatefold" disabled={validOptions && !validOptions['jacket']?.includes("gatefold")}>Gatefold Jacket</SelectItem>
-            <SelectItem value="trifold" disabled={validOptions && !validOptions['jacket']?.includes("trifold")} className="flex items-center justify-between">
+            <SelectItem value="single-pocket-3mm" disabled={disabled && validOptions && !validOptions['jacket']?.includes("single-pocket-3mm")}>Single Pocket Jacket (3mm Spine)</SelectItem>
+            <SelectItem value="single-pocket-5mm" disabled={disabled && validOptions && !validOptions['jacket']?.includes("single-pocket-5mm")}>Single Pocket Jacket (5mm Spine)</SelectItem>
+            <SelectItem value="gatefold" disabled={disabled && validOptions && !validOptions['jacket']?.includes("gatefold")}>Gatefold Jacket</SelectItem>
+            <SelectItem value="trifold" 
+            // disabled={disabled && validOptions && !validOptions['jacket']?.includes("trifold")}
+            disabled 
+            className="flex items-center justify-between">
               Trifold Jacket
               <Badge variant="outline" className="ml-2 bg-yellow-100 text-yellow-800 border-yellow-300">
                 Coming Soon
@@ -261,8 +262,8 @@ const PackagingSection = ({
             </SelectTrigger>
           </FormControl>
           <SelectContent>
-            <SelectItem disabled={validOptions && !validOptions['inserts']?.includes("no-insert")} value="no-insert">No Insert</SelectItem>
-            <SelectItem disabled={validOptions && !validOptions['inserts']?.includes("single-insert")} value="single-insert">Single Insert</SelectItem>
+            <SelectItem disabled={disabled && validOptions && !validOptions['inserts']?.includes("no-insert")} value="no-insert">No Insert</SelectItem>
+            <SelectItem disabled={disabled && validOptions && !validOptions['inserts']?.includes("single-insert")} value="single-insert">Single Insert</SelectItem>
           </SelectContent>
         </Select>
         {fieldState.error && (
@@ -287,8 +288,8 @@ const PackagingSection = ({
             </SelectTrigger>
           </FormControl>
           <SelectContent>
-            <SelectItem value="yes" disabled={validOptions && !validOptions['shrinkWrap']?.includes("yes")}>Yes</SelectItem>
-            <SelectItem value="no" disabled={validOptions && !validOptions['shrinkWrap']?.includes("no")}>No</SelectItem>
+            <SelectItem value="yes" disabled={disabled && validOptions && !validOptions['shrinkWrap']?.includes("yes")}>Yes</SelectItem>
+            <SelectItem value="no" disabled={disabled && validOptions && !validOptions['shrinkWrap']?.includes("no")}>No</SelectItem>
           </SelectContent>
         </Select>
         {fieldState.error && (

@@ -19,6 +19,7 @@ import Auth from "./pages/Auth";
 import VinylGlossary from "./pages/VinylGlossary";
 import NotFound from "./pages/NotFound";
 import BuyerProfile from "./pages/BuyerProfile";
+import ThankYouPage from './pages/ThankYouPage';
 
 const queryClient = new QueryClient();
 
@@ -54,7 +55,7 @@ const App = () => (
               <Route path="/about" element={<About />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/vinyl-glossary" element={<VinylGlossary />} />
-              <Route path="/thank-you-page" element={<PlantDetails />} />        {/*  DONE */}
+              <Route path="/thank-you-page" element={<ThankYouPage />} />        {/*  DONE */}
               <Route path="*" element={<NotFound />} />
 
               

@@ -319,7 +319,13 @@ const PlantPackagingPricing: React.FC<PlantPackagingPricingProps> = ({
   };
 
   const getPackagingOptions = (type: 'innerSleeve' | 'jacket' | 'inserts' | 'shrinkWrap') => {
-    return packagingPricing.filter(p => p.type === type);
+    const options = packagingPricing?.filter(p => p.type === type) || [];
+    options.map(obj => {
+      obj.prices.sort((a: any, b: any) => b.price - a.price);
+      return obj;
+    });
+
+    return options;
   };
 
   if (packagingPricing) {

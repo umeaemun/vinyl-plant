@@ -27,6 +27,21 @@ const PlantPackagingPricing: React.FC<PlantPackagingPricingProps> = ({
   const [packagingPricing, setPackagingPricing] = React.useState<any[]>(null);
   const [isSaving, setIsSaving] = React.useState(false);
 
+  const namingConvention = {
+    "white-paper": "White Paper",
+    "white-poly-lined": "White Poly-lined",
+    "black-paper": "Black Paper",
+    "black-poly-lined": "Black Poly-lined",
+    "printed": "Printed",
+    "single-pocket-3mm": "Single Pocket (3mm Spine)",
+    "single-pocket-5mm": "Single Pocket (5mm Spine)",
+    "gatefold": "Gatefold",
+    "no-insert": "No Insert",
+    "single-insert": "Single Insert",
+    "yes": "Yes",
+    "no": "No"
+  }
+
   const addPriceTier = (type: 'innerSleeve' | 'jacket' | 'inserts' | 'shrinkWrap', option: string) => {
 
     const updatedPricing = [...packagingPricing];
@@ -344,7 +359,7 @@ const PlantPackagingPricing: React.FC<PlantPackagingPricingProps> = ({
                 return (
                   <div key={optionIndex} className="mb-8 last:mb-0">
                     <h4 className="text-lg font-medium mb-4">
-                      {obj.option}
+                      {namingConvention[obj.option] || obj.option}
                       {((type === 'inserts' && obj.option.toLowerCase().includes('no')) ||
                         (type === 'shrinkWrap' && obj.option.toLowerCase() === 'no')) && (
                           <span className="text-sm text-muted-foreground ml-2">(Always $0)</span>

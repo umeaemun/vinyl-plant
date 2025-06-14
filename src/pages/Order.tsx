@@ -378,7 +378,7 @@ const Order = () => {
             <div>
               <h2 className="text-xl font-semibold mb-4">1. Vinyl Project Specifications</h2>
               <div className="bg-white rounded-lg shadow-sm">
-                <RecordProjectForm splitCapability={selectedPlant.split_manufacturing_capable} hideSubmitButton={true} orderSummary={orderSummary} setOrderSummary={setOrderSummary} setAllOptionsValid={setAllOptionsValid} />
+                <RecordProjectForm splitCapability={selectedPlant?.split_manufacturing_capable} hideSubmitButton={true} orderSummary={orderSummary} setOrderSummary={setOrderSummary} setAllOptionsValid={setAllOptionsValid} />
               </div>
             </div>
 

@@ -23,6 +23,9 @@ import { supabase } from '@/integrations/supabase/client';
 import emailjs from 'emailjs-com';
 import { useCurrency } from '@/contexts/CurrencyContext';
 import { OrderSummary } from '@/data/plants';
+import PhoneInput from 'react-phone-input-2';
+import 'react-phone-input-2/lib/style.css';
+
 
 interface PersonalDetailsFormProps {
   selectedPlant: Plant | null;
@@ -112,7 +115,7 @@ const PersonalDetailsForm = ({ selectedPlant, orderSummary, allOptionsValid }: P
 
 
     // emailjs.send("service_ub4n5aj", "template_dp8pbcf",
-    emailjs.send("service_squbmun","template_qzrl81q",
+    emailjs.send("service_squbmun", "template_qzrl81q",
       templateParams,
       "FZ2o2qSKeDHybPLnz"
     )
@@ -139,7 +142,7 @@ const PersonalDetailsForm = ({ selectedPlant, orderSummary, allOptionsValid }: P
 
 
     // emailjs.send("service_ub4n5aj", "template_q1x90oa",
-    emailjs.send("service_squbmun","template_e3p5old",
+    emailjs.send("service_squbmun", "template_e3p5old",
       templateParams,
       "FZ2o2qSKeDHybPLnz"
     )
@@ -427,7 +430,7 @@ const PersonalDetailsForm = ({ selectedPlant, orderSummary, allOptionsValid }: P
                 )}
               />
 
-              <FormField
+              {/* <FormField
                 control={form.control}
                 name="phone"
                 render={({ field }) => (
@@ -439,7 +442,34 @@ const PersonalDetailsForm = ({ selectedPlant, orderSummary, allOptionsValid }: P
                     <FormMessage />
                   </FormItem>
                 )}
+              /> */}
+
+              <FormField
+                control={form.control}
+                name="phone"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Phone</FormLabel>
+                    <FormControl>
+                      <PhoneInput
+                        country={'us'}
+                        value={field.value}
+                        onChange={(value) => field.onChange(value)}
+                        inputStyle={{
+                          width: '100%',
+                          height: '38px',
+                          borderRadius: '6px',
+                          borderColor: '#d1d5db',
+                        }}
+                        inputClass="text-sm"
+                        buttonStyle={{ border: 'none', background: 'transparent' }}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
+
             </div>
           </div>
 

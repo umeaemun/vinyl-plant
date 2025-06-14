@@ -430,20 +430,6 @@ const PersonalDetailsForm = ({ selectedPlant, orderSummary, allOptionsValid }: P
                 )}
               />
 
-              {/* <FormField
-                control={form.control}
-                name="phone"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Phone</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Phone Number" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              /> */}
-
               <FormField
                 control={form.control}
                 name="phone"

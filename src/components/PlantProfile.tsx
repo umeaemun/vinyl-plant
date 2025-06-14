@@ -173,6 +173,14 @@ const PlantProfile: React.FC<PlantProfileProps> = ({ plant }) => {
               )) : <p className="text-muted-foreground">No specialties listed.</p>
             }
           </div>
+
+
+          <div className='flex flex-row'>
+          <h6 className="font-display text-md mb-2 mr-4">Split Manufacturing facility:</h6>
+            <p>{plant?.split_manufacturing_capable ? 'Available' : 'Not Available'}</p>
+          </div>
+
+          
         </div>
 
         {/* <div className="md:col-span-1">

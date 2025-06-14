@@ -75,6 +75,9 @@ const PlantProfiles = () => {
                 turnaround_time: plant.turnaround_time || '8-10',
                 website: plant.website || '#',
                 image_url: plant.image_url || '',
+                reviews: plant.reviews || [],
+                split_manufacturing_capable: plant.split_manufacturing_capable || false
+
               };
 
               return userPlant;
@@ -176,7 +179,7 @@ const PlantProfiles = () => {
                 <CardContent>
                   <div className="flex flex-wrap gap-2 mb-4">
                     {plant.features.slice(0, 3).map(feature => (
-                      <span key={feature} className="text-xs bg-secondary text-secondary-foreground px-2 py-1 rounded-full">
+                      <span key={feature} className="text-xs bg-[#f2f2f2] text-secondary-foreground px-2 py-1 rounded-full">
                         {feature.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
                       </span>
                     ))}

@@ -371,7 +371,7 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ setAllOptionsVali
       });
   }
 
-  const handleSubmit = async (values: FormValues) => {
+  const handleSubmitForm = async (values: FormValues) => {
 
     // if (!user || !userProfile) {
     //   console.error("User not authenticated");
@@ -487,7 +487,7 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ setAllOptionsVali
   return (
     <div className={hideSubmitButton ? "w-full" : "bg-white p-6 rounded-lg w-full max-w-4xl mx-auto border-4 border-wwwax-green"}>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+        <form onSubmit={form.handleSubmit(handleSubmitForm)} className="space-y-6">
           {selectedPlantId && !hideSubmitButton && (
             <div className="bg-secondary/30 p-4 rounded-md mb-4 flex justify-between items-center">
               <p className="font-medium">
@@ -528,8 +528,9 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ setAllOptionsVali
               <Button
                 type="submit"
                 onClick={() => {
-                  form.handleSubmit(handleSubmit); // This will trigger the form validation
-                  // handleSubmit(form.getValues());
+                  console.log("clicked")
+                  form.handleSubmit(handleSubmitForm)
+                  handleSubmitForm(form.getValues());
                 }}
                 size="lg"
                 className="bg-wwwax-green text-black hover:bg-wwwax-green/80 text-center w-full max-w-md"

@@ -12,6 +12,8 @@ import Footer from '@/components/Footer';
 import { useToast } from '@/hooks/use-toast';
 import { Phone, Building, MapPin } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import PhoneInput from 'react-phone-input-2';
+import 'react-phone-input-2/lib/style.css';
 
 type ProfileData = {
   username: string;
@@ -278,13 +280,28 @@ const BuyerProfile = () => {
                             value={profileData.username}
                             onChange={(e) => handleInputChange('username', e.target.value)}
                           />
-                          <div className="relative">
+                          {/* <div className="relative">
                             <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" size={16} />
                             <Input
                               placeholder="Phone"
                               value={profileData.phone}
                               onChange={(e) => handleInputChange('phone', e.target.value)}
                               className="pl-10"
+                            />
+                          </div> */}
+                          <div className="relative">
+                            <PhoneInput
+                              country={'us'}
+                              value={profileData.phone}
+                              onChange={(value) => handleInputChange('phone', value)}
+                              inputStyle={{
+                                width: '100%',
+                                height: '38px',
+                                borderRadius: '6px',
+                                borderColor: '#d1d5db',
+                              }}
+                              inputClass="text-sm"
+                              buttonStyle={{ border: 'none', background: 'transparent' }}
                             />
                           </div>
                         </div>

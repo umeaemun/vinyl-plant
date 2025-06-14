@@ -528,7 +528,6 @@ const RecordProjectForm: React.FC<RecordProjectFormProps> = ({ setAllOptionsVali
               <Button
                 type="submit"
                 onClick={() => {
-                  console.log("clicked")
                   form.handleSubmit(handleSubmitForm)
                   handleSubmitForm(form.getValues());
                 }}

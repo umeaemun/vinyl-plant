@@ -139,14 +139,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const signUp = async (formData: any) => {
     const { email, password, role, username, plantData } = formData;
     try {
-      console.log("Starting signup process with:", { email, plantData });
-
+      // console.log("Starting signup process with:", { email, plantData });
+      const redirectUrl = `${process.env.VITE_PUBLIC_SITE_URL}/auth`;
       // Register the user
       const { error: signUpError, data } = await supabase.auth.signUp({
         email,
         password,
         options: {
-          emailRedirectTo: `${window.location.origin}/auth`,
+          emailRedirectTo: redirectUrl,
           data: {
             plant_name: plantData.plantName,
             location: plantData.location,

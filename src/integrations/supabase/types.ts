@@ -66,14 +66,15 @@ export type Database = {
           location: string;
           country: string;
           owner: UUID;
+          currency: string;
           description: string;
-          minimum_order: number;
-          turnaround_time: string;
+          features: string[];
           rating: number;
           review_count: number;
-          features: string[];
-          image_url: string;
+          minimum_order: number;
+          turnaround_time: string;
           website: string;
+          image_url: string;
           reviews: string[];
           split_manufacturing_capable: boolean;
           created_at: string;
@@ -84,6 +85,7 @@ export type Database = {
           location: string;
           country: string;
           owner: UUID;
+          currency: string;
           description: string;
           minimum_order: number;
           turnaround_time: string;
@@ -102,6 +104,7 @@ export type Database = {
           location?: string;
           country?: string;
           owner?: UUID;
+          currency?: string;
           description?: string;
           minimum_order?: number;
           turnaround_time?: string;

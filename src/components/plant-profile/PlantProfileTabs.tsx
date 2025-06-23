@@ -192,9 +192,31 @@ const PlantProfileTabs: React.FC<PlantProfileTabsProps> = ({
 
         <TabsContent value="pricing">
           <Card>
-            <CardHeader>
+            <CardHeader className="relative">
               <CardTitle>Pricing Management</CardTitle>
               <CardDescription>Configure your vinyl and packaging pricing options</CardDescription>
+
+              <div className="absolute top-4 right-7 w-40">
+                <Label className="text-sm mb-1 block ml-1">Currency</Label>
+                <Select
+                  value={selectedCurrency}
+                  onValueChange={setSelectedCurrency}
+                  disabled={disabled}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select Currency" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="USD">USD ($)</SelectItem>
+                    <SelectItem value="EUR">EUR (€)</SelectItem>
+                    <SelectItem value="GBP">GBP (£)</SelectItem>
+                    <SelectItem value="JPY">JPY (¥)</SelectItem>
+                    <SelectItem value="CAD">CAD (C$)</SelectItem>
+                    <SelectItem value="AUD">AUD (A$)</SelectItem>
+                    <SelectItem value="NZD">NZD (NZ$)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </CardHeader>
             <CardContent className="pt-6">
               <Tabs defaultValue="vinyl" className="w-full">

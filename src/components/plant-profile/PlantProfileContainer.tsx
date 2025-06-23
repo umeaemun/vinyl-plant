@@ -11,7 +11,7 @@ import PlantProfileEditor from './PlantProfileEditor';
 import PlantProfileTabs from './PlantProfileTabs';
 import { useAuth } from '@/contexts/AuthContext';
 
-const PlantProfileContainer = ({ plant, setPlant }: { plant: Plant , setPlant: React.Dispatch<any> }) => {
+const PlantProfileContainer = ({ plant, setPlant }: { plant: Plant, setPlant: React.Dispatch<any> }) => {
   // const navigate = useNavigate();
   // const { toast } = useToast();
   const { user } = useAuth();
@@ -23,13 +23,13 @@ const PlantProfileContainer = ({ plant, setPlant }: { plant: Plant , setPlant: R
 
   useEffect(() => {
 
-      // New users should be in edit mode by default
-      if (plant && (!plant.description || plant.description === "")) {
-        setIsEditing(true);
+    // New users should be in edit mode by default
+    if (plant && (!plant.description || plant.description === "")) {
+      setIsEditing(true);
 
     };
 
-  }, [ plant, user]);
+  }, [plant, user]);
 
   if (!plant) {
     return null;
@@ -45,7 +45,13 @@ const PlantProfileContainer = ({ plant, setPlant }: { plant: Plant , setPlant: R
             <h1 className="text-3xl font-bold font-display">Plant Profile Management</h1>
             {isEditing ? (
               <div className="flex gap-2">
-                <Button variant="outline" onClick={() => setIsEditing(false)}>Cancel</Button>
+                <Button variant="outline"
+                  onClick={() => { 
+                    setIsEditing(false)
+                  }}
+                >
+                  Cancel
+                </Button>
                 {/* <Button onClick={handleSave}>
                   <Save className="h-4 w-4 mr-2" />
                   Save Changes

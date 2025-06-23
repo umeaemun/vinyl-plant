@@ -77,7 +77,7 @@ const Order = () => {
         // console.log("Plant Pricing:", plantPricing);
 
         if (specs && plantPricing) {
-          const perUnit = convertPrice(plantPricing.calculatedPricing.perUnit);
+          const perUnit = convertPrice(plantPricing.calculatedPricing.perUnit, selectedPlant?.currency || 'USD');
           const formattedPerUnit = parseFloat(perUnit.toFixed(2));
 
           const total = formattedPerUnit * (Number(specs.quantity) || 0);
@@ -223,7 +223,7 @@ const Order = () => {
 
       const perUnit = vinylPrice + colorPrice + weightPrice + packagingPrice;
       console.log('Per Unit Price before conversion:', perUnit);
-      const convertedPerUnit = convertPrice(perUnit);
+      const convertedPerUnit = convertPrice(perUnit, selectedPlant?.currency || 'USD'); 
       const formattedPerUnit = parseFloat(convertedPerUnit.toFixed(2)); // Format to 2 decimal places
       console.log('Converted Per Unit Price:', formattedPerUnit);
 

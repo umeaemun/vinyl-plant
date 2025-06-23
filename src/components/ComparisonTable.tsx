@@ -19,7 +19,7 @@ type SortDirection = 'asc' | 'desc';
 
 const ComparisonTable: React.FC<ComparisonTableProps> = ({ plants, formData, pricingData }) => {
 
-  const { user, userProfile } =  useAuth();
+  // const { user, userProfile } =  useAuth();
 
   const [sortField, setSortField] = useState<SortField>('costPerUnit');
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
@@ -169,7 +169,7 @@ const ComparisonTable: React.FC<ComparisonTableProps> = ({ plants, formData, pri
             sortedPlants.map((plant, index) => {
               const pricing = getPlantPricing(plant.id);
               const totalCostPerUnit = pricing?.perUnit || 0;
-              const convertedPrice = convertPrice(totalCostPerUnit);
+              const convertedPrice = convertPrice(totalCostPerUnit, plant.currency || 'USD');
               
               return (
                 <tr 

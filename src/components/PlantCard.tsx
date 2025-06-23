@@ -31,7 +31,7 @@ const PlantCard: React.FC<PlantCardProps> = ({ plant, formData, pricingData }) =
   
   const pricing = getPlantPricing();
   const costPerUnit = pricing?.perUnit || 0;
-  const convertedPrice = convertPrice(costPerUnit);
+  const convertedPrice = convertPrice(costPerUnit, plant.currency || 'USD');
   
   const selectPlantForQuote = () => {
     localStorage.setItem('selectedPlantId', plant.id);

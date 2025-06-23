@@ -18,8 +18,8 @@ const PlantProfileContainer = ({ plant, setPlant }: { plant: Plant, setPlant: Re
 
 
   // State for plant data
-  // const [isEditing, setIsEditing] = useState(false);
-  const [isEditing, setIsEditing] = useState(true);
+  const [isEditing, setIsEditing] = useState(false);
+  // const [isEditing, setIsEditing] = useState(true);
   const [selectedCurrency, setSelectedCurrency] = useState<string>(plant?.currency || 'USD');
 
   useEffect(() => {
@@ -76,6 +76,7 @@ const PlantProfileContainer = ({ plant, setPlant }: { plant: Plant, setPlant: Re
               plant={plant}
               setPlant={setPlant}
               disabled={!isEditing}
+              setIsEditing={setIsEditing}
               selectedCurrency={selectedCurrency}
               setSelectedCurrency={setSelectedCurrency}
             />

@@ -21,6 +21,7 @@ interface PlantProfileTabsProps {
   plant: Plant;
   setPlant: React.Dispatch<React.SetStateAction<Plant | null>>;
   disabled: boolean;
+  setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
   selectedCurrency: string;
   setSelectedCurrency: React.Dispatch<React.SetStateAction<string>>;
 }
@@ -29,6 +30,7 @@ const PlantProfileTabs: React.FC<PlantProfileTabsProps> = ({
   plant,
   setPlant,
   disabled,
+  setIsEditing,
   selectedCurrency,
   setSelectedCurrency
 }) => {
@@ -98,8 +100,8 @@ const PlantProfileTabs: React.FC<PlantProfileTabsProps> = ({
   return (
     <div className="md:col-span-2">
       <Tabs
-        //  defaultValue="details" 
-        defaultValue="pricing"
+         defaultValue="details" 
+        // defaultValue="pricing"
         className="w-full">
         <TabsList className="mb-6 grid grid-cols-5 gap-2">
           <TabsTrigger value="details">Details</TabsTrigger>
@@ -232,6 +234,7 @@ const PlantProfileTabs: React.FC<PlantProfileTabsProps> = ({
                   <PlantVinylPricing
                     plant={plant}
                     disabled={disabled}
+                    setIsEditing={setIsEditing}
                     selectedCurrency={selectedCurrency}
                   />
                 </TabsContent>
@@ -240,6 +243,7 @@ const PlantProfileTabs: React.FC<PlantProfileTabsProps> = ({
                   <PlantPackagingPricing
                     plant={plant}
                     disabled={disabled}
+                    setIsEditing={setIsEditing}
                     selectedCurrency={selectedCurrency}
                   />
                 </TabsContent>

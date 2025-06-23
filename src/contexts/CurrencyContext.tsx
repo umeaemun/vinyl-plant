@@ -21,7 +21,7 @@ export const currencies: Currency[] = [
 type CurrencyContextType = {
   currency: Currency;
   setCurrency: (currency: Currency) => void;
-  convertPrice: (priceInUSD: number) => number;
+  convertPrice: (price: number, fromCurrencyCode: string) => number;
   formatPrice: (price: number) => string;
   convertCodeToSymbol: (code: string) => string;
   isLoading: boolean;
@@ -30,12 +30,13 @@ type CurrencyContextType = {
 const CurrencyContext = createContext<CurrencyContextType>({
   currency: currencies[0],
   setCurrency: () => {},
-  convertPrice: (price: number) => price,
+  convertPrice: (price: number, fromCurrencyCode?: string) => price,
   formatPrice: (price: number) => `$${price.toFixed(2)}`,
   convertCodeToSymbol: (code: string) => {
-    const foundCurrency = currencies.find(c => c.code === code);
-    return foundCurrency ? foundCurrency.symbol : '';
-  },
+  const foundCurrency = currencies.find(c => c.code === code);
+  return foundCurrency ? foundCurrency.symbol : '';
+},
+
   isLoading: false,
 });
 
@@ -112,9 +113,21 @@ export const CurrencyProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }
   };
 
-  const convertPrice = (priceInUSD: number): number => {
-    return priceInUSD * currency.rate;
-  };
+  // const convertPrice = (priceInUSD: number): number => {
+  //   return priceInUSD * currency.rate;
+  // };
+
+  const convertPrice = (price: number, fromCurrencyCode: string ): number => {
+  const fromCurrency = currenciesWithRates.find(c => c.code === fromCurrencyCode);
+  if (!fromCurrency) return price; // fallback: return original
+
+  // Convert from source currency to USD first, then to selected
+  const priceInUSD = price / fromCurrency.rate;
+  const convertedPrice = priceInUSD * currency.rate;
+
+  return convertedPrice;
+};
+
 
   const formatPrice = (price: number): string => {
     return `${currency.symbol} ${price.toFixed(2)}`;

@@ -13,12 +13,14 @@ import { useCurrency } from '@/contexts/CurrencyContext';
 interface PlantVinylPricingProps {
   plant: Plant;
   disabled: boolean;
+  setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
   selectedCurrency: string;
 }
 
 const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
   plant,
   disabled,
+  setIsEditing,
   selectedCurrency
 }) => {
 
@@ -495,6 +497,7 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
       });
     } finally {
       setIsSaving(false);
+      setIsEditing(false); 
     }
   };
 

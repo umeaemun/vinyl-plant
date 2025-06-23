@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Plant } from '@/data/plants';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -12,12 +12,14 @@ import { useCurrency } from '@/contexts/CurrencyContext';
 interface PlantPackagingPricingProps {
   plant: Plant;
   disabled: boolean;
+  setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
   selectedCurrency: string;
 }
 
 const PlantPackagingPricing: React.FC<PlantPackagingPricingProps> = ({
   plant,
   disabled,
+  setIsEditing,
   selectedCurrency,
 }) => {
 
@@ -26,6 +28,7 @@ const PlantPackagingPricing: React.FC<PlantPackagingPricingProps> = ({
   const { convertCodeToSymbol } = useCurrency();
 
   const [packagingPricing, setPackagingPricing] = React.useState<any[]>(null);
+  const [packagingOptions, setPackagingOptions] = React.useState<any>(null);
   const [isSaving, setIsSaving] = React.useState(false);
 
   const namingConvention = {
@@ -213,10 +216,30 @@ const PlantPackagingPricing: React.FC<PlantPackagingPricingProps> = ({
 
     if (plant && plant.id && !packagingPricing) {
       // console.log("Loading packaging pricing from Supabase");
+      setPackagingOptions(null);
       loadFromSupabase();
     }
 
   }, [plant]);
+
+  useEffect(() => {
+    if (packagingPricing && !packagingOptions) {
+      // console.log("Packaging pricing loaded", packagingPricing);
+
+      const sorted = packagingPricing.map(obj => {
+        obj.prices.sort((a: any, b: any) => a.price - b.price);
+        return obj;
+      });
+
+      const options = {
+        innerSleeve: sorted.filter(p => p.type === 'innerSleeve'),
+        jacket: sorted.filter(p => p.type === 'jacket'),
+        inserts: sorted.filter(p => p.type === 'inserts'),
+        shrinkWrap: sorted.filter(p => p.type === 'shrinkWrap')
+      };
+      setPackagingOptions(options);
+    }
+  }, [packagingPricing]);
 
 
   const saveToSupabase = async () => {
@@ -317,6 +340,7 @@ const PlantPackagingPricing: React.FC<PlantPackagingPricingProps> = ({
       });
     } finally {
       setIsSaving(false);
+      setIsEditing(false);
     }
   };
 
@@ -331,17 +355,17 @@ const PlantPackagingPricing: React.FC<PlantPackagingPricingProps> = ({
     }
   };
 
-  const getPackagingOptions = (type: 'innerSleeve' | 'jacket' | 'inserts' | 'shrinkWrap') => {
-    const options = packagingPricing?.filter(p => p.type === type) || [];
-    options.map(obj => {
-      obj.prices.sort((a: any, b: any) => a.price - b.price);
-      return obj;
-    });
+  // const getPackagingOptions = (type: 'innerSleeve' | 'jacket' | 'inserts' | 'shrinkWrap') => {
+  //   const options = packagingPricing?.filter(p => p.type === type) || [];
+  //   options.map(obj => {
+  //     obj.prices.sort((a: any, b: any) => a.price - b.price);
+  //     return obj;
+  //   });
 
-    return options;
-  };
+  //   return options;
+  // };
 
-  if (packagingPricing) {
+  if (packagingPricing && packagingOptions) {
 
     return (
       <div className="space-y-8">
@@ -374,7 +398,8 @@ const PlantPackagingPricing: React.FC<PlantPackagingPricingProps> = ({
               </CardDescription>
             </CardHeader>
             <CardContent>
-              {getPackagingOptions(type).map((obj, optionIndex) => {
+              {packagingOptions[type].map((obj, optionIndex) => {
+                console.log("obj", obj);
                 return (
                   <div key={optionIndex} className="mb-8 last:mb-0">
                     <h4 className="text-lg font-medium mb-4">

@@ -18,15 +18,15 @@ const PlantProfileContainer = ({ plant, setPlant }: { plant: Plant, setPlant: Re
 
 
   // State for plant data
-  const [isEditing, setIsEditing] = useState(false);
-  // const [isEditing, setIsEditing] = useState(true);
+  // const [isEditing, setIsEditing] = useState(false);
+  const [isEditing, setIsEditing] = useState(true);
+  const [selectedCurrency, setSelectedCurrency] = useState<string>(plant?.currency || 'USD');
 
   useEffect(() => {
 
     // New users should be in edit mode by default
     if (plant && (!plant.description || plant.description === "")) {
       setIsEditing(true);
-
     };
 
   }, [plant, user]);
@@ -48,6 +48,7 @@ const PlantProfileContainer = ({ plant, setPlant }: { plant: Plant, setPlant: Re
                 <Button variant="outline"
                   onClick={() => { 
                     setIsEditing(false)
+                    setSelectedCurrency(plant.currency || 'USD');
                   }}
                 >
                   Cancel
@@ -75,6 +76,8 @@ const PlantProfileContainer = ({ plant, setPlant }: { plant: Plant, setPlant: Re
               plant={plant}
               setPlant={setPlant}
               disabled={!isEditing}
+              selectedCurrency={selectedCurrency}
+              setSelectedCurrency={setSelectedCurrency}
             />
           </div>
         </div>

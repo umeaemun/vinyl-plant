@@ -85,6 +85,7 @@ export interface Plant {
   location: string;
   country: string;
   owner: any;
+  currency: string;
   description: string;
   minimum_order: number;
   turnaround_time: string;

@@ -14,14 +14,12 @@ interface PlantVinylPricingProps {
   plant: Plant;
   disabled: boolean;
   selectedCurrency: string;
-  setSelectedCurrency: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
   plant,
   disabled,
-  selectedCurrency,
-  setSelectedCurrency
+  selectedCurrency
 }) => {
 
   // console.log("plant", plant);
@@ -466,6 +464,19 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
           throw new Error(`Error saving weight options: ${updatedWeightOptionsError.message}`);
         }
       });
+
+      // update the plant's currency if it has changed
+      if (plant.currency !== selectedCurrency) {
+        const { data: updatedPlantData, error: updatedPlantError } = await supabase
+          .from('plants')
+          .update({ currency: selectedCurrency })
+          .eq('id', plant.id)
+          .select();
+        if (updatedPlantError) {
+          console.error('Error updating plant currency:', updatedPlantError);
+          throw new Error(`Error updating plant currency: ${updatedPlantError.message}`);
+        }
+      }
 
       await Promise.all([...a, ...b, ...c, ...d, ...e, ...f, ...g, ...h, ...i]);
 

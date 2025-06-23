@@ -7,24 +7,23 @@ import { Plus, Minus, Save } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { useCurrency } from '@/contexts/CurrencyContext';
 
 interface PlantPackagingPricingProps {
   plant: Plant;
   disabled: boolean;
   selectedCurrency: string;
-  setSelectedCurrency: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const PlantPackagingPricing: React.FC<PlantPackagingPricingProps> = ({
   plant,
   disabled,
   selectedCurrency,
-  setSelectedCurrency
 }) => {
 
   // console.log("plant", plant);
   const { toast } = useToast();
-
+  const { convertCodeToSymbol } = useCurrency();
 
   const [packagingPricing, setPackagingPricing] = React.useState<any[]>(null);
   const [isSaving, setIsSaving] = React.useState(false);
@@ -289,6 +288,17 @@ const PlantPackagingPricing: React.FC<PlantPackagingPricingProps> = ({
         }
       });
 
+      // update the plant's currency if it has changed
+      if (plant.currency !== selectedCurrency) {
+        const { error: updateError } = await supabase
+          .from('plants')
+          .update({ currency: selectedCurrency })
+          .eq('id', plant.id);  
+        if (updateError) {
+          console.error('Error updating plant currency:', updateError);
+        }
+      }
+
 
       await Promise.all(pricingUpdates);
 
@@ -379,7 +389,7 @@ const PlantPackagingPricing: React.FC<PlantPackagingPricingProps> = ({
                         <TableHeader>
                           <TableRow>
                             <TableHead className="w-1/3">Quantity</TableHead>
-                            <TableHead className="w-1/3">Price Per Unit ($)</TableHead>
+                            <TableHead className="w-1/3">Price Per Unit ({convertCodeToSymbol(selectedCurrency)})</TableHead>
                             <TableHead className="w-1/3">
                               {!disabled && <span>Actions</span>}
                             </TableHead>

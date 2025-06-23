@@ -21,16 +21,19 @@ interface PlantProfileTabsProps {
   plant: Plant;
   setPlant: React.Dispatch<React.SetStateAction<Plant | null>>;
   disabled: boolean;
+  selectedCurrency: string;
+  setSelectedCurrency: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const PlantProfileTabs: React.FC<PlantProfileTabsProps> = ({
   plant,
   setPlant,
-  disabled
+  disabled,
+  selectedCurrency,
+  setSelectedCurrency
 }) => {
   const { toast } = useToast();
   const [isSaving, setIsSaving] = React.useState(false);
-  const [selectedCurrency, setSelectedCurrency] = useState<string>('USD');
 
   const handleChange = (field: keyof Plant, value: any) => {
     if (plant) {
@@ -230,7 +233,6 @@ const PlantProfileTabs: React.FC<PlantProfileTabsProps> = ({
                     plant={plant}
                     disabled={disabled}
                     selectedCurrency={selectedCurrency}
-                    setSelectedCurrency={setSelectedCurrency}
                   />
                 </TabsContent>
 
@@ -239,7 +241,6 @@ const PlantProfileTabs: React.FC<PlantProfileTabsProps> = ({
                     plant={plant}
                     disabled={disabled}
                     selectedCurrency={selectedCurrency}
-                    setSelectedCurrency={setSelectedCurrency}
                   />
                 </TabsContent>
               </Tabs>

@@ -291,13 +291,13 @@ const VinylDetailsSection = ({
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
-                <SelectItem value="7">
+                <SelectItem value="7" disabled>
                   7"
-                  {/* <Badge variant="outline" className="ml-2 bg-gray-100">Coming soon</Badge> */}
+                  <Badge variant="outline" className="ml-2 bg-gray-100">Coming soon</Badge>
                 </SelectItem>
-                <SelectItem value="10">
+                <SelectItem value="10" disabled>
                   10"
-                  {/* <Badge variant="outline" className="ml-2 bg-gray-100">Coming soon</Badge> */}
+                  <Badge variant="outline" className="ml-2 bg-gray-100">Coming soon</Badge>
                 </SelectItem>
                 <SelectItem value="12">12"</SelectItem>
               </SelectContent>
@@ -332,11 +332,11 @@ const VinylDetailsSection = ({
               </FormControl>
               <SelectContent>
                 <SelectItem value="1LP">1LP</SelectItem>
-                <SelectItem value="2LP">2LP
-                  {/* <Badge variant="outline" className="ml-2 bg-gray-100">Coming soon</Badge> */}
+                <SelectItem disabled value="2LP">2LP
+                  <Badge variant="outline" className="ml-2 bg-gray-100">Coming soon</Badge>
                 </SelectItem>
-                <SelectItem value="3LP">3LP
-                  {/* <Badge variant="outline" className="ml-2 bg-gray-100">Coming soon</Badge> */}
+                <SelectItem disabled value="3LP">3LP
+                  <Badge variant="outline" className="ml-2 bg-gray-100">Coming soon</Badge>
                 </SelectItem>
               </SelectContent>
             </Select>

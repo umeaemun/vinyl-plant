@@ -141,7 +141,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     try {
       // console.log("Starting signup process with:", { email, plantData });
       const redirectUrl = `${import.meta.env.VITE_PUBLIC_SITE_URL}/auth`;
-      console.log("Redirect URL for signup:", redirectUrl);
+      // console.log("Redirect URL for signup:", redirectUrl);
       // Register the user
       const { error: signUpError, data } = await supabase.auth.signUp({
         email,

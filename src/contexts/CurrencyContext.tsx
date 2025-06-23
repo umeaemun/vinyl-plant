@@ -23,6 +23,7 @@ type CurrencyContextType = {
   setCurrency: (currency: Currency) => void;
   convertPrice: (priceInUSD: number) => number;
   formatPrice: (price: number) => string;
+  convertCodeToSymbol: (code: string) => string;
   isLoading: boolean;
 };
 
@@ -31,6 +32,10 @@ const CurrencyContext = createContext<CurrencyContextType>({
   setCurrency: () => {},
   convertPrice: (price: number) => price,
   formatPrice: (price: number) => `$${price.toFixed(2)}`,
+  convertCodeToSymbol: (code: string) => {
+    const foundCurrency = currencies.find(c => c.code === code);
+    return foundCurrency ? foundCurrency.symbol : '';
+  },
   isLoading: false,
 });
 
@@ -115,6 +120,11 @@ export const CurrencyProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     return `${currency.symbol} ${price.toFixed(2)}`;
   };
 
+  const convertCodeToSymbol = (code: string): string => {
+    const foundCurrency = currenciesWithRates.find(c => c.code === code);
+    return foundCurrency ? foundCurrency.symbol : '';
+  };
+
   return (
     <CurrencyContext.Provider 
       value={{ 
@@ -122,6 +132,7 @@ export const CurrencyProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         setCurrency: handleSetCurrency, 
         convertPrice, 
         formatPrice,
+        convertCodeToSymbol,
         isLoading
       }}
     >

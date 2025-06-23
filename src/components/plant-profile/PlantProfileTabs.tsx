@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Plant } from '@/data/plants';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -30,6 +30,7 @@ const PlantProfileTabs: React.FC<PlantProfileTabsProps> = ({
 }) => {
   const { toast } = useToast();
   const [isSaving, setIsSaving] = React.useState(false);
+  const [selectedCurrency, setSelectedCurrency] = useState<string>('USD');
 
   const handleChange = (field: keyof Plant, value: any) => {
     if (plant) {
@@ -93,7 +94,10 @@ const PlantProfileTabs: React.FC<PlantProfileTabsProps> = ({
 
   return (
     <div className="md:col-span-2">
-      <Tabs defaultValue="details" className="w-full">
+      <Tabs
+        //  defaultValue="details" 
+        defaultValue="pricing"
+        className="w-full">
         <TabsList className="mb-6 grid grid-cols-5 gap-2">
           <TabsTrigger value="details">Details</TabsTrigger>
           <TabsTrigger value="pricing">Pricing</TabsTrigger>
@@ -202,115 +206,18 @@ const PlantProfileTabs: React.FC<PlantProfileTabsProps> = ({
                 <TabsContent value="vinyl">
                   <PlantVinylPricing
                     plant={plant}
-                    setPlant={setPlant}
                     disabled={disabled}
+                    selectedCurrency={selectedCurrency}
+                    setSelectedCurrency={setSelectedCurrency}
                   />
                 </TabsContent>
 
                 <TabsContent value="packaging">
-                  {/* <div className="space-y-8">
-                    {(['innerSleeve', 'jacket', 'inserts', 'shrinkWrap'] as const).map(type => (
-                      <Card key={type}>
-                        <CardHeader>
-                          <CardTitle>{getTypeName(type)}</CardTitle>
-                          <CardDescription>
-                            Set pricing for different {getTypeName(type).toLowerCase()} options
-                          </CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                          {getPackagingOptions(type).map((option, optionIndex) => (
-                            <div key={optionIndex} className="mb-8 last:mb-0">
-                              <h4 className="text-lg font-medium mb-4">
-                                {option.option}
-                                {((type === 'inserts' && option.option.toLowerCase().includes('no')) || 
-                                 (type === 'shrinkWrap' && option.option.toLowerCase() === 'no')) && (
-                                  <span className="text-sm text-muted-foreground ml-2">(Always $0)</span>
-                                )}
-                              </h4>
-                              <div className="overflow-x-auto">
-                                <Table>
-                                  <TableHeader>
-                                    <TableRow>
-                                      <TableHead className="w-1/3">Quantity</TableHead>
-                                      <TableHead className="w-1/3">Price Per Unit ($)</TableHead>
-                                      <TableHead className="w-1/3">
-                                        {!disabled && <span>Actions</span>}
-                                      </TableHead>
-                                    </TableRow>
-                                  </TableHeader>
-                                  <TableBody>
-                                    {option.prices.map((price, priceIndex) => (
-                                      <TableRow key={priceIndex}>
-                                        <TableCell>
-                                          <Input
-                                            type="number"
-                                            value={price.quantity}
-                                            onChange={(e) => updatePackagingPrice(
-                                              type,
-                                              option.option,
-                                              priceIndex,
-                                              'quantity',
-                                              parseInt(e.target.value) || 0
-                                            )}
-                                            disabled={disabled}
-                                            className="w-full"
-                                          />
-                                        </TableCell>
-                                        <TableCell>
-                                          <Input
-                                            type="number"
-                                            value={price.price}
-                                            onChange={(e) => updatePackagingPrice(
-                                              type,
-                                              option.option,
-                                              priceIndex,
-                                              'price',
-                                              parseFloat(e.target.value) || 0
-                                            )}
-                                            disabled={disabled || 
-                                              (type === 'inserts' && option.option.toLowerCase().includes('no')) || 
-                                              (type === 'shrinkWrap' && option.option.toLowerCase() === 'no')}
-                                            className="w-full"
-                                            step="0.01"
-                                          />
-                                        </TableCell>
-                                        <TableCell>
-                                          {!disabled && (
-                                            <Button 
-                                              variant="destructive" 
-                                              size="sm" 
-                                              onClick={() => removePriceTier(type, option.option, priceIndex)}
-                                              disabled={option.prices.length <= 1}
-                                              className="w-full"
-                                            >
-                                              Remove
-                                            </Button>
-                                          )}
-                                        </TableCell>
-                                      </TableRow>
-                                    ))}
-                                  </TableBody>
-                                </Table>
-                              </div>
-                              {!disabled && (
-                                <Button 
-                                  onClick={() => addPriceTier(type, option.option)} 
-                                  className="mt-4"
-                                  variant="outline"
-                                >
-                                  <Plus className="h-4 w-4 mr-2" /> Add Quantity Tier
-                                </Button>
-                              )}
-                            </div>
-                          ))}
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div> */}
                   <PlantPackagingPricing
                     plant={plant}
-                    setPlant={setPlant}
                     disabled={disabled}
+                    selectedCurrency={selectedCurrency}
+                    setSelectedCurrency={setSelectedCurrency}
                   />
                 </TabsContent>
               </Tabs>

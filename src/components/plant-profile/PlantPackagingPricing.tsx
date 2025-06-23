@@ -10,14 +10,16 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 
 interface PlantPackagingPricingProps {
   plant: Plant;
-  setPlant: React.Dispatch<React.SetStateAction<Plant | null>>;
   disabled: boolean;
+  selectedCurrency: string;
+  setSelectedCurrency: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const PlantPackagingPricing: React.FC<PlantPackagingPricingProps> = ({
   plant,
-  setPlant,
-  disabled
+  disabled,
+  selectedCurrency,
+  setSelectedCurrency
 }) => {
 
   // console.log("plant", plant);
@@ -245,7 +247,7 @@ const PlantPackagingPricing: React.FC<PlantPackagingPricingProps> = ({
           .eq('plant_id', plant.id)
           .eq('type', type)
           .eq('option', option);
-          
+
         if (existingError) {
           console.error('Error fetching existing packaging pricing:', existingError);
           return;
@@ -254,20 +256,20 @@ const PlantPackagingPricing: React.FC<PlantPackagingPricingProps> = ({
         if (existingData && existingData.length > 0) {
           // Update existing row
 
-            const { data, error } = await supabase
-              .from('packaging_pricing')
-              .update({
-                prices: prices
-              })
-              .eq('plant_id', plant.id)
-              .eq('type', type)
-              .eq('option', option)
-              .select();
+          const { data, error } = await supabase
+            .from('packaging_pricing')
+            .update({
+              prices: prices
+            })
+            .eq('plant_id', plant.id)
+            .eq('type', type)
+            .eq('option', option)
+            .select();
 
-            if (error) {
-              console.error('Error saving packaging pricing:', error);
-            }
-      
+          if (error) {
+            console.error('Error saving packaging pricing:', error);
+          }
+
         }
         else {
           // Insert new row
@@ -286,12 +288,12 @@ const PlantPackagingPricing: React.FC<PlantPackagingPricingProps> = ({
           }
         }
       });
-      
-   
+
+
       await Promise.all(pricingUpdates);
 
       loadFromSupabase();
-      
+
       toast({
         title: "Success",
         description: "Pricing data saved successfully"
@@ -385,7 +387,7 @@ const PlantPackagingPricing: React.FC<PlantPackagingPricingProps> = ({
                         </TableHeader>
                         <TableBody>
                           {obj?.prices?.map((price, priceIndex) => {
-                          
+
                             return <TableRow key={priceIndex}>
                               {/* quantity */}
                               <TableCell>
@@ -462,13 +464,13 @@ const PlantPackagingPricing: React.FC<PlantPackagingPricingProps> = ({
       </div>
     );
 
-  }else{
+  } else {
     return (
       <div className="flex items-center justify-center h-[300px]">
-      <svg className="h-8 w-8 text-blue-500 animate-spin" viewBox="0 0 24 24" fill="none">
-        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
-        <path className="opacity-75" fill="currentColor" d="M12 2a10 10 0 0 1 10 10h-4a6 6 0 0 0-6-6V2z"/>
-      </svg>
+        <svg className="h-8 w-8 text-blue-500 animate-spin" viewBox="0 0 24 24" fill="none">
+          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+          <path className="opacity-75" fill="currentColor" d="M12 2a10 10 0 0 1 10 10h-4a6 6 0 0 0-6-6V2z" />
+        </svg>
 
       </div>
     );

@@ -8,22 +8,25 @@ import { Plus, Minus, Save } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { useCurrency } from '@/contexts/CurrencyContext';
 
 interface PlantVinylPricingProps {
   plant: Plant;
-  setPlant: React.Dispatch<React.SetStateAction<Plant | null>>;
   disabled: boolean;
+  selectedCurrency: string;
+  setSelectedCurrency: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
   plant,
-  setPlant,
-  disabled
+  disabled,
+  selectedCurrency,
+  setSelectedCurrency
 }) => {
 
   // console.log("plant", plant);
   const { toast } = useToast();
-
+  const { convertCodeToSymbol } = useCurrency();
 
   const [vinylPricing, setVinylPricing] = React.useState<PriceTier[]>(null);
   const [colorOptions, setColorOptions] = React.useState<ColorOption[]>([]);
@@ -572,7 +575,7 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
                     </div>
 
                     <div>
-                      <Label htmlFor={`price-${index}`}>Price per unit ($)</Label>
+                      <Label htmlFor={`price-${index}`}>Price per unit ({convertCodeToSymbol(selectedCurrency)})</Label>
                       <Input
                         id={`price-${index}`}
                         type="number"

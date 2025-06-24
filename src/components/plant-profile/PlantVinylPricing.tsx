@@ -500,7 +500,7 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
       setIsEditing(false); 
     }
   };
-
+console.log("weightOptions", weightOptions);
 
   if (vinylPricing && colorOptions && weightOptions) {
     return (
@@ -724,7 +724,7 @@ const PlantVinylPricing: React.FC<PlantVinylPricingProps> = ({
                       <Label htmlFor={`weight-${index}`}>Weight</Label>
                       <Select
                         disabled={disabled}
-                        value="180gm"
+                        value={option.weight}
                         onValueChange={(value) => handleWeightOptionChange(option.id, 'weight', value)}
                       >
                         <SelectTrigger>

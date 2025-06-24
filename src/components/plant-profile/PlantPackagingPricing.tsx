@@ -28,7 +28,6 @@ const PlantPackagingPricing: React.FC<PlantPackagingPricingProps> = ({
   const { convertCodeToSymbol } = useCurrency();
 
   const [packagingPricing, setPackagingPricing] = React.useState<any[]>(null);
-  const [packagingOptions, setPackagingOptions] = React.useState<any>(null);
   const [isSaving, setIsSaving] = React.useState(false);
 
   const namingConvention = {
@@ -121,7 +120,7 @@ const PlantPackagingPricing: React.FC<PlantPackagingPricingProps> = ({
 
         return {
           ...row,
-          prices: prices,
+          prices: prices.sort((a: any, b: any) => a.price - b.price)
         };
 
       });
@@ -216,30 +215,10 @@ const PlantPackagingPricing: React.FC<PlantPackagingPricingProps> = ({
 
     if (plant && plant.id && !packagingPricing) {
       // console.log("Loading packaging pricing from Supabase");
-      setPackagingOptions(null);
       loadFromSupabase();
     }
 
   }, [plant]);
-
-  useEffect(() => {
-    if (packagingPricing && !packagingOptions) {
-      // console.log("Packaging pricing loaded", packagingPricing);
-
-      const sorted = packagingPricing.map(obj => {
-        obj.prices.sort((a: any, b: any) => a.price - b.price);
-        return obj;
-      });
-
-      const options = {
-        innerSleeve: sorted.filter(p => p.type === 'innerSleeve'),
-        jacket: sorted.filter(p => p.type === 'jacket'),
-        inserts: sorted.filter(p => p.type === 'inserts'),
-        shrinkWrap: sorted.filter(p => p.type === 'shrinkWrap')
-      };
-      setPackagingOptions(options);
-    }
-  }, [packagingPricing]);
 
 
   const saveToSupabase = async () => {
@@ -278,6 +257,7 @@ const PlantPackagingPricing: React.FC<PlantPackagingPricingProps> = ({
         if (existingData && existingData.length > 0) {
           // Update existing row
 
+         
           const { data, error } = await supabase
             .from('packaging_pricing')
             .update({
@@ -344,7 +324,6 @@ const PlantPackagingPricing: React.FC<PlantPackagingPricingProps> = ({
     }
   };
 
-
   const getTypeName = (type: 'innerSleeve' | 'jacket' | 'inserts' | 'shrinkWrap') => {
     switch (type) {
       case 'innerSleeve': return 'Inner Sleeve';
@@ -355,17 +334,16 @@ const PlantPackagingPricing: React.FC<PlantPackagingPricingProps> = ({
     }
   };
 
-  // const getPackagingOptions = (type: 'innerSleeve' | 'jacket' | 'inserts' | 'shrinkWrap') => {
-  //   const options = packagingPricing?.filter(p => p.type === type) || [];
-  //   options.map(obj => {
-  //     obj.prices.sort((a: any, b: any) => a.price - b.price);
-  //     return obj;
-  //   });
+  const getPackagingOptions = (type: 'innerSleeve' | 'jacket' | 'inserts' | 'shrinkWrap') => {
+    const options = packagingPricing?.filter(p => p.type === type) || [];
+    options.map(obj => {
+      return obj;
+    });
 
-  //   return options;
-  // };
+    return options;
+  };
 
-  if (packagingPricing && packagingOptions) {
+  if (packagingPricing) {
 
     return (
       <div className="space-y-8">
@@ -398,15 +376,14 @@ const PlantPackagingPricing: React.FC<PlantPackagingPricingProps> = ({
               </CardDescription>
             </CardHeader>
             <CardContent>
-              {packagingOptions[type].map((obj, optionIndex) => {
-                console.log("obj", obj);
+              {getPackagingOptions(type).map((obj, optionIndex) => {
                 return (
                   <div key={optionIndex} className="mb-8 last:mb-0">
                     <h4 className="text-lg font-medium mb-4">
                       {namingConvention[obj.option] || obj.option}
                       {((type === 'inserts' && obj.option.toLowerCase().includes('no')) ||
                         (type === 'shrinkWrap' && obj.option.toLowerCase() === 'no')) && (
-                          <span className="text-sm text-muted-foreground ml-2">(Always $0)</span>
+                          <span className="text-sm text-muted-foreground ml-2">(Always {convertCodeToSymbol(selectedCurrency)}0)</span>
                         )}
                     </h4>
                     <div className="overflow-x-auto">

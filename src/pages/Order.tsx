@@ -229,16 +229,21 @@ const Order = () => {
       console.log('Converted Per Unit Price:', formattedPerUnit);
 
 
-      setPerUnit(formattedPerUnit); // Ensure perUnit is a string with 2 decimal places
-
+      setPerUnit(formattedPerUnit); 
 
       const total = formattedPerUnit * (parseInt(orderSummary?.quantity) || 0);
       const parsedTotal = parseFloat(total.toFixed(2)); // Format to 2 decimal places
-      setTotalPrice(parsedTotal);
+      // setTotalPrice(parsedTotal);
+      setTotalPrice((prev)=>{
+        if (prev === parsedTotal) {
+          setCurrencyLoading(false);
+          return prev; // No change, return previous value
+        }
+        return parsedTotal; // Update totalPrice with new value
+      }); // Ensure totalPrice is a string with 2 decimal places
 
       console.log('Total Price:', parsedTotal);
 
-      setCurrencyLoading(false);
 
     }
 

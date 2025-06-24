@@ -24,12 +24,13 @@ const Order = () => {
   const [orderSummary, setOrderSummary] = useState<OrderSummary | null>(null);
   const [allOptionsValid, setAllOptionsValid] = useState<any>({ vinyl: true, packaging: true });
   const [isLoading, setIsLoading] = useState(true);
+  const [currencyLoading, setCurrencyLoading] = useState(false);
   const [perUnit, setPerUnit] = useState<number>(0);
   const [totalPrice, setTotalPrice] = useState<number>(0);
   const navigate = useNavigate();
   const { toast } = useToast();
   const [initialLoading, setInitialLoading] = useState(true);
-  const { convertPrice, isLoading: currencyLoading, currency } = useCurrency();
+  const { convertPrice, currency } = useCurrency();
 
   useEffect(() => {
     // Get plant information
@@ -98,7 +99,7 @@ const Order = () => {
 
     setTimeout(() => {
       setInitialLoading(false);
-    }, 2000); 
+    }, 2000);
 
     // Only show warning if there's no plant selected at all
     if (foundPlant === false && toast) {
@@ -223,7 +224,7 @@ const Order = () => {
 
       const perUnit = vinylPrice + colorPrice + weightPrice + packagingPrice;
       console.log('Per Unit Price before conversion:', perUnit);
-      const convertedPerUnit = convertPrice(perUnit, selectedPlant?.currency || 'USD'); 
+      const convertedPerUnit = convertPrice(perUnit, selectedPlant?.currency || 'USD');
       const formattedPerUnit = parseFloat(convertedPerUnit.toFixed(2)); // Format to 2 decimal places
       console.log('Converted Per Unit Price:', formattedPerUnit);
 
@@ -237,13 +238,16 @@ const Order = () => {
 
       console.log('Total Price:', parsedTotal);
 
+      setCurrencyLoading(false);
+
     }
 
     if (orderSummary && selectedPlant && initialLoading === false) {
       // updateVinylFormData();
+      setCurrencyLoading(true);
       calculateUpdatedPicing();
     }
-  }, [orderSummary]);
+  }, [orderSummary, currency]);
 
   useEffect(() => {
     // Update order summary with perUnit and totalPrice
@@ -278,7 +282,6 @@ const Order = () => {
   // console.log('Selected Plant:', selectedPlant);
   // console.log('Order Summary:', orderSummary);
   // console.log('All Options Valid:', allOptionsValid);
-
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -316,14 +319,6 @@ const Order = () => {
               </Button>
             </Card>
           ) : (
-            currencyLoading ? 
-              <Alert variant="default" className="mb-4 bg-muted/50">
-               <AlertDescription className="flex items-center">
-                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                   Loading current exchange rates...
-                 </AlertDescription>
-               </Alert>
-            :
             <Card className="p-6 mb-8">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div>
@@ -360,14 +355,24 @@ const Order = () => {
                   </div>
 
                   <div className="mt-4 pt-4 border-t">
-                    <div className="flex justify-between mb-1">
-                      <p className="font-medium">Price per unit:</p>
-                      <p className="font-medium">{currency.symbol} {orderSummary.perUnit}</p>
-                    </div>
-                    <div className="flex justify-between">
-                      <p className="font-semibold">Total price:</p>
-                      <p className="font-semibold">{currency.symbol} {orderSummary.totalPrice}</p>
-                    </div>
+                    {currencyLoading ?
+                    <Alert variant="default" className="mb-4 bg-muted/50">
+                      <AlertDescription className="flex items-center">
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                        Loading current exchange rates...
+                      </AlertDescription>
+                    </Alert>
+                    :
+                    <>
+                      <div className="flex justify-between mb-1">
+                        <p className="font-medium">Price per unit:</p>
+                        <p className="font-medium">{currency.symbol} {orderSummary.perUnit}</p>
+                      </div>
+                      <div className="flex justify-between">
+                        <p className="font-semibold">Total price:</p>
+                        <p className="font-semibold">{currency.symbol} {orderSummary.totalPrice}</p>
+                      </div>
+                    </>}
                   </div>
                 </div>
               </div>
@@ -385,7 +390,7 @@ const Order = () => {
             <div>
               <h2 className="text-xl font-semibold mb-4">2. Personal Details</h2>
               <div className="bg-white rounded-lg shadow-sm">
-                <PersonalDetailsForm selectedPlant={selectedPlant} orderSummary={orderSummary} allOptionsValid={allOptionsValid}  />
+                <PersonalDetailsForm selectedPlant={selectedPlant} orderSummary={orderSummary} allOptionsValid={allOptionsValid} />
               </div>
             </div>
           </div>
